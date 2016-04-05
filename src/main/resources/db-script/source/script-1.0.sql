@@ -100,8 +100,5 @@ INSERT INTO `sms_type`(`sms_type`, `credentials_id`) values('InterviewSMS', @cre
 SET @sms_type_id = (SELECT `id` FROM `sms_type` WHERE `sms_type`='InterviewSMS');
 INSERT INTO `sms_template`(`sms_type`, `template`)
   values(@sms_type_id, 'STUDENT_FIRST_NAME, COMPANY_NAME приглашает Вас на собеседование в INTERVIEW_DATE по адресу COMPANY_ADDRESS');
-INSERT INTO `email_template`(`sms_type`, `subject`, `content`)
-  values(@sms_type_id, 'Вас пригласили на собеседование',
-         'Здравствуйте, STUDENT_LAST_NAME STUDENT_FIRST_NAME<br><br>Компания COMPANY_NAME приглашает Вас на собеседование в INTERVIEW_DATE по адресу COMPANY_ADDRESS.<br><br>С уважением, команда cv.bsu.by');
 
 INSERT INTO `sms_type`(`sms_type`, `credentials_id`) VALUES('CustomSMS', @creds_id);

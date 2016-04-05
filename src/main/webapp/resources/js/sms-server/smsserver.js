@@ -6,6 +6,19 @@ application.config(['$httpProvider',
     }
 ]);
 
+application.run(
+    ['$cookies',
+        function ($cookies) {
+            if (!$cookies.get('auth_token')) {
+                if (localStorage.getItem('authentication')) {
+                    var auth = JSON.parse(localStorage.getItem('authentication'));
+                    $cookies.put('auth_token', auth.token);
+                }
+            }
+        }
+    ]
+);
+
 application.config(['$routeProvider',
     function ($routeProvider) {
         var BASE_TEMPLATE_LOCATION = 'resources/templates/';
