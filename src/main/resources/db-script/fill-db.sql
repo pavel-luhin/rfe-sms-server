@@ -1,0 +1,1 @@
+source ./source/script-1.0.sql

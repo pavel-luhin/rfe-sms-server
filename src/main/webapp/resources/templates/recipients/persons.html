@@ -1,0 +1,23 @@
+<div id="recipients">
+    <label>Recipients:</label>
+    <input type="text" class="input-field"
+           placeholder="Filter by First Name, Last Name, Phone Number" ng-model="recipientsFilter">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="recipient in receivedRecipients">
+        <tr>
+            <td>{{recipient.firstName}}</td>
+            <td>{{recipient.lastName}}</td>
+            <td>{{recipient.email}}</td>
+            <td>{{recipient.phoneNumber}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,141 @@
+body {
+	margin-top: 0;
+}
+
+.login-form {
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+	width: 500px;
+	clear: both;
+	padding-top: 10%;
+}
+
+.input-submit {
+	float: right;
+	width: 100px;
+	height: 30px;
+	font-family: sans-serif;
+	font-weight: bold;
+	color: white;
+	background-color: #00cccc;
+	border: none;
+	margin-right: 10px;
+}
+
+.input-submit:hover {
+	cursor: pointer;
+	background-color: #009999;
+}
+
+.input-submit:active {
+	box-shadow: 1px 1px 3px black;
+}
+
+.input-submit:focus {
+	outline: none;
+}
+
+.input-field {
+	margin-bottom: 30px;
+	width: 100%;
+	clear: both;
+	height: 40px;
+	border-bottom-color: #00cccc;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+
+.input-field:focus {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #00cccc;
+	outline: none;
+	border-bottom-width: 8px;
+}
+
+.login-error {
+	color: red;
+	font-family: sans-serif;
+	top: -200px;
+}
+
+.sms-content-textarea {
+	width: 100%;
+	height: 250px;
+	border-bottom-color: #00cccc;
+	border-bottom-style: solid;
+	border-bottom-width: 2px;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+}
+
+.sms-content-textarea:focus {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #00cccc;
+	outline: none;
+	border-bottom-width: 8px;
+}
+
+.sms-content-status {
+	color: lightgray;
+	font-family: sans-serif;
+	font-size: 10pt;
+	float: left;
+}
+
+.recipients {
+	margin-bottom: 50px;
+}
+
+.add-recipient-link {
+	text-align: center;
+	width: 150px;
+	height: 30px;
+	display: block;
+	text-decoration: none;
+	float: right;
+	margin-top: 50px;
+	background-color: #00cccc;
+	font-weight: bold;
+	color: white;
+	padding-top: 10px;
+}
+
+.add-recipient-link:hover {
+	background-color: #009999;
+}
+
+.add-recipient-link:active {
+	box-shadow: 1px 1px 3px black;
+}
+
+.small-input-field {
+	width: 200px;
+	margin-right: 20px;
+}
+
+.remove-recipient-form {
+	text-align: center;
+	width: 150px;
+	height: 30px;
+	display: block;
+	border: none;
+	background-color: #00cccc;
+	font-weight: bold;
+	color: white;
+	float: right;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.expandable {
+	background-color: #E4E4E4;
+}
