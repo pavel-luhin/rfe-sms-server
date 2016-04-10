@@ -22,7 +22,7 @@ public class UserEntity extends AbstractPersistable<Integer> {
     @Column(name = "password", nullable = false)
     private String password;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private List<AuthenticationTokenEntity> tokens;
 
     public String getUsername() {
