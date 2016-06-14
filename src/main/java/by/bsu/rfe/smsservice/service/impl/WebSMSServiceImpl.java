@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.service.impl;
 
 import by.bsu.rfe.smsservice.builder.RequestBuilder;
+import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.EmailEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTypeEntity;
@@ -62,7 +63,7 @@ public class WebSMSServiceImpl implements WebSMSService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void sendSMS(BaseSMS sms) {
+    public SMSResultDTO sendSMS(BaseSMS sms) {
         Request request = smsRequestBuilder.buildRequest(sms);
         LOG.info("Prepared request with parameters:");
         LOG.info("" + request.getParameters());
@@ -78,6 +79,8 @@ public class WebSMSServiceImpl implements WebSMSService {
         CredentialsEntity credentialsEntity = credentialsService.getCredentials(sms.getClass().getSimpleName());
         statisticsEntity.setCredentials(credentialsEntity);
 
+        SMSResultDTO smsResult = new SMSResultDTO();
+
         try {
             HttpResponse response = execute(request);
             String content = getContent(response);
@@ -87,9 +90,11 @@ public class WebSMSServiceImpl implements WebSMSService {
             if (objectNode.get(STATUS_PARAM).asText().equals(STATUS_SUCCESS)) {
                 LOG.debug("Sms sent successfully");
                 statisticsEntity.setError(false);
+                smsResult.setSuccess(true);
             } else {
                 LOG.debug("Error while sending sms");
                 statisticsEntity.setError(true);
+                smsResult.setSuccess(false);
             }
             if (sms instanceof EmailSMS) {
                 EmailSMS emailSMS = (EmailSMS) sms;
@@ -112,6 +117,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         } finally {
             statisticsService.saveStatistics(statisticsEntity);
         }
+        return smsResult;
     }
 
     private HttpResponse execute(Request request) throws IOException {

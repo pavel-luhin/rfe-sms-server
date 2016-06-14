@@ -14,7 +14,9 @@
               <property name="url" value="jdbc:mysql://localhost:3306/sms_server" />
               <property name="username" value="${database.username}"/>
               <property name="password" value="${database.password}"/>
-              <property name="connectionProperties" value="useUnicode=true;characterEncoding=utf8"/>
+              <property name="connectionProperties" value="useUnicode=true;characterEncoding=utf8;autoReconnect=true"/>
+              <property name="validationQuery" value="SELECT 1"/>
+              <property name="testOnBorrow" value="true"/>
        </bean>
 
        <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

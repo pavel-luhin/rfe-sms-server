@@ -8,7 +8,7 @@
         <class-a>by.bsu.rfe.smsservice.common.entity.StatisticsEntity</class-a>
         <class-b>by.bsu.rfe.smsservice.common.dto.StatisticsDTO</class-b>
         <field>
-            <a>credentials.username</a>
+            <a>credentials.sender</a>
             <b>username</b>
         </field>
         <field>

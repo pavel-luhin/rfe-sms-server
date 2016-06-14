@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.sms.CustomSMS;
 import by.bsu.rfe.smsservice.common.sms.InterviewSMS;
 import by.bsu.rfe.smsservice.service.WebSMSService;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
@@ -30,11 +32,9 @@ public class SMSController {
         webSMSService.sendSMS(sms);
     }
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     @RequestMapping(value = "/custom", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void sendCustom(@RequestBody List<CustomSMS> customSMSs) {
-        for (CustomSMS customSMS : customSMSs) {
-            webSMSService.sendSMS(customSMS);
-        }
+    public SMSResultDTO sendCustom(@RequestBody CustomSMS customSMS) {
+        return webSMSService.sendSMS(customSMS);
     }
 }

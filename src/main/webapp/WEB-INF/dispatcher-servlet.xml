@@ -17,4 +17,8 @@
               <property name="supportedMediaTypes" value="application/json"/>
        </bean>
        <mvc:default-servlet-handler />
+
+       <mvc:interceptors>
+              <bean class="by.bsu.rfe.smsservice.security.RequestLoggerInterceptor"/>
+       </mvc:interceptors>
 </beans>

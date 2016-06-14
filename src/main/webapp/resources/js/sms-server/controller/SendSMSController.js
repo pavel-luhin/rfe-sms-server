@@ -24,13 +24,20 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                 $scope.error = undefined;
             }
 
-            $scope.messages.push({
-                recipient: sms.recipient,
-                content: sms.content,
-                recipientType: 'PERSON'
-            });
+            sms.recipientType = 'PERSON';
 
-            $http.post(RestURLFactory.SEND_CUSTOM_SMS, $scope.messages);
+            $http.post(RestURLFactory.SEND_CUSTOM_SMS, sms)
+                .then(function (data) {
+                    console.log(data.data.success == true);
+                    if (data.data.success == true) {
+                        alert("SMS sent successfully");
+                    } else {
+                        alert("Some error occured");
+                    }
+                    $scope.messages = [];
+                    sms.recipient = '';
+                    sms.content = '';
+                });
         };
 
         function isSMSValid(sms) {
