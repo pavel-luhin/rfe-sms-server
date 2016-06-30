@@ -90,11 +90,7 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
         };
 
         var changePage = function (targetPage) {
-            if (targetPage > currentPage) {
-                skip = currentPage * currentPageSize.value;
-            } else {
-                skip = skip - targetPage * currentPageSize.value
-            }
+            skip = (targetPage - 1) * currentPageSize.value;
             
             currentPage = targetPage;
             recalculatePages();
