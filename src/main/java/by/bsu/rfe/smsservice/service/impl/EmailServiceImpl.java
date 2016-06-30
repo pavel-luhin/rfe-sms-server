@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.service.impl;
 
 import by.bsu.rfe.smsservice.common.entity.EmailEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.EmailRepository;
 import by.bsu.rfe.smsservice.service.EmailService;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -35,20 +38,13 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.starttls.enable}")
     private String emailStartTLSEnable;
 
-    @Autowired
-    private EmailRepository emailRepository;
-
     @Override
-    public EmailEntity getEmailEntity(String smsType) {
-        return emailRepository.getEmailEntity(smsType);
+    public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
+
     }
 
     @Override
     public void sendEmail(String address, String subject, String body) {
-        if (StringUtils.isEmpty(emailUsername) || StringUtils.isEmpty(emailPassword)) {
-            return;
-        }
-
         Properties properties = new Properties();
         properties.put("mail.smtp.auth", emailEnableAuthentication);
         properties.put("mail.smtp.starttls.enable", emailStartTLSEnable);

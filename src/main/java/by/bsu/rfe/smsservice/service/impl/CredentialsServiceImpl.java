@@ -6,6 +6,8 @@ import by.bsu.rfe.smsservice.service.CredentialsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Created by pluhin on 3/20/16.
  */
@@ -15,7 +17,7 @@ public class CredentialsServiceImpl implements CredentialsService {
     private CredentialsRepository credentialsRepository;
 
     @Override
-    public CredentialsEntity getCredentials(String smsType) {
-        return credentialsRepository.getCredentials(smsType);
+    public List<CredentialsEntity> getAllCredentials() {
+        return credentialsRepository.findAll();
     }
 }

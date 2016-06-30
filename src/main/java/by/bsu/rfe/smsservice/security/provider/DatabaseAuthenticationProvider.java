@@ -30,7 +30,7 @@ public class DatabaseAuthenticationProvider implements AuthenticationProvider {
 
         UserEntity userEntity = userService.findByUsername(username);
         if (userEntity.getPassword().equals(password)) {
-            Authentication authResult = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<GrantedAuthority>());
+            UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<GrantedAuthority>());
             SecurityContextHolder.getContext().setAuthentication(authResult);
             return authResult;
         } else {

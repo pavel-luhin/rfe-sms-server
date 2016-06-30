@@ -8,5 +8,4 @@ import by.bsu.rfe.smsservice.common.entity.SmsTypeEntity;
  */
 public interface SmsInfoService {
     SmsTypeEntity getSMSTypeEntity(String smsTypeName);
-    SmsTemplateEntity getSMSTemplate(String smsTypeName);
 }

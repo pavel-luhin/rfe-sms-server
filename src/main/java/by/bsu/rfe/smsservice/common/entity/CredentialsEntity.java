@@ -4,7 +4,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,9 +25,14 @@ public class CredentialsEntity extends AbstractPersistable<Integer> {
     private String sender;
     @Column(name = "api_key")
     private String apiKey;
-    @OneToMany
-    @JoinColumn(name = "credentials_id")
-    private List<SmsTypeEntity> smsType;
+    @Column(name = "smsType")
+    private String smsType;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_credentials"
+    )
+    private List<UserEntity> users;
 
     public String getUsername() {
         return username;
@@ -50,11 +58,19 @@ public class CredentialsEntity extends AbstractPersistable<Integer> {
         this.sender = sender;
     }
 
-    public List<SmsTypeEntity> getSmsType() {
+    public String getSmsType() {
         return smsType;
     }
 
-    public void setSmsType(List<SmsTypeEntity> smsType) {
+    public void setSmsType(String smsType) {
         this.smsType = smsType;
+    }
+
+    public List<UserEntity> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<UserEntity> users) {
+        this.users = users;
     }
 }

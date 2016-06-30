@@ -22,9 +22,4 @@ public class SmsInfoServiceImpl implements SmsInfoService {
     public SmsTypeEntity getSMSTypeEntity(String smsTypeName) {
         return smsTypeRepository.getSmsType(smsTypeName);
     }
-
-    @Override
-    public SmsTemplateEntity getSMSTemplate(String smsTypeName) {
-        return smsTemplateRepository.getTemplateBySMSType(smsTypeName);
-    }
 }

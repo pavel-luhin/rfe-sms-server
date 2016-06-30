@@ -1,10 +1,10 @@
 package by.bsu.rfe.smsservice.common.entity;
 
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -12,30 +12,20 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sms_template")
-public class SmsTemplateEntity {
-    @Id
-    @Column(name = "sms_id")
-    private Integer id;
+public class SmsTemplateEntity extends AbstractPersistable<Integer> {
     @Column(name = "template", nullable = false)
     private String template;
-    @OneToOne
-    @JoinColumn(name = "sms_type", nullable = false)
-    private SmsTypeEntity smsTypeEntity;
+    @Column(name = "sms_type", nullable = false)
+    private String smsType;
+    @Column(name = "uri_path", nullable = false)
+    private String uriPath;
 
-    public Integer getId() {
-        return id;
+    public String getSmsType() {
+        return smsType;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public SmsTypeEntity getSmsType() {
-        return smsTypeEntity;
-    }
-
-    public void setSmsType(SmsTypeEntity smsTypeEntity) {
-        this.smsTypeEntity = smsTypeEntity;
+    public void setSmsType(String smsType) {
+        this.smsType = smsType;
     }
 
     public String getTemplate() {
@@ -44,5 +34,13 @@ public class SmsTemplateEntity {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public String getUriPath() {
+        return uriPath;
+    }
+
+    public void setUriPath(String uriPath) {
+        this.uriPath = uriPath;
     }
 }
