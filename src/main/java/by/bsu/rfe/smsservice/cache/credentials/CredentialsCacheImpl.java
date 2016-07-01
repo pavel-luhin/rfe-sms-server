@@ -28,7 +28,7 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialsCacheImpl.class);
 
     @Value("${credentials.cache.enabled:false}")
-    public Boolean enableCredentialsCache;
+    private Boolean enableCredentialsCache;
 
     @Autowired
     private CredentialsService credentialsService;
@@ -109,5 +109,9 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
     @Override
     public void reloadCache() {
         startCache();
+    }
+
+    public Boolean getEnableCredentialsCache() {
+        return enableCredentialsCache;
     }
 }
