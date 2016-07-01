@@ -3,6 +3,7 @@ package by.bsu.rfe.smsservice.cache.credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CredentialsCacheImpl.class);
 
+    @Value("${credentials.cache.enabled:false}")
+    public Boolean enableCredentialsCache;
+
     @Autowired
     private CredentialsService credentialsService;
 
@@ -33,6 +37,14 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
     private Map<String, CredentialsEntity> defaultCredentialsByUsername = new ConcurrentHashMap<>();
 
     @PostConstruct
+    public void startCache() {
+        if (enableCredentialsCache) {
+            initCache();
+        } else {
+            LOGGER.info("CREDENTIALS CACHE IS DISABLED");
+        }
+    }
+
     public void initCache() {
         LOGGER.info("INITIALIZING CREDENTIALS CACHE");
         int count = 0;
@@ -96,6 +108,6 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
 
     @Override
     public void reloadCache() {
-        initCache();
+        startCache();
     }
 }
