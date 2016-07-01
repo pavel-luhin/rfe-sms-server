@@ -9,4 +9,5 @@ import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
  */
 public interface CredentialsService {
     List<CredentialsEntity> getAllCredentials();
+    CredentialsEntity getCredentialsForSmsTypeOrDefault(String smsType);
 }

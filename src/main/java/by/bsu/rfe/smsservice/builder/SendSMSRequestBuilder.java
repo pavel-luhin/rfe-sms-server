@@ -1,5 +1,20 @@
 package by.bsu.rfe.smsservice.builder;
 
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGE;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.RECIPIENTS;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
+
+import org.apache.http.message.BasicNameValuePair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
@@ -7,21 +22,8 @@ import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
-import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.service.SmsInfoService;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.http.message.BasicNameValuePair;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.*;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -33,18 +35,33 @@ public class SendSMSRequestBuilder {
     private CredentialsCache credentialsCache;
     @Autowired
     private RecipientService recipientService;
+    @Autowired
+    private CredentialsService credentialsService;
 
     @Value("${sms.test}")
     private Integer test;
 
     public Request buildRequest(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsContent, String smsType) {
+        if (parameters == null) {
+            parameters = new HashMap<>();
+        }
+
         if (recipient.getValue() != RecipientType.NUMBER) {
             collectAdditionalParameters(recipient, parameters);
         }
 
         Request request = new Request();
 
-        CredentialsEntity credentials = credentialsCache.getCredentialsForSMSTypeOrDefault(smsType);
+        CredentialsEntity credentials = null;
+        if (credentialsCache.isCacheEnabled()) {
+            credentials = credentialsCache.getCredentialsForSMSTypeOrDefault(smsType);
+        } else {
+            credentials = credentialsService.getCredentialsForSmsTypeOrDefault(smsType);
+        }
+
+        if (credentials == null) {
+            throw new NullPointerException("User doesn't allowed to send sms.");
+        }
 
         request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
         request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
@@ -59,7 +76,10 @@ public class SendSMSRequestBuilder {
         } else {
             //process adding registered recipient
         }
-        request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), smsContent));
+
+        String message = createMessage(smsContent, parameters);
+
+        request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), message));
 
         return request;
     }
@@ -78,14 +98,10 @@ public class SendSMSRequestBuilder {
 
     }
 
-    private CredentialsEntity getCredentialsForSMS(String smsType, List<CredentialsEntity> userCredentials) {
-        if (CollectionUtils.isNotEmpty(userCredentials)) {
-            for (CredentialsEntity credentialsEntity : userCredentials) {
-                if (credentialsEntity.getSmsType().equals(smsType)) {
-                    return credentialsEntity;
-                }
-            }
+    private String createMessage(String template, Map<String, String> messageParameters) {
+        for (Map.Entry<String, String> fieldTemplate : messageParameters.entrySet()) {
+            template = template.replaceAll(fieldTemplate.getKey(), fieldTemplate.getValue());
         }
-        return null;
+        return template;
     }
 }

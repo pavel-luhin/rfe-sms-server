@@ -11,4 +11,5 @@ public interface CredentialsCache {
     CredentialsEntity getCredentialsForSMSTypeOrDefault(String smsType);
     List<CredentialsEntity> getAllUserCredentals();
     CredentialsEntity getDefaultCredentialsForUser();
+    Boolean isCacheEnabled();
 }

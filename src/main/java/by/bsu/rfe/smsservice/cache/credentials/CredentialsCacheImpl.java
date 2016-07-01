@@ -111,7 +111,7 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
         startCache();
     }
 
-    public Boolean getEnableCredentialsCache() {
+    public Boolean isCacheEnabled() {
         return enableCredentialsCache;
     }
 }
