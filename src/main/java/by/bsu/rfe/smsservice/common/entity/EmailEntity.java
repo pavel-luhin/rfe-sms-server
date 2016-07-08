@@ -16,8 +16,8 @@ public class EmailEntity extends AbstractPersistable<Integer> {
     private String subject;
     private String content;
     @OneToOne
-    @JoinColumn(name = "sms_type")
-    private SmsTypeEntity smsType;
+    @JoinColumn(name = "sms_template")
+    private SmsTemplateEntity smsTemplate;
 
     public String getSubject() {
         return subject;
@@ -33,13 +33,5 @@ public class EmailEntity extends AbstractPersistable<Integer> {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public SmsTypeEntity getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(SmsTypeEntity smsType) {
-        this.smsType = smsType;
     }
 }

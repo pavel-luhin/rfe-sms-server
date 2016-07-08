@@ -19,9 +19,6 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
     private String number;
     private String text;
     private String response;
-    @OneToOne
-    @JoinColumn(name = "sms_type")
-    private SmsTypeEntity smsType;
     @Enumerated(EnumType.STRING)
     @Column(name = "recipient_type")
     private RecipientType recipientType;
@@ -66,14 +63,6 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
 
     public void setResponse(String response) {
         this.response = response;
-    }
-
-    public SmsTypeEntity getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(SmsTypeEntity smsType) {
-        this.smsType = smsType;
     }
 
     public RecipientType getRecipientType() {
