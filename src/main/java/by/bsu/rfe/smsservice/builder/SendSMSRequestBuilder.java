@@ -8,12 +8,16 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
@@ -30,6 +34,8 @@ import by.bsu.rfe.smsservice.service.RecipientService;
  */
 @Component("sendSMS")
 public class SendSMSRequestBuilder {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SendSMSRequestBuilder.class);
 
     @Autowired
     private CredentialsCache credentialsCache;
@@ -59,6 +65,8 @@ public class SendSMSRequestBuilder {
             credentials = credentialsService.getCredentialsForSmsTypeOrDefault(smsType);
         }
 
+        String message = createMessage(smsContent, parameters, smsContent);
+
         if (credentials == null) {
             throw new NullPointerException("User doesn't allowed to send sms.");
         }
@@ -77,7 +85,7 @@ public class SendSMSRequestBuilder {
             //process adding registered recipient
         }
 
-        String message = createMessage(smsContent, parameters);
+
 
         request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), message));
 
@@ -98,10 +106,28 @@ public class SendSMSRequestBuilder {
 
     }
 
-    private String createMessage(String template, Map<String, String> messageParameters) {
-        for (Map.Entry<String, String> fieldTemplate : messageParameters.entrySet()) {
-            template = template.replaceAll(fieldTemplate.getKey(), fieldTemplate.getValue());
+    private String createMessage(String template, Map<String, String> messageParameters, String originalMessage) {
+        String regex = "\\$\\{([^}]+)\\}";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(template);
+        String result = template;
+        while(matcher.find()) {
+            String token = matcher.group();
+            String tokenKey = matcher.group(1);
+            String replacementValue = null;
+
+            if(messageParameters.containsKey(tokenKey)) {
+                replacementValue = messageParameters.get(tokenKey);
+            } else {
+                LOGGER.error("Not enough parameters. Could not create message.");
+                LOGGER.error("Original message: {}", originalMessage);
+                LOGGER.error("Parameters: {}", messageParameters);
+                throw new IllegalArgumentException("Not enough parameters. Could not create message.");
+            }
+
+            result = result.replaceFirst(Pattern.quote(token), replacementValue);
         }
-        return template;
+
+        return result;
     }
 }
