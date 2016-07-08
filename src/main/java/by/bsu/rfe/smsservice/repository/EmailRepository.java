@@ -8,6 +8,4 @@ import org.springframework.data.jpa.repository.Query;
  * Created by pluhin on 3/20/16.
  */
 public interface EmailRepository extends JpaRepository<EmailEntity, Integer> {
-    @Query("FROM EmailEntity WHERE smsType.smsType=?1")
-    EmailEntity getEmailEntity(String smsType);
 }
