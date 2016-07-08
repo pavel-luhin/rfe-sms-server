@@ -3,16 +3,7 @@ package by.bsu.rfe.smsservice.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder;
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
-import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
-import by.bsu.rfe.smsservice.common.request.Request;
-import by.bsu.rfe.smsservice.common.sms.SmsDTO;
-import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
-import by.bsu.rfe.smsservice.service.EmailService;
-import by.bsu.rfe.smsservice.service.WebSMSService;
-
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -33,6 +24,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder;
+import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.common.request.Request;
+import by.bsu.rfe.smsservice.common.sms.SmsDTO;
+import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
+import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.WebSMSService;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -55,7 +56,7 @@ public class WebSMSServiceImpl implements WebSMSService {
     private EmailService emailService;
 
     public SMSResultDTO sendSMS(SmsDTO smsDTO) {
-        Map<String, RecipientType> recipients = smsDTO.getRecipients();
+        Map<String, RecipientType> recipients = MapUtils.emptyIfNull(smsDTO.getRecipients());
         Map<String, Map<String, String>> smsParameters = smsDTO.getSmsParameters();
 
         SMSResultDTO smsResultDTO = new SMSResultDTO();
