@@ -88,6 +88,7 @@ public class WebSMSServiceImpl implements WebSMSService {
                     }
                 }
 
+                statisticsEntity.setSmsTemplate(smsDTO.getSmsTemplate());
                 statisticsEntity.setRecipientType(recipient.getValue());
                 statisticsEntity.setSentDate(new Date());
                 statisticsEntity.setResponse(content);

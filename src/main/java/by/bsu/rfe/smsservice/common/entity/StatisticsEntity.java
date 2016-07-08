@@ -24,6 +24,9 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
     private RecipientType recipientType;
     @Column(name = "sent_date")
     private Date sentDate;
+    @ManyToOne
+    @JoinColumn(name = "sms_template")
+    private SmsTemplateEntity smsTemplate;
 
     public Boolean getError() {
         return error;
@@ -79,5 +82,13 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
 
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+    }
+
+    public SmsTemplateEntity getSmsTemplate() {
+        return smsTemplate;
+    }
+
+    public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
+        this.smsTemplate = smsTemplate;
     }
 }
