@@ -65,8 +65,6 @@ public class SendSMSRequestBuilder {
             credentials = credentialsService.getCredentialsForSmsTypeOrDefault(smsType);
         }
 
-        String message = createMessage(smsContent, parameters, smsContent);
-
         if (credentials == null) {
             throw new NullPointerException("User doesn't allowed to send sms.");
         }
@@ -85,7 +83,7 @@ public class SendSMSRequestBuilder {
             //process adding registered recipient
         }
 
-
+        String message = createMessage(smsContent, parameters, smsContent);
 
         request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), message));
 
