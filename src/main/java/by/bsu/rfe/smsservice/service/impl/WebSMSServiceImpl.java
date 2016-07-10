@@ -60,6 +60,8 @@ public class WebSMSServiceImpl implements WebSMSService {
     private StatisticsService statisticsService;
 
     public SMSResultDTO sendSMS(SmsDTO smsDTO) {
+        String smsType = smsDTO.getSmsTemplate().getSmsType();
+        LOG.info("Preparing sms with SMSType {}", smsType);
         Map<String, RecipientType> recipients = MapUtils.emptyIfNull(smsDTO.getRecipients());
         Map<String, Map<String, String>> smsParameters = smsDTO.getSmsParameters();
 
@@ -70,7 +72,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         for (Map.Entry<String, RecipientType> recipient : recipients.entrySet()) {
             smsResultDTO.incrementTotalCount();
             Request request = null;
-            String smsType = smsDTO.getSmsTemplate().getSmsType();
+
             if (StringUtils.isNotEmpty(smsDTO.getSmsContent())) {
                 request = smsRequestBuilder.buildRequest(recipient, smsParameters.get(recipient.getKey()), smsDTO.getSmsContent(), smsType);
             } else {
@@ -105,9 +107,9 @@ public class WebSMSServiceImpl implements WebSMSService {
                     LOG.info("Sms sent successfully");
                     statisticsEntity.setError(false);
                 } else {
-                    LOG.info("Error while sending sms");
-                    LOG.info("Detail response is:");
-                    LOG.info("{}", content);
+                    LOG.error("Error while sending sms");
+                    LOG.error("Detail response is:");
+                    LOG.error("{}", content);
                     smsResultDTO.setLastError(content);
                     smsResultDTO.incrementErrorCount();
                     statisticsEntity.setError(true);
