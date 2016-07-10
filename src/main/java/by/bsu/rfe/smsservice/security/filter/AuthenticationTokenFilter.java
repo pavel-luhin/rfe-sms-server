@@ -41,11 +41,13 @@ public class AuthenticationTokenFilter extends GenericFilterBean {
 
             if (StringUtils.isNotEmpty(token)) {
                 UserEntity userEntity = userService.getUserByToken(token);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        userEntity.getUsername(),
-                        userEntity.getPassword(),
-                        new ArrayList<GrantedAuthority>());
-                authenticationManager.authenticate(authentication);
+                if (userEntity != null) {
+                    Authentication authentication = new UsernamePasswordAuthenticationToken(
+                            userEntity.getUsername(),
+                            userEntity.getPassword(),
+                            new ArrayList<GrantedAuthority>());
+                    authenticationManager.authenticate(authentication);
+                }
             }
         }
         filterChain.doFilter(servletRequest, servletResponse);
