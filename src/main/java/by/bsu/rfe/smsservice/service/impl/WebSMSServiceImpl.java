@@ -33,7 +33,9 @@ import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.sms.SmsDTO;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
 import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.StatisticsService;
 import by.bsu.rfe.smsservice.service.WebSMSService;
+import by.bsu.rfe.smsservice.util.CredentialsUtils;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -54,6 +56,8 @@ public class WebSMSServiceImpl implements WebSMSService {
     private ObjectMapper objectMapper;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private StatisticsService statisticsService;
 
     public SMSResultDTO sendSMS(SmsDTO smsDTO) {
         Map<String, RecipientType> recipients = MapUtils.emptyIfNull(smsDTO.getRecipients());
@@ -89,10 +93,12 @@ public class WebSMSServiceImpl implements WebSMSService {
                     }
                 }
 
+                statisticsEntity.setCredentials(CredentialsUtils.getUserCredentialsForSMSType(smsType));
                 statisticsEntity.setSmsTemplate(smsDTO.getSmsTemplate());
                 statisticsEntity.setRecipientType(recipient.getValue());
                 statisticsEntity.setSentDate(new Date());
                 statisticsEntity.setResponse(content);
+                statisticsEntity.setRecipient(recipient.getKey());
 
                 ObjectNode objectNode = objectMapper.readValue(content, ObjectNode.class);
                 if (objectNode.get(STATUS_PARAM).asText().equals(STATUS_SUCCESS)) {
@@ -106,6 +112,8 @@ public class WebSMSServiceImpl implements WebSMSService {
                     smsResultDTO.incrementErrorCount();
                     statisticsEntity.setError(true);
                 }
+
+                statisticsService.saveStatistics(statisticsEntity);
             } catch (IOException e) {
                 e.printStackTrace();
             }

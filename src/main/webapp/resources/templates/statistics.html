@@ -6,7 +6,7 @@
                 <th class="clickable" ng-click="sortBy('error')">Status <i class="{{sortOrder.error.elementClass}}"></i></th>
                 <th class="clickable" ng-click="sortBy('smsType')">SMS Type <i class="{{sortOrder.smsType.elementClass}}"></i></th>
                 <th class="clickable" ng-click="sortBy('username')">Username <i class="{{sortOrder.username.elementClass}}"></i></th>
-                <th class="clickable" ng-click="sortBy('number')">Recipient <i class="{{sortOrder.number.elementClass}}"></i></th>
+                <th class="clickable" ng-click="sortBy('recipient')">Recipient <i class="{{sortOrder.recipient.elementClass}}"></i></th>
                 <th class="clickable" ng-click="sortBy('recipientType')">RecipientType <i class="{{sortOrder.recipientType.elementClass}}"></i></th>
                 <th class="clickable" ng-click="sortBy('sentDate')">Sent Date <i class="{{sortOrder.sentDate.elementClass}}"></i></th>
             </tr>
@@ -19,7 +19,7 @@
                 <td ng-show="!{{statistic.error}}" style="color: green">success</td>
                 <td>{{statistic.smsType}}</td>
                 <td>{{statistic.username}}</td>
-                <td>{{statistic.number}}</td>
+                <td>{{statistic.recipient}}</td>
                 <td>{{statistic.recipientType}}</td>
                 <td>{{statistic.sentDate | date: 'medium'}}</td>
             </tr>

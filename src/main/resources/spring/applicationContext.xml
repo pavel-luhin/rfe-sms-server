@@ -42,4 +42,5 @@
               </constructor-arg>
        </bean>
        <bean class="com.fasterxml.jackson.databind.ObjectMapper"/>
+       <bean class="by.bsu.rfe.smsservice.common.SpringContextHolder"/>
 </beans>

@@ -10,7 +10,7 @@ import java.util.Date;
 public class StatisticsDTO {
     private Boolean error;
     private String username;
-    private String number;
+    private String recipient;
     private String text;
     private String response;
     private String smsType;
@@ -33,12 +33,12 @@ public class StatisticsDTO {
         this.username = username;
     }
 
-    public String getNumber() {
-        return number;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getText() {

@@ -16,7 +16,7 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
     @OneToOne
     @JoinColumn(foreignKey = @ForeignKey(name = "cred_fk"))
     private CredentialsEntity credentials;
-    private String number;
+    private String recipient;
     private String text;
     private String response;
     @Enumerated(EnumType.STRING)
@@ -44,12 +44,12 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
         this.credentials = credentials;
     }
 
-    public String getNumber() {
-        return number;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getText() {

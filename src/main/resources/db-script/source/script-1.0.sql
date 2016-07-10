@@ -56,7 +56,7 @@ CREATE TABLE `email_template` (
 CREATE TABLE `statistics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `error` bit(1) DEFAULT NULL,
-  `number` varchar(255) DEFAULT NULL,
+  `recipient` varchar(255) DEFAULT NULL,
   `recipient_type` varchar(255) DEFAULT NULL,
   `response` varchar(255) DEFAULT NULL,
   `sent_date` datetime DEFAULT NULL,

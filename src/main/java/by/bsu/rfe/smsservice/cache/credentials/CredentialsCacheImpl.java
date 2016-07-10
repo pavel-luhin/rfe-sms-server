@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.cache.credentials;
 
+import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
         String username = SecurityUtil.getCurrentUsername();
         List<CredentialsEntity> userCredentials = credentialsByUsername.get(username);
 
-        for (CredentialsEntity credentials : userCredentials) {
+        for (CredentialsEntity credentials : ListUtils.emptyIfNull(userCredentials)) {
             if (credentials.getSmsType().equals(smsType)) {
                 return credentials;
             }
@@ -103,7 +104,9 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
     }
 
     private void putToDefaultCache(UserEntity userEntity) {
-        defaultCredentialsByUsername.put(userEntity.getUsername(), userEntity.getDefaultUserCredentials());
+        if (userEntity.getDefaultUserCredentials() != null) {
+            defaultCredentialsByUsername.put(userEntity.getUsername(), userEntity.getDefaultUserCredentials());
+        }
     }
 
     @Override

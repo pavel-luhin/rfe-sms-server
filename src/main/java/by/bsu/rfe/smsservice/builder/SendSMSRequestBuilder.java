@@ -28,6 +28,7 @@ import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
+import by.bsu.rfe.smsservice.util.CredentialsUtils;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -58,12 +59,7 @@ public class SendSMSRequestBuilder {
 
         Request request = new Request();
 
-        CredentialsEntity credentials = null;
-        if (credentialsCache.isCacheEnabled()) {
-            credentials = credentialsCache.getCredentialsForSMSTypeOrDefault(smsType);
-        } else {
-            credentials = credentialsService.getCredentialsForSmsTypeOrDefault(smsType);
-        }
+        CredentialsEntity credentials = CredentialsUtils.getUserCredentialsForSMSType(smsType);
 
         if (credentials == null) {
             throw new NullPointerException("User doesn't allowed to send sms.");
@@ -101,7 +97,6 @@ public class SendSMSRequestBuilder {
     }
 
     private void collectAdditionalParameters(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
-
     }
 
     private String createMessage(String template, Map<String, String> messageParameters, String originalMessage) {
