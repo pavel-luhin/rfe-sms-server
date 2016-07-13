@@ -6,6 +6,8 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
 
         $scope.messages = [];
 
+        $scope.loading = true;
+
         $scope.countSymbols = function () {
             recalculateSymbols();
             if ($scope.symbolsLeft <= 0) {
@@ -20,6 +22,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
         };
 
         $scope.sendSMS = function (smsObject) {
+            $scope.loading = true;
             if (isSMSValid(smsObject)) {
                 $scope.error = undefined;
             }
@@ -50,7 +53,28 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                     smsObject.recipient = '';
                     smsObject.content = '';
                     sms = null;
+                    $scope.loading = false;
                 });
+        };
+
+        $scope.sendBulkSMS = function () {
+            $scope.loading = true;
+            var file = $scope.myFile;
+            var sameForAll = $scope.sameForAll;
+            if (sameForAll === undefined) {
+                sameForAll = false;
+            }
+            console.log(file);
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append('sameContentForAll', sameForAll);
+
+            $http.post(RestURLFactory.SEND_BULK_SMS, fd, {
+                transformRequest: angular.identity,
+                headers: {'Content-Type': undefined}
+            }).then(function (data) {
+                $scope.loading = false;
+            });
         };
 
         function isSMSValid(sms) {
@@ -87,3 +111,19 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
         }
     }
 ]);
+
+angular.module('sms-server').directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);

@@ -2,11 +2,13 @@ package by.bsu.rfe.smsservice.builder;
 
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGE;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGES;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.RECIPIENTS;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
+import org.apache.commons.io.output.StringBuilderWriter;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,14 +21,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
-import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.util.CredentialsUtils;
 
@@ -53,19 +53,9 @@ public class SendSMSRequestBuilder {
             collectAdditionalParameters(recipient, parameters);
         }
 
-        Request request = new Request();
-
-        CredentialsEntity credentials = CredentialsUtils.getUserCredentialsForSMSType(smsType);
-
-        if (credentials == null) {
-            throw new NullPointerException("User doesn't allowed to send sms.");
-        }
+        Request request = buildBaseRequest(smsType);
 
         request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
-        request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
-        request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), credentials.getApiKey()));
-        request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), credentials.getSender()));
-        request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
         if (recipient.getValue() == RecipientType.NUMBER) {
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
         } else if (recipient.getValue() == RecipientType.GROUP) {
@@ -79,6 +69,31 @@ public class SendSMSRequestBuilder {
         String message = createMessage(smsContent, parameters, smsContent);
 
         request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), message));
+
+        return request;
+    }
+
+    public Request buildBulkRequest(Map<String, String> messages, String smsType) {
+        Request request = buildBaseRequest(smsType);
+
+        request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
+        String messagesArray = createArrayOfMessages(messages);
+        request.addParameter(new BasicNameValuePair(MESSAGES.getRequestParam(), messagesArray));
+        return request;
+    }
+
+    private Request buildBaseRequest(String smsType) {
+        Request request = new Request();
+        CredentialsEntity credentials = CredentialsUtils.getUserCredentialsForSMSType(smsType);
+
+        if (credentials == null) {
+            throw new NullPointerException("User doesn't allowed to send sms.");
+        }
+
+        request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
+        request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), credentials.getApiKey()));
+        request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), credentials.getSender()));
+        request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
 
         return request;
     }
@@ -119,5 +134,19 @@ public class SendSMSRequestBuilder {
         }
 
         return result;
+    }
+
+    private String createArrayOfMessages(Map<String, String> messages) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+
+        for(Map.Entry<String, String> message : messages.entrySet()) {
+            stringBuilder.append("{\"recipient\":\"").append(message.getKey()).append("\",");
+            stringBuilder.append("\"message\":\"").append(message.getValue()).append("\"},");
+        }
+
+        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 }

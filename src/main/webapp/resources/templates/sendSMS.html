@@ -1,14 +1,25 @@
 <div class="col-md-offset-2 col-md-8">
-    <form ng-submit="sendSMS(sms)">
-        <span ng-show="error" class="login-error">{{error}}</span>
-        <tags-input display-property="name" placeholder="Search by recipients and groups" ng-model="sms.recipient">
-            <auto-complete source="loadRecipients($query)" load-on-focus="true" template="autocomplete-template"></auto-complete>
-        </tags-input>
-        <textarea placeholder="Message content" class="sms-content-textarea" ng-change="countSymbols()" ng-model="sms.content"></textarea>
-        <p ng-show="smsCount > 1" class="sms-content-status">{{smsCount}} sms&nbsp;</p>
-        <p class="sms-content-status">{{symbolsLeft}} symbols left</p>
-        <input type="submit" class="input-submit" value="Send SMS">
-    </form>
+    <div class="loader" ng-show="{{loading}}"></div>
+    <div ng-class="{loading : transparent}">
+        <h3>Maually send SMS</h3>
+        <form ng-submit="sendSMS(sms)">
+            <span ng-show="error" class="login-error">{{error}}</span>
+            <tags-input display-property="name" placeholder="Search by recipients and groups" ng-model="sms.recipient">
+                <auto-complete source="loadRecipients($query)" load-on-focus="true" template="autocomplete-template"></auto-complete>
+            </tags-input>
+            <textarea placeholder="Message content" class="sms-content-textarea" ng-change="countSymbols()" ng-model="sms.content"></textarea>
+            <p ng-show="smsCount > 1" class="sms-content-status">{{smsCount}} sms&nbsp;</p>
+            <p class="sms-content-status">{{symbolsLeft}} symbols left</p>
+            <input type="submit" class="input-submit" value="Send SMS">
+        </form>
+        <hr>
+        <h3>Or send using *.xls file</h3>
+        <form ng-submit="sendBulkSMS()">
+            <input type="file" file-model="myFile"/>
+            <br>
+            <input type="submit" class="input-submit pull-left" value="Send Bulk">
+        </form>
+    </div>
 </div>
 
 <script type="text/ng-template" id="autocomplete-template">

@@ -1,6 +1,9 @@
 package by.bsu.rfe.smsservice.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.sms.SmsDTO;
 
 /**
@@ -8,4 +11,5 @@ import by.bsu.rfe.smsservice.common.sms.SmsDTO;
  */
 public interface WebSMSService {
     SMSResultDTO sendSMS(SmsDTO smsDTO);
+    SMSResultDTO bulkSendSMS(MultipartFile file, SmsTemplateEntity smsTemplate, Boolean sameContentForAll);
 }
