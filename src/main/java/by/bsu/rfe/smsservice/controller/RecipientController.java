@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -45,7 +47,7 @@ public class RecipientController {
 
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PersonEntity> getAllRecipients() {
-        return recipientService.getAllPersons();
+    public List<RecipientDTO> getAllRecipients() {
+        return recipientService.getAllRecpients();
     }
 }

@@ -39,11 +39,7 @@ public class SendSMSRequestBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(SendSMSRequestBuilder.class);
 
     @Autowired
-    private CredentialsCache credentialsCache;
-    @Autowired
     private RecipientService recipientService;
-    @Autowired
-    private CredentialsService credentialsService;
 
     @Value("${sms.test}")
     private Integer test;
@@ -76,7 +72,8 @@ public class SendSMSRequestBuilder {
             GroupEntity groupEntity = recipientService.getGroup(Integer.valueOf(recipient.getKey()));
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
         } else {
-            //process adding registered recipient
+            PersonEntity personEntity = recipientService.getPerson(recipient.getKey());
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
         }
 
         String message = createMessage(smsContent, parameters, smsContent);

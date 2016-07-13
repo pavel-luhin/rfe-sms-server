@@ -24,10 +24,18 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                 $scope.error = undefined;
             }
 
-            smsObject.recipientType = 'NUMBER';
-
+            console.log(smsObject);
+            
             var sms = createBaseSMS();
-            sms.recipients[smsObject.recipient] = smsObject.recipientType;
+            
+            for (var obj in smsObject.recipient) {
+                if (smsObject.recipient[obj].recipientType === undefined) {
+                    sms.recipients[smsObject.recipient[obj].name] = 'NUMBER';
+                } else {
+                    sms.recipients[smsObject.recipient[obj].name] = smsObject.recipient[obj].recipientType;
+                }                
+            }
+            
             sms.smsContent = smsObject.content;
 
             $http.post(RestURLFactory.SEND_CUSTOM_SMS, sms)
@@ -68,6 +76,14 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
             sms.duplicateEmail = false;
             sms.smsContent = "";
             return sms;
+        }
+        
+        $scope.loadRecipients = function (query) {
+            return $http.get(RestURLFactory.GET_ALL_RECIPIENTS)
+                .then(function (response) {
+                    var recipients = response.data;
+                    return recipients;
+                })
         }
     }
 ]);

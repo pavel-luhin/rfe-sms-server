@@ -1,13 +1,16 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.GroupRepository;
 import by.bsu.rfe.smsservice.repository.PersonRepository;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,12 +44,36 @@ public class RecipientServiceImpl implements RecipientService {
     }
 
     @Override
-    public List<PersonEntity> getAllPersons() {
-        return personRepository.findAll();
+    public List<RecipientDTO> getAllRecpients() {
+        List<PersonEntity> persons = personRepository.findAll();
+        List<GroupEntity> groups = groupRepository.findAll();
+
+        List<RecipientDTO> recipients = new ArrayList<>(persons.size() + groups.size());
+
+        for (PersonEntity personEntity : persons) {
+            RecipientDTO recipientDTO = new RecipientDTO();
+            recipientDTO.setName(personEntity.getFirstName());
+            recipientDTO.setRecipientType(RecipientType.PERSON);
+            recipients.add(recipientDTO);
+        }
+
+        for (GroupEntity groupEntity : groups) {
+            RecipientDTO recipientDTO = new RecipientDTO();
+            recipientDTO.setName(groupEntity.getName());
+            recipientDTO.setRecipientType(RecipientType.GROUP);
+            recipients.add(recipientDTO);
+        }
+
+        return recipients;
     }
 
     @Override
     public GroupEntity getGroup(Integer groupId) {
         return groupRepository.findOne(groupId);
+    }
+
+    @Override
+    public PersonEntity getPerson(String name) {
+        return personRepository.getPersonByFirstName(name);
     }
 }

@@ -1,4 +1,4 @@
-var application = angular.module('sms-server', ['ngRoute', 'ngCookies', 'ngProgress', 'ngStorage']);
+var application = angular.module('sms-server', ['ngRoute', 'ngCookies', 'ngProgress', 'ngStorage', 'ngTagsInput']);
 
 application.config(['$httpProvider',
     function ($httpProvider) {
