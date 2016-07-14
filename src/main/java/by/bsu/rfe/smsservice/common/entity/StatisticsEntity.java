@@ -18,6 +18,7 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
     private CredentialsEntity credentials;
     private String recipient;
     private String text;
+    @Lob
     private String response;
     @Enumerated(EnumType.STRING)
     @Column(name = "recipient_type")

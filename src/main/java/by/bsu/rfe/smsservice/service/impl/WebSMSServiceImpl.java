@@ -77,9 +77,8 @@ public class WebSMSServiceImpl implements WebSMSService {
         SMSResultDTO smsResultDTO = new SMSResultDTO();
 
         for (Map.Entry<String, RecipientType> recipient : recipients.entrySet()) {
-            SMSResultDTO oneSMSResult = prepareAndSendSMS(recipient, smsParameters.get(recipient.getKey()), smsDTO.getSmsTemplate(), smsDTO.isDuplicateEmail());
+            SMSResultDTO oneSMSResult = prepareAndSendSMS(recipient, smsParameters.get(recipient.getKey()), smsDTO.getSmsTemplate(), smsDTO.isDuplicateEmail(), smsDTO.getSmsContent());
             setTotalSmsDTO(oneSMSResult, smsResultDTO);
-            break;
         }
 
         return smsResultDTO;
@@ -149,13 +148,17 @@ public class WebSMSServiceImpl implements WebSMSService {
     }
 
     private SMSResultDTO prepareAndSendSMS(Map.Entry<String, RecipientType> recipient, Map<String, String> smsParameters, SmsTemplateEntity smsTemplate,
-            Boolean duplicateEmail) {
+            Boolean duplicateEmail, String smsContent) {
         String smsType = smsTemplate.getSmsType();
         SMSResultDTO smsResultDTO = new SMSResultDTO();
         smsResultDTO.incrementTotalCount();
         Request request = null;
 
-        request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), smsType);
+        if (StringUtils.isNotEmpty(smsTemplate.getTemplate())) {
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), smsType);
+        } else {
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsContent, smsType);
+        }
 
         LOG.info("Prepared sms with parameters {}", request.getParameters());
 

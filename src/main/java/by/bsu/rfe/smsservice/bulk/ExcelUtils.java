@@ -33,6 +33,8 @@ public class ExcelUtils {
             Row row = rowIterator.next();
             Cell recipientCell = row.getCell(recipientsPosition);
             Cell messageCell = row.getCell(messagePosition);
+            recipientCell.setCellType(Cell.CELL_TYPE_STRING);
+            messageCell.setCellType(Cell.CELL_TYPE_STRING);
             messages.put(recipientCell.getStringCellValue(), messageCell.getStringCellValue());
         }
         return messages;
