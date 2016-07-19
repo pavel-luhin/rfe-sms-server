@@ -54,7 +54,7 @@ public class CredentialsCacheImpl implements SmsServerCache, CredentialsCache {
         List<CredentialsEntity> allCredentials = credentialsService.getAllCredentials();
 
         for (CredentialsEntity credentials : allCredentials) {
-            LOGGER.info("CACHE: LOADED CREDENTIALS FOR SMSTYPE: {}", credentials.getSmsType());
+            LOGGER.info("CACHE: LOADED CREDENTIALS FOR SMSTYPE: {} WITH SENDER NAME: {}", credentials.getSmsType(), credentials.getSender());
             List<UserEntity> usersAllowedToUse = credentials.getUsers();
             for (UserEntity userEntity : usersAllowedToUse) {
                 putToAllCache(userEntity, credentials);
