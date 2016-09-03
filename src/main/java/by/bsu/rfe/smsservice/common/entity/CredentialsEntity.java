@@ -20,21 +20,25 @@ import java.util.List;
  */
 @Entity
 @Table(name = "credentials")
-public class CredentialsEntity extends AbstractPersistable<Integer> {
+public class CredentialsEntity extends CreationDetails {
     @Column(name = "username")
     private String username;
     @Column(name = "sender")
     private String sender;
     @Column(name = "api_key")
     private String apiKey;
-    @Column(name = "smsType")
-    private String smsType;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_credentials"
     )
     private List<UserEntity> users = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "applications_credentials"
+    )
+    private List<ExternalApplicationEntity> applications = new ArrayList<>();
 
     public String getUsername() {
         return username;
@@ -58,14 +62,6 @@ public class CredentialsEntity extends AbstractPersistable<Integer> {
 
     public void setSender(String sender) {
         this.sender = sender;
-    }
-
-    public String getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(String smsType) {
-        this.smsType = smsType;
     }
 
     public List<UserEntity> getUsers() {

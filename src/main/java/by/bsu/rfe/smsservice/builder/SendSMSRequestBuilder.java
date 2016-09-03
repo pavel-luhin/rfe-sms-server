@@ -1,14 +1,13 @@
 package by.bsu.rfe.smsservice.builder;
 
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGE;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGES;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.RECIPIENTS;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
-
-import org.apache.commons.io.output.StringBuilderWriter;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
+import by.bsu.rfe.smsservice.common.entity.GroupEntity;
+import by.bsu.rfe.smsservice.common.entity.PersonEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.common.request.Request;
+import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
+import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.RecipientService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -22,14 +21,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
-import by.bsu.rfe.smsservice.common.entity.GroupEntity;
-import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
-import by.bsu.rfe.smsservice.common.request.Request;
-import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
-import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.util.CredentialsUtils;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.*;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -42,10 +34,13 @@ public class SendSMSRequestBuilder {
     @Autowired
     private RecipientService recipientService;
 
+    @Autowired
+    private CredentialsService credentialsService;
+
     @Value("${sms.test}")
     private Integer test;
 
-    public Request buildRequest(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsContent, String smsType, String requestSenderName) {
+    public Request buildRequest(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsContent, String requestSenderName) {
         if (parameters == null) {
             parameters = new HashMap<>();
         }
@@ -54,7 +49,7 @@ public class SendSMSRequestBuilder {
             collectAdditionalParameters(recipient, parameters);
         }
 
-        Request request = buildBaseRequest(smsType, requestSenderName);
+        Request request = buildBaseRequest(requestSenderName);
 
         request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
 
@@ -75,8 +70,8 @@ public class SendSMSRequestBuilder {
         return request;
     }
 
-    public Request buildBulkRequest(Map<String, String> messages, String smsType, String requestSenderName) {
-        Request request = buildBaseRequest(smsType, requestSenderName);
+    public Request buildBulkRequest(Map<String, String> messages, String requestSenderName) {
+        Request request = buildBaseRequest(requestSenderName);
 
         request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
         String messagesArray = createArrayOfMessages(messages);
@@ -84,14 +79,14 @@ public class SendSMSRequestBuilder {
         return request;
     }
 
-    private Request buildBaseRequest(String smsType, String requestSenderName) {
+    private Request buildBaseRequest(String requestSenderName) {
         Request request = new Request();
 
         CredentialsEntity credentials;
         if (StringUtils.isEmpty(requestSenderName)) {
-            credentials = CredentialsUtils.getUserCredentialsForSMSType(smsType);
+            credentials = credentialsService.getDefaultCredentialsForCurrentUser();
         } else {
-            credentials = CredentialsUtils.getCredentialsForSenderName(requestSenderName);
+            credentials = credentialsService.getCredentialsForSenderName(requestSenderName);
         }
 
         if (credentials == null) {

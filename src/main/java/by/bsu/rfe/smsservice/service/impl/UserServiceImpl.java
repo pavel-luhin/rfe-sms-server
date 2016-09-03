@@ -141,7 +141,6 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByUsername(SecurityUtil.getCurrentUsername());
         credentialsEntity.getUsers().add(userEntity);
         credentialsService.addNewCredentials(credentialsEntity);
-        credentialsCache.reloadCache();
     }
 
     @Override

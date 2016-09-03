@@ -39,10 +39,10 @@ import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.sms.SmsDTO;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
+import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.EmailService;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import by.bsu.rfe.smsservice.service.WebSMSService;
-import by.bsu.rfe.smsservice.util.CredentialsUtils;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -67,6 +67,8 @@ public class WebSMSServiceImpl implements WebSMSService {
     private EmailService emailService;
     @Autowired
     private StatisticsService statisticsService;
+    @Autowired
+    private CredentialsService credentialsService;
 
     public SMSResultDTO sendSMS(SmsDTO smsDTO) {
         String smsType = smsDTO.getSmsTemplate().getSmsType();
@@ -116,15 +118,15 @@ public class WebSMSServiceImpl implements WebSMSService {
                     }
                 }
 
-                Request request = smsRequestBuilder.buildBulkRequest(messages, smsTemplate.getSmsType(), requestSenderName);
+                Request request = smsRequestBuilder.buildBulkRequest(messages, requestSenderName);
                 HttpResponse response = execute(request);
                 String stringResponse = getContent(response);
 
                 CredentialsEntity credentialsEntity = null;
                 if (StringUtils.isEmpty(requestSenderName)) {
-                    credentialsEntity = CredentialsUtils.getUserCredentialsForSMSType(smsTemplate.getSmsType());
+                    credentialsEntity = credentialsService.getDefaultCredentialsForCurrentUser();
                 } else {
-                    credentialsEntity = CredentialsUtils.getCredentialsForSenderName(requestSenderName);
+                    credentialsEntity = credentialsService.getCredentialsForSenderName(requestSenderName);
                 }
 
                 statisticsEntity.setSender(credentialsEntity.getSender());
@@ -157,15 +159,14 @@ public class WebSMSServiceImpl implements WebSMSService {
 
     private SMSResultDTO prepareAndSendSMS(Map.Entry<String, RecipientType> recipient, Map<String, String> smsParameters, SmsTemplateEntity smsTemplate,
             Boolean duplicateEmail, String smsContent, String requestSenderName) {
-        String smsType = smsTemplate.getSmsType();
         SMSResultDTO smsResultDTO = new SMSResultDTO();
         smsResultDTO.incrementTotalCount();
         Request request = null;
 
         if (StringUtils.isNotEmpty(smsTemplate.getTemplate())) {
-            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), smsType, requestSenderName);
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), requestSenderName);
         } else {
-            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsContent, smsType, requestSenderName);
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsContent, requestSenderName);
         }
 
         LOG.info("Prepared sms with parameters {}", request.getParameters());
@@ -185,9 +186,9 @@ public class WebSMSServiceImpl implements WebSMSService {
 
             CredentialsEntity credentialsEntity = null;
             if (StringUtils.isEmpty(requestSenderName)) {
-                credentialsEntity = CredentialsUtils.getUserCredentialsForSMSType(smsTemplate.getSmsType());
+                credentialsEntity = credentialsService.getDefaultCredentialsForCurrentUser();
             } else {
-                credentialsEntity = CredentialsUtils.getCredentialsForSenderName(requestSenderName);
+                credentialsEntity = credentialsService.getCredentialsForSenderName(requestSenderName);
             }
 
             statisticsEntity.setSender(credentialsEntity.getSender());

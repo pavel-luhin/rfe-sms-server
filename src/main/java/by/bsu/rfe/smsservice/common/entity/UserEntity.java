@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "user")
-public class UserEntity extends AbstractPersistable<Integer> {
+public class UserEntity extends CreationDetails {
     @Column(name = "username", nullable = false)
     private String username;
     @Column(name = "password", nullable = false)

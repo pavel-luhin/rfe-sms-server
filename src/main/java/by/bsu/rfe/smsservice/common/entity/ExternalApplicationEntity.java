@@ -11,13 +11,16 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "external_application")
-public class ExternalApplicationEntity extends AbstractPersistable<Integer> {
+public class ExternalApplicationEntity extends CreationDetails {
 
     @Column(name = "application_name", nullable = false)
     private String applicationName;
 
     @Column(name = "authentication", nullable = false)
     private String authenticationToken;
+
+    @Column(name = "default_credentials")
+    private CredentialsEntity defaultCredentials;
 
     public String getApplicationName() {
         return applicationName;
@@ -33,5 +36,13 @@ public class ExternalApplicationEntity extends AbstractPersistable<Integer> {
 
     public void setAuthenticationToken(String authenticationToken) {
         this.authenticationToken = authenticationToken;
+    }
+
+    public CredentialsEntity getDefaultCredentials() {
+        return defaultCredentials;
+    }
+
+    public void setDefaultCredentials(CredentialsEntity defaultCredentials) {
+        this.defaultCredentials = defaultCredentials;
     }
 }

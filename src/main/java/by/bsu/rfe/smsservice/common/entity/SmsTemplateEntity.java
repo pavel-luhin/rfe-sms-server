@@ -5,6 +5,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 
 /**
@@ -12,8 +13,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "sms_template")
-public class SmsTemplateEntity extends AbstractPersistable<Integer> {
-    @Column(name = "template", nullable = false)
+public class SmsTemplateEntity extends CreationDetails {
+    @Lob
+    @Column(name = "template")
     private String template;
     @Column(name = "sms_type", nullable = false)
     private String smsType;

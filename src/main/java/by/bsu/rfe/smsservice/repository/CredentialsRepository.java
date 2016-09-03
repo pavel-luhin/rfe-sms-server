@@ -11,9 +11,6 @@ import java.util.List;
  */
 public interface CredentialsRepository extends JpaRepository<CredentialsEntity, Integer> {
 
-    @Query("FROM CredentialsEntity ce JOIN ce.users ue WHERE ue.username=?1 AND ce.smsType=?2")
-    CredentialsEntity getCredentials(String username, String smsType);
-
     @Query("FROM CredentialsEntity ce JOIN ce.users ue WHERE ue.username=?1")
     CredentialsEntity getDefaultCredentials(String username);
 

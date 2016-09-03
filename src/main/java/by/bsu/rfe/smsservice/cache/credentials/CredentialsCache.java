@@ -10,12 +10,11 @@ import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
  * Created by pluhin on 6/30/16.
  */
 public interface CredentialsCache extends SmsServerCache {
-    CredentialsEntity getCredentialsForSMSTypeOrDefault(String smsType);
     List<CredentialsEntity> getAllUserCredentals(String username);
     List<CredentialsEntity> getAllCurrentUserCredentals();
     CredentialsEntity getDefaultCredentialsForUser(String username);
     CredentialsEntity getDefaultCredentialsForCurrentUser();
     Boolean isCacheEnabled();
     Set<String> getSenderNamesForCurrentUser();
-    CredentialsEntity getCredentialsBySenderName(String senderName);
+    CredentialsEntity getCredentialsBySenderNameForCurrentUser(String senderName);
 }

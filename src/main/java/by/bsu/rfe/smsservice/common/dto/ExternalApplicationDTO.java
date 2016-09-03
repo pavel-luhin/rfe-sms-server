@@ -3,7 +3,7 @@ package by.bsu.rfe.smsservice.common.dto;
 /**
  * Created by pluhin on 9/3/16.
  */
-public class ExternalApplicationDTO {
+public class ExternalApplicationDTO extends CreatedDetails {
     private String applicationName;
     private String authenticationToken;
 

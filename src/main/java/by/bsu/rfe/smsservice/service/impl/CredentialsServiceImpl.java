@@ -3,9 +3,11 @@ package by.bsu.rfe.smsservice.service.impl;
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
+import by.bsu.rfe.smsservice.common.entity.UserEntity;
 import by.bsu.rfe.smsservice.repository.CredentialsRepository;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.UserService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 
 import org.dozer.Mapper;
@@ -23,6 +25,8 @@ public class CredentialsServiceImpl implements CredentialsService {
     @Autowired
     private CredentialsRepository credentialsRepository;
     @Autowired
+    private UserService userService;
+    @Autowired
     private CredentialsCache credentialsCache;
     @Autowired
     private Mapper mapper;
@@ -33,24 +37,30 @@ public class CredentialsServiceImpl implements CredentialsService {
     }
 
     @Override
-    public CredentialsEntity getCredentialsForSmsTypeOrDefault(String smsType) {
-        String username = SecurityUtil.getCurrentUsername();
-        CredentialsEntity credentialsEntity = credentialsRepository.getCredentials(username, smsType);
-        if (credentialsEntity == null) {
-            credentialsEntity = credentialsRepository.getDefaultCredentials(username);
+    public CredentialsEntity getDefaultCredentialsForCurrentUser() {
+        if (credentialsCache.isCacheEnabled()) {
+            return credentialsCache.getDefaultCredentialsForCurrentUser();
+        } else {
+            String username = SecurityUtil.getCurrentUsername();
+            UserEntity userEntity = userService.findByUsername(username);
+            return userEntity.getDefaultUserCredentials();
         }
-        return credentialsEntity;
     }
 
     @Override
     public CredentialsEntity getCredentialsForSenderName(String senderName) {
-        String username = SecurityUtil.getCurrentUsername();
-        return credentialsRepository.getCredentialsForSenderName(username, senderName);
+        if (credentialsCache.isCacheEnabled()) {
+            return credentialsCache.getCredentialsBySenderNameForCurrentUser(senderName);
+        } else {
+            String username = SecurityUtil.getCurrentUsername();
+            return credentialsRepository.getCredentialsForSenderName(username, senderName);
+        }
     }
 
     @Override
     public void addNewCredentials(CredentialsEntity credentialsEntity) {
         credentialsRepository.saveAndFlush(credentialsEntity);
+        credentialsCache.reloadCache();
     }
 
     @Override

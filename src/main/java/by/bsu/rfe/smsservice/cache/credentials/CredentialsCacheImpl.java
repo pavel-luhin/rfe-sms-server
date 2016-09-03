@@ -60,7 +60,7 @@ public class CredentialsCacheImpl implements CredentialsCache {
         List<CredentialsEntity> allCredentials = credentialsService.getAllCredentials();
 
         for (CredentialsEntity credentials : allCredentials) {
-            LOGGER.info("CACHE: LOADED CREDENTIALS FOR SMSTYPE: {} WITH SENDER NAME: {}", credentials.getSmsType(), credentials.getSender());
+            LOGGER.info("CACHE: LOADED CREDENTIALS WITH SENDER NAME: {}", credentials.getSender());
             List<UserEntity> usersAllowedToUse = credentials.getUsers();
             for (UserEntity userEntity : usersAllowedToUse) {
                 putToAllCache(userEntity, credentials);
@@ -71,20 +71,6 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
         LOGGER.info("CREDENTIALS CACHE INITIALIZED IN {} ms", System.currentTimeMillis() - startTime);
         LOGGER.info("TOTAL COUNT: {}", count);
-    }
-
-    @Override
-    public CredentialsEntity getCredentialsForSMSTypeOrDefault(String smsType) {
-        String username = SecurityUtil.getCurrentUsername();
-        List<CredentialsEntity> userCredentials = credentialsByUsername.get(username);
-
-        for (CredentialsEntity credentials : ListUtils.emptyIfNull(userCredentials)) {
-            if (credentials.getSmsType().equals(smsType)) {
-                return credentials;
-            }
-        }
-
-        return getDefaultCredentialsForCurrentUser();
     }
 
     @Override
@@ -142,7 +128,7 @@ public class CredentialsCacheImpl implements CredentialsCache {
     }
 
     @Override
-    public CredentialsEntity getCredentialsBySenderName(String senderName) {
+    public CredentialsEntity getCredentialsBySenderNameForCurrentUser(String senderName) {
         List<CredentialsEntity> userCredentials = getAllCurrentUserCredentals();
 
         for (CredentialsEntity credentialsEntity : userCredentials) {

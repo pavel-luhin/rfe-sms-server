@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "recipient_group")
-public class GroupEntity extends AbstractPersistable<Integer> {
+public class GroupEntity extends CreationDetails {
     @Column(name = "name", nullable = false)
     private String name;
     @ManyToMany(mappedBy = "groups", fetch = FetchType.EAGER)

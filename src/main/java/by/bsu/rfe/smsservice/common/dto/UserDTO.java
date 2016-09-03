@@ -3,7 +3,7 @@ package by.bsu.rfe.smsservice.common.dto;
 /**
  * Created by pluhin on 3/21/16.
  */
-public class UserDTO {
+public class UserDTO extends CreatedDetails {
     private Integer id;
     private String username;
     private String token;
