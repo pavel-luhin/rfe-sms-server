@@ -42,9 +42,4 @@ public class SecurityUtil {
         }
         return StringUtils.isNotEmpty(username) ? username : ANONYMOUS_USERNAME;
     }
-
-    public static List<CredentialsEntity> getCurrentUserCredentials() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (List<CredentialsEntity>) authentication.getDetails();
-    }
 }

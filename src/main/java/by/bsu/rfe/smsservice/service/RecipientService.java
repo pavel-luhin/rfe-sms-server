@@ -3,6 +3,7 @@ package by.bsu.rfe.smsservice.service;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
 
 import java.util.List;
 
@@ -14,7 +15,8 @@ public interface RecipientService {
     void addPersons(List<PersonEntity> personEntities);
     void assignPersonToGroup(Integer personId, Integer groupId);
     List<RecipientDTO> getAllRecpients();
+    List<RecipientDTO> getRecipientByQuery(String query);
     GroupEntity getGroup(Integer groupId);
-    PersonEntity getPerson(String name);
+    PersonEntity getPerson(String[] name);
 
 }

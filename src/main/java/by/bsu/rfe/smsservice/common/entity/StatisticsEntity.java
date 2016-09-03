@@ -13,9 +13,7 @@ import java.util.Date;
 @Table(name = "statistics")
 public class StatisticsEntity extends AbstractPersistable<Integer> {
     private Boolean error;
-    @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cred_fk"))
-    private CredentialsEntity credentials;
+    private String sender;
     private String recipient;
     private String text;
     @Lob
@@ -25,9 +23,7 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
     private RecipientType recipientType;
     @Column(name = "sent_date")
     private Date sentDate;
-    @ManyToOne
-    @JoinColumn(name = "sms_template")
-    private SmsTemplateEntity smsTemplate;
+    private String smsType;
 
     public Boolean getError() {
         return error;
@@ -35,14 +31,6 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
 
     public void setError(Boolean error) {
         this.error = error;
-    }
-
-    public CredentialsEntity getCredentials() {
-        return credentials;
-    }
-
-    public void setCredentials(CredentialsEntity credentials) {
-        this.credentials = credentials;
     }
 
     public String getRecipient() {
@@ -85,11 +73,19 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
         this.sentDate = sentDate;
     }
 
-    public SmsTemplateEntity getSmsTemplate() {
-        return smsTemplate;
+    public String getSender() {
+        return sender;
     }
 
-    public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
-        this.smsTemplate = smsTemplate;
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getSmsType() {
+        return smsType;
+    }
+
+    public void setSmsType(String smsType) {
+        this.smsType = smsType;
     }
 }

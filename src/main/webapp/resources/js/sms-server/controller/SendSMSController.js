@@ -8,6 +8,16 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
 
         $scope.loading = true;
 
+        $scope.activeTab = 1;
+
+        $http.get(RestURLFactory.GET_SENDER_NAMES).then(function (response) {
+            $scope.senderNames = response.data;
+
+            if ($scope.senderNames.length != 0) {
+                $scope.requestSenderName = $scope.senderNames[0];
+            }
+        });
+
         $scope.countSymbols = function () {
             recalculateSymbols();
             if ($scope.symbolsLeft <= 0) {
@@ -27,8 +37,6 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                 $scope.error = undefined;
             }
 
-            console.log(smsObject);
-            
             var sms = createBaseSMS();
             
             for (var obj in smsObject.recipient) {
@@ -41,14 +49,18 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
             
             sms.smsContent = smsObject.content;
 
+            sms.requestSenderName = $scope.requestSenderName;
+
             $http.post(RestURLFactory.SEND_CUSTOM_SMS, sms)
                 .then(function (data) {
                     console.log(data.data.success == true);
+
                     if (data.data.success == true) {
                         alert("SMS sent successfully");
                     } else {
                         alert("Some error occured");
                     }
+
                     $scope.messages = [];
                     smsObject.recipient = '';
                     smsObject.content = '';
@@ -57,13 +69,19 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                 });
         };
 
+        $scope.showTab = function (tabIndex) {
+            $scope.activeTab = tabIndex;
+        };
+
         $scope.sendBulkSMS = function () {
             $scope.loading = true;
             var file = $scope.myFile;
+
             var sameForAll = $scope.sameForAll;
             if (sameForAll === undefined) {
                 sameForAll = false;
             }
+
             console.log(file);
             var fd = new FormData();
             fd.append('file', file);
@@ -103,12 +121,21 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
         }
         
         $scope.loadRecipients = function (query) {
-            return $http.get(RestURLFactory.GET_ALL_RECIPIENTS)
+            return $http.get(RestURLFactory.GET_ALL_RECIPIENTS + "?query=" + query)
                 .then(function (response) {
                     var recipients = response.data;
                     return recipients;
                 })
-        }
+        };
+
+        $scope.loadTemplate = function () {
+            return $http.get(RestURLFactory.FIND_TEMPLATE + "?query=Cus")
+                .then(function (response) {
+                    $scope.templates = response.data;
+                })
+        };
+
+        $scope.loadTemplate();
     }
 ]);
 

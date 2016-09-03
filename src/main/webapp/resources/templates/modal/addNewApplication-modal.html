@@ -1,0 +1,13 @@
+<div class="modal-header" id="modal-header">
+	<h3 class="modal-title">Add new credentials</h3>
+</div>
+
+<div class="modal-body" id="modal-body">
+	<span ng-show="error" class="login-error">{{error}}</span>
+	<input type="text" ng-model="app.applicationName" class="input-field" placeholder="Application Name">
+</div>
+
+<div class="modal-footer" id="modal-footer">
+	<input type="button" class="input-submit" value="Cancel" ng-click="cancel()">
+	<input type="button" class="input-submit" value="Add" ng-click="addApplication(app)">
+</div>

@@ -9,6 +9,7 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
 import org.apache.commons.io.output.StringBuilderWriter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,7 @@ public class SendSMSRequestBuilder {
     @Value("${sms.test}")
     private Integer test;
 
-    public Request buildRequest(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsContent, String smsType) {
+    public Request buildRequest(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsContent, String smsType, String requestSenderName) {
         if (parameters == null) {
             parameters = new HashMap<>();
         }
@@ -53,16 +54,17 @@ public class SendSMSRequestBuilder {
             collectAdditionalParameters(recipient, parameters);
         }
 
-        Request request = buildBaseRequest(smsType);
+        Request request = buildBaseRequest(smsType, requestSenderName);
 
         request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
+
         if (recipient.getValue() == RecipientType.NUMBER) {
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
         } else if (recipient.getValue() == RecipientType.GROUP) {
             GroupEntity groupEntity = recipientService.getGroup(Integer.valueOf(recipient.getKey()));
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
         } else {
-            PersonEntity personEntity = recipientService.getPerson(recipient.getKey());
+            PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
         }
 
@@ -73,8 +75,8 @@ public class SendSMSRequestBuilder {
         return request;
     }
 
-    public Request buildBulkRequest(Map<String, String> messages, String smsType) {
-        Request request = buildBaseRequest(smsType);
+    public Request buildBulkRequest(Map<String, String> messages, String smsType, String requestSenderName) {
+        Request request = buildBaseRequest(smsType, requestSenderName);
 
         request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
         String messagesArray = createArrayOfMessages(messages);
@@ -82,9 +84,15 @@ public class SendSMSRequestBuilder {
         return request;
     }
 
-    private Request buildBaseRequest(String smsType) {
+    private Request buildBaseRequest(String smsType, String requestSenderName) {
         Request request = new Request();
-        CredentialsEntity credentials = CredentialsUtils.getUserCredentialsForSMSType(smsType);
+
+        CredentialsEntity credentials;
+        if (StringUtils.isEmpty(requestSenderName)) {
+            credentials = CredentialsUtils.getUserCredentialsForSMSType(smsType);
+        } else {
+            credentials = CredentialsUtils.getCredentialsForSenderName(requestSenderName);
+        }
 
         if (credentials == null) {
             throw new NullPointerException("User doesn't allowed to send sms.");

@@ -46,6 +46,8 @@ tags-input .tags .tag-item {
 	display: inline-block;
 	float: left;
 	font: 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: bold;
+	color: white;
 	height: 26px;
 	line-height: 25px;
 	background-color: #66e0ff;
@@ -134,6 +136,7 @@ tags-input .autocomplete .suggestion-item {
 	padding: 5px 10px;
 	cursor: pointer;
 	white-space: nowrap;
+	height: auto;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;

@@ -18,6 +18,8 @@ public class SmsDTO {
 
     private SmsTemplateEntity smsTemplate;
 
+    private String requestSenderName;
+
     public Map<String, RecipientType> getRecipients() {
         return recipients;
     }
@@ -56,5 +58,13 @@ public class SmsDTO {
 
     public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
         this.smsTemplate = smsTemplate;
+    }
+
+    public String getRequestSenderName() {
+        return requestSenderName;
+    }
+
+    public void setRequestSenderName(String requestSenderName) {
+        this.requestSenderName = requestSenderName;
     }
 }

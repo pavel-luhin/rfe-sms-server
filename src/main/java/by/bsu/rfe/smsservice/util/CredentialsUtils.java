@@ -20,4 +20,14 @@ public class CredentialsUtils {
         }
     }
 
+    public static CredentialsEntity getCredentialsForSenderName(String senderName) {
+        CredentialsCache credentialsCache = SpringContextHolder.getBean(CredentialsCache.class);
+        if (credentialsCache.isCacheEnabled()) {
+            return credentialsCache.getCredentialsBySenderName(senderName);
+        } else {
+            CredentialsService credentialsService = SpringContextHolder.getBean(CredentialsService.class);
+            return credentialsService.getCredentialsForSenderName(senderName);
+        }
+    }
+
 }

@@ -295,3 +295,13 @@ body {
 		-moz-transform: rotate(0deg);
 	}
 }
+
+.sender-names {
+	width: 100%;
+	height: 30px;
+	background-color: white;
+	border: solid #00cccc;
+	border-radius: 4px;
+	color: #00cccc;
+	font-weight: bold;
+}

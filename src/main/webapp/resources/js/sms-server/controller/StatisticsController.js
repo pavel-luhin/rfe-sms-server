@@ -17,7 +17,7 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
         var sortOrder = {
             error: sortConstants.notSorted,
                 smsType: sortConstants.notSorted,
-                username: sortConstants.notSorted,
+                senderName: sortConstants.notSorted,
                 number: sortConstants.notSorted,
                 recipientType: sortConstants.notSorted,
                 sentDate: sortConstants.desc

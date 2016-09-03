@@ -9,16 +9,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
- * Created by pluhin on 3/21/16.
+ * Created by pluhin on 9/3/16.
  */
-public class DatabaseAuthenticationProvider implements AuthenticationProvider {
+public class ApplicationAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private UserService userService;

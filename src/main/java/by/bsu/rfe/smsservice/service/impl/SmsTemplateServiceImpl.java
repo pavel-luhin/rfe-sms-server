@@ -3,6 +3,8 @@ package by.bsu.rfe.smsservice.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.repository.SmsTemplateRepository;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
@@ -19,5 +21,25 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     @Override
     public SmsTemplateEntity getByRequestUri(String requestUri) {
         return smsTemplateRepository.getByURIPath(requestUri);
+    }
+
+    @Override
+    public List<SmsTemplateEntity> getSmsTemplates() {
+        return smsTemplateRepository.findAll();
+    }
+
+    @Override
+    public void removeSMSTemplate(Integer id) {
+        smsTemplateRepository.delete(id);
+    }
+
+    @Override
+    public SmsTemplateEntity addSMSTemplate(SmsTemplateEntity smsTemplateEntity) {
+        return smsTemplateRepository.saveAndFlush(smsTemplateEntity);
+    }
+
+    @Override
+    public SmsTemplateEntity findSMSTemplate(String query) {
+        return smsTemplateRepository.findSMSTemplate(query);
     }
 }

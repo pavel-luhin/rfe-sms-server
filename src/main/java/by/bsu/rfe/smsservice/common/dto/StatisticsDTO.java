@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public class StatisticsDTO {
     private Boolean error;
-    private String username;
+    private String senderName;
     private String recipient;
     private String text;
     private String response;
@@ -25,12 +25,12 @@ public class StatisticsDTO {
         this.error = error;
     }
 
-    public String getUsername() {
-        return username;
+    public String getSenderName() {
+        return senderName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
     public String getRecipient() {

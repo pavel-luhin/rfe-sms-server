@@ -1,0 +1,20 @@
+<div ng-include="'/resources/templates/setup/backToSetupLink.html'"></div>
+<div class="col-md-offset-2 col-md-8">
+    <h3>Users</h3>
+    <a href class="pull-right" ng-click="addUserModal()">Add new user</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="user in users">
+        <tr>
+            <td>{{user.username}}</td>
+            <td><i class="fa fa-remove clickable" ng-click="removeUser(user.id)"></i></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>

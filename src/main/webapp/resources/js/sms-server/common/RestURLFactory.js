@@ -8,7 +8,13 @@ angular.module('sms-server').factory('RestURLFactory',
             ADD_RECIPIENT: BASE_REST_PREFIX + '/recipient/add/recipients',
             GET_ALL_RECIPIENTS: BASE_REST_PREFIX + '/recipient/all',
             LOGOUT: BASE_REST_PREFIX + '/user/logout',
-            AUTHENTICATE: BASE_REST_PREFIX + '/user/authenticate'
+            AUTHENTICATE: BASE_REST_PREFIX + '/user/authenticate',
+            GET_SENDER_NAMES: BASE_REST_PREFIX + '/user/senderNames',
+            CREDENTIALS: BASE_REST_PREFIX + "/setup/credentials",
+            SMS_TEMPLATE: BASE_REST_PREFIX + "/setup/smsTemplate",
+            FIND_TEMPLATE: BASE_REST_PREFIX + "/sms/template",
+            USERS: BASE_REST_PREFIX + "/setup/user",
+            APPLICATION: BASE_REST_PREFIX + "/setup/application"
         }
     }
 );

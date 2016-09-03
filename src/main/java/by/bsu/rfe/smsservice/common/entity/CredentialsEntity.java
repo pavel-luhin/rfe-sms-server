@@ -11,6 +11,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +34,7 @@ public class CredentialsEntity extends AbstractPersistable<Integer> {
     @JoinTable(
             name = "users_credentials"
     )
-    private List<UserEntity> users;
+    private List<UserEntity> users = new ArrayList<>();
 
     public String getUsername() {
         return username;

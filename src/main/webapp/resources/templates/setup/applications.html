@@ -1,0 +1,22 @@
+<div ng-include="'/resources/templates/setup/backToSetupLink.html'"></div>
+<div class="col-md-offset-2 col-md-8">
+    <h3>Applications Management</h3>
+    <a href class="pull-right" ng-click="addApplicationModal()">Add new application</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Application name</th>
+            <th>Authentication Header</th>
+            <th>Remove</th>
+        </tr>
+        </thead>
+        <tbody ng-repeat="app in applications">
+        <tr>
+            <td>{{app.applicationName}}</td>
+            <td ng-show="!app.showToken"><a href ng-click="app.showToken = true">Show token</a></td>
+            <td ng-show="app.showToken"><pre>auth-token={{app.authenticationToken}}</pre></td>
+            <td><i class="fa fa-remove clickable" ng-click="removeApplication(app.id)"></i></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

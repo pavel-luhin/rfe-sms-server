@@ -2,6 +2,7 @@ package by.bsu.rfe.smsservice.service;
 
 import java.util.List;
 
+import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 
 /**
@@ -10,4 +11,8 @@ import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 public interface CredentialsService {
     List<CredentialsEntity> getAllCredentials();
     CredentialsEntity getCredentialsForSmsTypeOrDefault(String smsType);
+    CredentialsEntity getCredentialsForSenderName(String senderName);
+    void addNewCredentials(CredentialsEntity credentialsEntity);
+    List<CredentialsDTO> getUserCredentials(String username);
+    void removeCredentials(Integer id);
 }

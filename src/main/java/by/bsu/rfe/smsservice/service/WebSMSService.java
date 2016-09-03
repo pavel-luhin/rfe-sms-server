@@ -11,5 +11,5 @@ import by.bsu.rfe.smsservice.common.sms.SmsDTO;
  */
 public interface WebSMSService {
     SMSResultDTO sendSMS(SmsDTO smsDTO);
-    SMSResultDTO bulkSendSMS(MultipartFile file, SmsTemplateEntity smsTemplate, Boolean sameContentForAll);
+    SMSResultDTO bulkSendSMS(MultipartFile file, SmsTemplateEntity smsTemplate, Boolean sameContentForAll, String requestSenderName);
 }

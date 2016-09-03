@@ -4,8 +4,17 @@ package by.bsu.rfe.smsservice.common.dto;
  * Created by pluhin on 3/21/16.
  */
 public class UserDTO {
+    private Integer id;
     private String username;
     private String token;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

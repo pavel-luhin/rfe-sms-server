@@ -5,7 +5,6 @@ import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getSheetFromFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -33,6 +32,7 @@ import java.util.Map;
 
 import by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder;
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
@@ -77,7 +77,8 @@ public class WebSMSServiceImpl implements WebSMSService {
         SMSResultDTO smsResultDTO = new SMSResultDTO();
 
         for (Map.Entry<String, RecipientType> recipient : recipients.entrySet()) {
-            SMSResultDTO oneSMSResult = prepareAndSendSMS(recipient, smsParameters.get(recipient.getKey()), smsDTO.getSmsTemplate(), smsDTO.isDuplicateEmail(), smsDTO.getSmsContent());
+            SMSResultDTO oneSMSResult = prepareAndSendSMS(recipient, smsParameters.get(recipient.getKey()), smsDTO.getSmsTemplate(),
+                    smsDTO.isDuplicateEmail(), smsDTO.getSmsContent(), smsDTO.getRequestSenderName());
             setTotalSmsDTO(oneSMSResult, smsResultDTO);
         }
 
@@ -85,7 +86,7 @@ public class WebSMSServiceImpl implements WebSMSService {
     }
 
     @Override
-    public SMSResultDTO bulkSendSMS(MultipartFile file, SmsTemplateEntity smsTemplate, Boolean sameContentForAll) {
+    public SMSResultDTO bulkSendSMS(MultipartFile file, SmsTemplateEntity smsTemplate, Boolean sameContentForAll, String requestSenderName) {
         LOG.info("Preparing bulk send sms for file: {}", file.getOriginalFilename());
         Sheet sheet = getSheetFromFile(file);
         Map<String, String> totalMessages = getMessagesFromSheet(sheet);
@@ -115,12 +116,19 @@ public class WebSMSServiceImpl implements WebSMSService {
                     }
                 }
 
-                Request request = smsRequestBuilder.buildBulkRequest(messages, smsTemplate.getSmsType());
+                Request request = smsRequestBuilder.buildBulkRequest(messages, smsTemplate.getSmsType(), requestSenderName);
                 HttpResponse response = execute(request);
                 String stringResponse = getContent(response);
 
-                statisticsEntity.setCredentials(CredentialsUtils.getUserCredentialsForSMSType(smsTemplate.getSmsType()));
-                statisticsEntity.setSmsTemplate(smsTemplate);
+                CredentialsEntity credentialsEntity = null;
+                if (StringUtils.isEmpty(requestSenderName)) {
+                    credentialsEntity = CredentialsUtils.getUserCredentialsForSMSType(smsTemplate.getSmsType());
+                } else {
+                    credentialsEntity = CredentialsUtils.getCredentialsForSenderName(requestSenderName);
+                }
+
+                statisticsEntity.setSender(credentialsEntity.getSender());
+                statisticsEntity.setSmsType(smsTemplate.getSmsType());
                 statisticsEntity.setRecipientType(RecipientType.NUMBER);
                 statisticsEntity.setSentDate(new Date());
                 statisticsEntity.setResponse(stringResponse);
@@ -148,16 +156,16 @@ public class WebSMSServiceImpl implements WebSMSService {
     }
 
     private SMSResultDTO prepareAndSendSMS(Map.Entry<String, RecipientType> recipient, Map<String, String> smsParameters, SmsTemplateEntity smsTemplate,
-            Boolean duplicateEmail, String smsContent) {
+            Boolean duplicateEmail, String smsContent, String requestSenderName) {
         String smsType = smsTemplate.getSmsType();
         SMSResultDTO smsResultDTO = new SMSResultDTO();
         smsResultDTO.incrementTotalCount();
         Request request = null;
 
         if (StringUtils.isNotEmpty(smsTemplate.getTemplate())) {
-            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), smsType);
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), smsType, requestSenderName);
         } else {
-            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsContent, smsType);
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsContent, smsType, requestSenderName);
         }
 
         LOG.info("Prepared sms with parameters {}", request.getParameters());
@@ -175,8 +183,15 @@ public class WebSMSServiceImpl implements WebSMSService {
                 }
             }
 
-            statisticsEntity.setCredentials(CredentialsUtils.getUserCredentialsForSMSType(smsType));
-            statisticsEntity.setSmsTemplate(smsTemplate);
+            CredentialsEntity credentialsEntity = null;
+            if (StringUtils.isEmpty(requestSenderName)) {
+                credentialsEntity = CredentialsUtils.getUserCredentialsForSMSType(smsTemplate.getSmsType());
+            } else {
+                credentialsEntity = CredentialsUtils.getCredentialsForSenderName(requestSenderName);
+            }
+
+            statisticsEntity.setSender(credentialsEntity.getSender());
+            statisticsEntity.setSmsType(smsTemplate.getSmsType());
             statisticsEntity.setRecipientType(recipient.getValue());
             statisticsEntity.setSentDate(new Date());
             statisticsEntity.setResponse(content);

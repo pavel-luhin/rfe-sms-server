@@ -39,6 +39,11 @@ public class EmailServiceImpl implements EmailService {
     private String emailStartTLSEnable;
 
     @Override
+    public void sendPostRegistrationEmail(String email, String password) {
+
+    }
+
+    @Override
     public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
 
     }

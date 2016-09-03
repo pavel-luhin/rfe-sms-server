@@ -1,5 +1,7 @@
 package by.bsu.rfe.smsservice.service;
 
+import java.util.List;
+
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 
 /**
@@ -7,4 +9,8 @@ import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
  */
 public interface SmsTemplateService {
     SmsTemplateEntity getByRequestUri(String requestUri);
+    List<SmsTemplateEntity> getSmsTemplates();
+    void removeSMSTemplate(Integer id);
+    SmsTemplateEntity addSMSTemplate(SmsTemplateEntity smsTemplateEntity);
+    SmsTemplateEntity findSMSTemplate(String query);
 }

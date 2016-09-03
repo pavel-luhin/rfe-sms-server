@@ -26,7 +26,7 @@ public class RecipientServiceImpl implements RecipientService {
     @Override
     public void addGroup(String groupName) {
         GroupEntity groupEntity = new GroupEntity();
-//        groupEntity.setName(groupName);
+        groupEntity.setName(groupName);
         groupRepository.saveAndFlush(groupEntity);
     }
 
@@ -68,12 +68,36 @@ public class RecipientServiceImpl implements RecipientService {
     }
 
     @Override
+    public List<RecipientDTO> getRecipientByQuery(String query) {
+        List<PersonEntity> persons = personRepository.getPersonsByQuery(query);
+        List<GroupEntity> groups = groupRepository.getGroupsByQuery(query);
+
+        List<RecipientDTO> recipients = new ArrayList<>(persons.size() + groups.size());
+
+        for (PersonEntity personEntity : persons) {
+            RecipientDTO recipientDTO = new RecipientDTO();
+            recipientDTO.setName(personEntity.getFirstName() + " " + personEntity.getLastName());
+            recipientDTO.setRecipientType(RecipientType.PERSON);
+            recipients.add(recipientDTO);
+        }
+
+        for (GroupEntity groupEntity : groups) {
+            RecipientDTO recipientDTO = new RecipientDTO();
+            recipientDTO.setName(groupEntity.getName());
+            recipientDTO.setRecipientType(RecipientType.GROUP);
+            recipients.add(recipientDTO);
+        }
+
+        return recipients;
+    }
+
+    @Override
     public GroupEntity getGroup(Integer groupId) {
         return groupRepository.findOne(groupId);
     }
 
     @Override
-    public PersonEntity getPerson(String name) {
-        return personRepository.getPersonByFirstName(name);
+    public PersonEntity getPerson(String[] name) {
+        return personRepository.getPersonByFirstNameAndLastName(name[0], name[1]);
     }
 }

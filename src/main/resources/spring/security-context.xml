@@ -2,12 +2,21 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
-       <security:authentication-manager id="authenticationManager">
-              <security:authentication-provider ref="databaseAuthenticationProvider"/>
-       </security:authentication-manager>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-       <bean id="databaseAuthenticationProvider" class="by.bsu.rfe.smsservice.security.provider.DatabaseAuthenticationProvider"/>
+        <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+            <property name="eraseCredentialsAfterAuthentication" value="false"/>
+            <constructor-arg>
+                <list>
+                    <ref bean="userAuthenticationProvider" />
+                </list>
+            </constructor-arg>
+        </bean>
+
+       <bean id="userAuthenticationProvider" class="by.bsu.rfe.smsservice.security.provider.UserAuthenticationProvider"/>
        <bean id="authenticationFilter" class="by.bsu.rfe.smsservice.security.filter.AuthenticationTokenFilter"/>
        <bean id="unauthorizedEntryPoint" class="by.bsu.rfe.smsservice.security.UnauthorizedEntryPoint"/>
 

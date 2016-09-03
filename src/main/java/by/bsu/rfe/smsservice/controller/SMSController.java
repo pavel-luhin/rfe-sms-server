@@ -57,7 +57,13 @@ public class SMSController {
 
     @ResponseBody
     @RequestMapping(value = "/bulkSMS", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public SMSResultDTO bulkSendSMS(@RequestParam MultipartFile file, @RequestParam Boolean sameContentForAll) {
-        return webSMSService.bulkSendSMS(file, getTemplate(CUSTOM_SMS_URI), sameContentForAll);
+    public SMSResultDTO bulkSendSMS(@RequestParam MultipartFile file, @RequestParam Boolean sameContentForAll, @RequestParam String requestSenderName) {
+        return webSMSService.bulkSendSMS(file, getTemplate(CUSTOM_SMS_URI), sameContentForAll, requestSenderName);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/sms/template", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public SmsTemplateEntity getSMSTemplate(@RequestParam String query) {
+        return smsTemplateService.findSMSTemplate(query);
     }
 }

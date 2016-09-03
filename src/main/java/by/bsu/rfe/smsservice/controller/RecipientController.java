@@ -47,7 +47,13 @@ public class RecipientController {
 
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RecipientDTO> getAllRecipients() {
+    public List<RecipientDTO> getAllRecipients(@RequestParam String query) {
+        return recipientService.getRecipientByQuery(query);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "person/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<RecipientDTO> getAllPersons() {
         return recipientService.getAllRecpients();
     }
 }

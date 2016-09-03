@@ -10,4 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface SmsTemplateRepository extends JpaRepository<SmsTemplateEntity, Integer> {
     @Query("FROM SmsTemplateEntity WHERE uriPath=?1")
     SmsTemplateEntity getByURIPath(String uriPath);
+
+    @Query("FROM SmsTemplateEntity WHERE smsType LIKE %?1%")
+    SmsTemplateEntity findSMSTemplate(String query);
 }

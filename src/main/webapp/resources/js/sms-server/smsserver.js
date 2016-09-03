@@ -1,4 +1,13 @@
-var application = angular.module('sms-server', ['ngRoute', 'ngCookies', 'ngProgress', 'ngStorage', 'ngTagsInput']);
+var application = angular.module('sms-server',
+                                 ['ngRoute',
+                                  'ngCookies',
+                                  'ngProgress',
+                                  'ngStorage',
+                                  'ngTagsInput',
+                                  'ui.bootstrap',
+                                  'ui.bootstrap.tpls',
+                                  'ui.bootstrap.tooltip'
+                                 ]);
 
 application.config(['$httpProvider',
     function ($httpProvider) {
@@ -46,6 +55,30 @@ application.config(['$routeProvider',
             .when('/recipients/add-group', {
                 templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
                 controller: 'RecipientsController'
+            })
+            .when('/setup', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup.html',
+                controller: 'SetupController'
+            })
+            .when('/setup/templates', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/templates.html',
+                controller: 'TemplateController'
+            })
+            .when('/setup/credentials', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/credentials.html',
+                controller: 'CredentialsController'
+            })
+            .when('/setup/users', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/users.html',
+                controller: 'UsersController'
+            })
+            .when('/setup/applications', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/applications.html',
+                controller: 'ApplicationsController'
+            })
+            .when('/test', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'test.html',
+                controller: 'TestController'
             })
             .otherwise({
                 redirectTo: '/statistics'

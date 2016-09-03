@@ -8,12 +8,8 @@
         <class-a>by.bsu.rfe.smsservice.common.entity.StatisticsEntity</class-a>
         <class-b>by.bsu.rfe.smsservice.common.dto.StatisticsDTO</class-b>
         <field>
-            <a>credentials.sender</a>
-            <b>username</b>
-        </field>
-        <field>
-            <a>smsTemplate.smsType</a>
-            <b>smsType</b>
+            <a>sender</a>
+            <b>senderName</b>
         </field>
     </mapping>
 </mappings>
