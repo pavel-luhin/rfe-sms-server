@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS sms_server;
-USE `sms_server`;
-
 CREATE TABLE IF NOT EXISTS `credentials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) DEFAULT NULL,
@@ -23,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   CONSTRAINT `def_creds_key` FOREIGN KEY (`default_credentials`) REFERENCES `credentials` (`id`)
 );
 
-INSERT INTO `sms_server`.`user` (username, password, created_by, created_date) VALUES ('pavel.luhin@gmail.com', 'q1w2e3r4t5', 'SYSTEM', NOW());
+INSERT INTO `user` (username, password, created_by, created_date) VALUES ('pavel.luhin@gmail.com', 'q1w2e3r4t5', 'SYSTEM', NOW());
 
 CREATE TABLE `authentication_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -45,8 +42,8 @@ CREATE TABLE IF NOT EXISTS `sms_template` (
   PRIMARY KEY (`id`)
 );
 
-INSERT INTO `sms_server`.`sms_template` (sms_type, uri_path, created_by, created_date) VALUES ('CustomSMS', '/rest/sms/custom', 'SYSTEM', NOW());
-INSERT INTO `sms_server`.`sms_template` (sms_type, template, uri_path, created_by, created_date) VALUES
+INSERT INTO `sms_template` (sms_type, uri_path, created_by, created_date) VALUES ('CustomSMS', '/rest/sms/custom', 'SYSTEM', NOW());
+INSERT INTO `sms_template` (sms_type, template, uri_path, created_by, created_date) VALUES
   ('InterviewSMS', '${STUDENT_FIRST_NAME}, ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_DATE} по адресу ${INTERVIEW_TIME}',
    '/rest/sms/custom', 'SYSTEM', NOW());
 
@@ -62,10 +59,10 @@ CREATE TABLE IF NOT EXISTS `email_template` (
   CONSTRAINT `template_fk` FOREIGN KEY (`sms_template`) REFERENCES `sms_template` (`id`)
 );
 
-INSERT INTO `sms_server`.`email_template` (subject, content, created_by, created_date, sms_template) VALUES ('Вас пригласили на собеседование',
+INSERT INTO `email_template` (subject, content, created_by, created_date, sms_template) VALUES ('Вас пригласили на собеседование',
                                                                                                              'Здравствуйте, ${STUDENT_FIRST_NAME} ${STUDENT_LAST_NAME},<br>Компания ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_DATE} по адресу ${COMPANY_ADDRESS}', 'SYSTEM', NOW(), LAST_INSERT_ID());
 
-INSERT INTO `sms_server`.`email_template` (subject, content, created_by, created_date) VALUES ('Your account on SMS-Server was registered',
+INSERT INTO `email_template` (subject, content, created_by, created_date) VALUES ('Your account on SMS-Server was registered',
                                                                                                'Hello ${USERNAME},<br><br>Your account on SMS-Server was successfully registered.<br>
                                                                                                SMS-Server address is: ${SERVER.URL}<br>
                                                                                                User the following credentials to log in:<br>
