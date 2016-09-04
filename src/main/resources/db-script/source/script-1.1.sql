@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `sms_template` (
 INSERT INTO `sms_template` (sms_type, uri_path, created_by, created_date) VALUES ('CustomSMS', '/rest/sms/custom', 'SYSTEM', NOW());
 INSERT INTO `sms_template` (sms_type, template, uri_path, created_by, created_date) VALUES
   ('InterviewSMS', '${STUDENT_FIRST_NAME}, ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_DATE} по адресу ${INTERVIEW_TIME}',
-   '/rest/sms/custom', 'SYSTEM', NOW());
+   '/rest/sms/interview', 'SYSTEM', NOW());
 
 CREATE TABLE IF NOT EXISTS `email_template` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
