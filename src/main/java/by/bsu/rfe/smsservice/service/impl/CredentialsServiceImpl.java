@@ -91,4 +91,9 @@ public class CredentialsServiceImpl implements CredentialsService {
         credentialsRepository.saveAndFlush(credentialsEntity);
         credentialsCache.reloadCache();
     }
+
+    @Override
+    public CredentialsEntity getCredentialsById(Integer id) {
+        return credentialsRepository.findOne(id);
+    }
 }

@@ -23,4 +23,6 @@ public interface CredentialsService {
     void removeCredentials(Integer id);
 
     void shareCredentials(ShareCredentialsDTO shareCredentialsDTO);
+
+    CredentialsEntity getCredentialsById(Integer id);
 }

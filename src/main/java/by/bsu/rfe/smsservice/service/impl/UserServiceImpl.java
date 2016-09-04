@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -155,8 +156,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getAllUsers() {
-        List<UserEntity> userEntities = userRepository.findAll();
+    public List<UserDTO> getAllUsers(Integer credentialsId) {
+        List<UserEntity> userEntities;
+
+        if (credentialsId == null) {
+            userEntities = userRepository.findAll();
+        } else {
+            CredentialsEntity credentialsEntity = credentialsService.getCredentialsById(credentialsId);
+            List<String> usernames = credentialsEntity.getUsers().stream().map(UserEntity::getUsername).collect(Collectors.toList());
+            userEntities = userRepository.findUsersToShareCredentialsWith(usernames);
+        }
+
         return DozerUtil.mapList(mapper, userEntities, UserDTO.class);
     }
 

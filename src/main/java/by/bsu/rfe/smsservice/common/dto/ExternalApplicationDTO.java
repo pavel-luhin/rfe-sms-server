@@ -4,8 +4,17 @@ package by.bsu.rfe.smsservice.common.dto;
  * Created by pluhin on 9/3/16.
  */
 public class ExternalApplicationDTO extends CreatedDetails {
+    private Integer id;
     private String applicationName;
     private String authenticationToken;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getApplicationName() {
         return applicationName;

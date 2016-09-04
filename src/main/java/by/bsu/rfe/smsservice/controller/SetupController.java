@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -83,8 +84,8 @@ public class SetupController {
 
     @ResponseBody
     @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDTO> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserDTO> getAllUsers(@RequestParam(required = false) Integer credentialsId) {
+        return userService.getAllUsers(credentialsId);
     }
 
     @ResponseStatus(HttpStatus.OK)

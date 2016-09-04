@@ -6,7 +6,7 @@ angular.module('sms-server').controller('ShareCredentialsModalController',
                 $uibModalInstance.dismiss();
             };
 
-            $http.get(RestURLFactory.USERS).then(function (response) {
+            $http.get(RestURLFactory.USERS + '?credentialsId=' + $rootScope.shareCredentialsId).then(function (response) {
                 $scope.users = response.data;
             });
 

@@ -5,18 +5,16 @@ import by.bsu.rfe.smsservice.common.entity.CreationDetails;
 /**
  * Created by pluhin on 9/4/16.
  */
-public class EmailTemplateDTO extends CreationDetails {
+public class EmailTemplateDTO extends CreatedDetails {
     private Integer id;
     private String subject;
     private String content;
     private String smsType;
 
-    @Override
     public Integer getId() {
         return id;
     }
 
-    @Override
     public void setId(Integer id) {
         this.id = id;
     }

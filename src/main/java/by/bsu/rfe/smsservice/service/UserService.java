@@ -31,7 +31,7 @@ public interface UserService {
 
     void addNewCredentials(CredentialsDTO credentialsDTO);
 
-    List<UserDTO> getAllUsers();
+    List<UserDTO> getAllUsers(Integer credentialsId);
 
     void createUser(String username);
 
