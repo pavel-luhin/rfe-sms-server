@@ -1,13 +1,13 @@
 package by.bsu.rfe.smsservice.builder;
 
-import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
-import by.bsu.rfe.smsservice.common.entity.GroupEntity;
-import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
-import by.bsu.rfe.smsservice.common.request.Request;
-import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
-import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.RecipientService;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGE;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGES;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.RECIPIENTS;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -21,7 +21,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.*;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
+import by.bsu.rfe.smsservice.common.entity.GroupEntity;
+import by.bsu.rfe.smsservice.common.entity.PersonEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.common.request.Request;
+import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
+import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.RecipientService;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -114,18 +121,16 @@ public class SendSMSRequestBuilder {
     private void collectAdditionalParameters(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
     }
 
-    private String createMessage(String template, Map<String, String> messageParameters, String originalMessage) {
+    public static String createMessage(String template, Map<String, String> messageParameters, String originalMessage) {
         String regex = "\\$\\{([^}]+)\\}";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(template);
         String result = template;
-        while(matcher.find()) {
+        while (matcher.find()) {
             String token = matcher.group();
-            String tokenKey = matcher.group(1);
             String replacementValue = null;
-
-            if(messageParameters.containsKey(tokenKey)) {
-                replacementValue = messageParameters.get(tokenKey);
+            if (messageParameters.containsKey(token)) {
+                replacementValue = messageParameters.get(token);
             } else {
                 LOGGER.error("Not enough parameters. Could not create message.");
                 LOGGER.error("Original message: {}", originalMessage);
@@ -143,7 +148,7 @@ public class SendSMSRequestBuilder {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
 
-        for(Map.Entry<String, String> message : messages.entrySet()) {
+        for (Map.Entry<String, String> message : messages.entrySet()) {
             stringBuilder.append("{\"recipient\":\"").append(message.getKey()).append("\",");
             stringBuilder.append("\"message\":\"").append(message.getValue()).append("\"},");
         }

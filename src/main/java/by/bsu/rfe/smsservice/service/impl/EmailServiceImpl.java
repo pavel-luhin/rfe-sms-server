@@ -1,21 +1,18 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
-import by.bsu.rfe.smsservice.common.entity.EmailEntity;
-import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
-import by.bsu.rfe.smsservice.repository.EmailRepository;
-import by.bsu.rfe.smsservice.service.EmailService;
-import by.bsu.rfe.smsservice.service.SmsTemplateService;
-import by.bsu.rfe.smsservice.util.DozerUtil;
+import static by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder.createMessage;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -25,10 +22,14 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
+import by.bsu.rfe.smsservice.common.entity.EmailEntity;
+import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.repository.EmailRepository;
+import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.SmsTemplateService;
+import by.bsu.rfe.smsservice.util.DozerUtil;
 
 /**
  * Created by pluhin on 3/20/16.
@@ -48,6 +49,8 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.starttls.enable}")
     private String emailStartTLSEnable;
 
+    private static final String REGISTER_USER_SMS_TYPE = "RegisterUserSMS";
+
     @Autowired
     private EmailRepository emailRepository;
     @Autowired
@@ -64,12 +67,14 @@ public class EmailServiceImpl implements EmailService {
         parameterMap.put("${USERNAME}", email.split("@")[0]);
 
         Pair<String, RecipientType> recipient = new MutablePair<>(email, RecipientType.PERSON);
-        processSendingEmail(recipient, parameterMap);
+        processSendingEmail(recipient, parameterMap, REGISTER_USER_SMS_TYPE);
     }
 
     @Override
-    public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
-
+    public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsType) {
+        EmailEntity emailEntity = emailRepository.findBySMSType(smsType);
+        String message = createMessage(emailEntity.getContent(), parameters, emailEntity.getContent());
+        sendEmail(recipient.getKey(), emailEntity.getSubject(), message);
     }
 
     @Override

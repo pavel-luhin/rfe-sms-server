@@ -1,10 +1,7 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
@@ -19,8 +16,10 @@ public class SmsTemplateEntity extends CreationDetails {
     private String template;
     @Column(name = "sms_type", nullable = false)
     private String smsType;
-    @Column(name = "uri_path", nullable = false)
+    @Column(name = "uri_path", nullable = false, unique = true)
     private String uriPath;
+    @Column(name = "enabled")
+    private Boolean enabled;
 
     public String getSmsType() {
         return smsType;
@@ -44,5 +43,13 @@ public class SmsTemplateEntity extends CreationDetails {
 
     public void setUriPath(String uriPath) {
         this.uriPath = uriPath;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

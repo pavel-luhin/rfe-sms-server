@@ -216,7 +216,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         }
 
         if (duplicateEmail) {
-            emailService.processSendingEmail(recipient, smsParameters);
+            emailService.processSendingEmail(recipient, smsParameters, smsTemplate.getSmsType());
         }
         return smsResultDTO;
     }
