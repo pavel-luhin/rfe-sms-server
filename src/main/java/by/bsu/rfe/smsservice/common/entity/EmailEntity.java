@@ -36,4 +36,12 @@ public class EmailEntity extends CreationDetails {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public SmsTemplateEntity getSmsTemplate() {
+        return smsTemplate;
+    }
+
+    public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
+        this.smsTemplate = smsTemplate;
+    }
 }

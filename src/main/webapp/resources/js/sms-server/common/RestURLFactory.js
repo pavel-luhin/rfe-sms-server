@@ -14,7 +14,8 @@ angular.module('sms-server').factory('RestURLFactory',
             SMS_TEMPLATE: BASE_REST_PREFIX + "/setup/smsTemplate",
             FIND_TEMPLATE: BASE_REST_PREFIX + "/sms/template",
             USERS: BASE_REST_PREFIX + "/setup/user",
-            APPLICATION: BASE_REST_PREFIX + "/setup/application"
+            APPLICATION: BASE_REST_PREFIX + "/setup/application",
+            EMAIL_TEMPLATE: BASE_REST_PREFIX + "/setup/emailTemplate"
         }
     }
 );

@@ -12,4 +12,13 @@
             <b>senderName</b>
         </field>
     </mapping>
+
+    <mapping type="one-way">
+        <class-a>by.bsu.rfe.smsservice.common.entity.EmailEntity</class-a>
+        <class-b>by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO</class-b>
+        <field>
+            <a>smsTemplate.smsType</a>
+            <b>smsType</b>
+        </field>
+    </mapping>
 </mappings>

@@ -1,11 +1,14 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
 import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.UserDTO;
+import by.bsu.rfe.smsservice.common.entity.EmailEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.EmailService;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.UserService;
@@ -32,6 +35,8 @@ public class SetupController {
     private SmsTemplateService smsTemplateService;
     @Autowired
     private ExternalApplicationService externalApplicationService;
+    @Autowired
+    private EmailService emailService;
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/credentials", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -104,5 +109,23 @@ public class SetupController {
     @RequestMapping(value = "/application/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteApplication(@PathVariable Integer id) {
         externalApplicationService.removeExternalApplication(id);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/emailTemplate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<EmailTemplateDTO> getAllEmailTemplates() {
+        return emailService.getAllEmailTemplates();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/emailTemplate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void createEmailTemplate(@RequestBody EmailTemplateDTO emailTemplateDTO) {
+        emailService.saveEmailTemplate(emailTemplateDTO);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/emailTemplate/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteEmailTemplate(@PathVariable Integer id) {
+        emailService.removeEmailTemplate(id);
     }
 }
