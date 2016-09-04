@@ -7,7 +7,11 @@ angular.module('sms-server').controller('ApplicationController',
 
             $scope.logout = function () {
                 AuthenticationProvider.logout();
-            }
+            };
+
+            $scope.getCurrentUserName = function () {
+                return AuthenticationProvider.getCurrentUserName();
+            };
         }
     ]
 );

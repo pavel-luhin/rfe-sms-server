@@ -7,7 +7,6 @@ angular.module('sms-server').factory('AuthenticationProvider', ['$rootScope', '$
         return {
             setAuthentication: function(authentication) {
                 $cookies.put(cookieName, authentication.token);
-                console.log(authentication.token);
                 $rootScope.authenticated = true;
                 authentication.authenticated = true;
                 localStorage.setItem(localStorageAuthName, JSON.stringify(authentication));
@@ -33,6 +32,11 @@ angular.module('sms-server').factory('AuthenticationProvider', ['$rootScope', '$
                         return false;
                     }
                 }
+            },
+
+            getCurrentUserName: function () {
+                var auth = JSON.parse(localStorage.getItem(localStorageAuthName));
+                return auth.username;
             }
         }
     }
