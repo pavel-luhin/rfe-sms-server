@@ -39,6 +39,7 @@ import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.sms.SmsDTO;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
+import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.EmailService;
 import by.bsu.rfe.smsservice.service.StatisticsService;
@@ -136,6 +137,7 @@ public class WebSMSServiceImpl implements WebSMSService {
                 statisticsEntity.setResponse(stringResponse);
                 statisticsEntity.setText("//Bulk sending statistics currently doesn't support displaying recipient-specific parameters//. Sent sms count " + messages.size());
                 statisticsEntity.setRecipient("BULK");
+                statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
 
                 if (isSuccess(stringResponse)) {
                     LOG.info("Bulk send was successful");
@@ -197,6 +199,7 @@ public class WebSMSServiceImpl implements WebSMSService {
             statisticsEntity.setSentDate(new Date());
             statisticsEntity.setResponse(content);
             statisticsEntity.setRecipient(recipient.getKey());
+            statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
 
             if (isSuccess(content)) {
                 LOG.info("SMS sent successfully");

@@ -16,6 +16,7 @@ public class StatisticsDTO {
     private String smsType;
     private RecipientType recipientType;
     private Date sentDate;
+    private String initiatedBy;
 
     public Boolean getError() {
         return error;
@@ -79,5 +80,13 @@ public class StatisticsDTO {
 
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
     }
 }

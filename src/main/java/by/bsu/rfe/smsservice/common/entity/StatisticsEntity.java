@@ -24,6 +24,8 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
     @Column(name = "sent_date")
     private Date sentDate;
     private String smsType;
+    @Column(name = "initiated_by")
+    private String initiatedBy;
 
     public Boolean getError() {
         return error;
@@ -87,5 +89,13 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
 
     public void setSmsType(String smsType) {
         this.smsType = smsType;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
     }
 }

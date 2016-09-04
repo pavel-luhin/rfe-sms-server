@@ -20,7 +20,8 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
                 senderName: sortConstants.notSorted,
                 number: sortConstants.notSorted,
                 recipientType: sortConstants.notSorted,
-                sentDate: sortConstants.desc
+                sentDate: sortConstants.desc,
+                initiatedBy: sortConstants.notSorted
         };
 
         var sortField = 'sentDate';

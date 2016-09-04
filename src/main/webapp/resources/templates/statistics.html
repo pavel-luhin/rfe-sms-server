@@ -9,6 +9,7 @@
                 <th class="clickable" ng-click="sortBy('recipient')">Recipient <i class="{{sortOrder.recipient.elementClass}}"></i></th>
                 <th class="clickable" ng-click="sortBy('recipientType')">RecipientType <i class="{{sortOrder.recipientType.elementClass}}"></i></th>
                 <th class="clickable" ng-click="sortBy('sentDate')">Sent Date <i class="{{sortOrder.sentDate.elementClass}}"></i></th>
+                <th class="clickable" ng-click="sortBy('initiatedBy')">Initiated By <i class="{{sortOrder.initiatedBy.elementClass}}"></i></th>
             </tr>
         </thead>
         <tbody ng-repeat="statistic in statistics">
@@ -22,14 +23,15 @@
                 <td>{{statistic.recipient}}</td>
                 <td>{{statistic.recipientType}}</td>
                 <td>{{statistic.sentDate | date: 'medium'}}</td>
+                <td>{{statistic.initiatedBy}}</td>
             </tr>
             <tr class="expandable table-condensed" ng-show="statistic.expanded">
                 <td><b>Text:</b></td>
-                <td colspan="6">{{statistic.text}}</td>
+                <td colspan="7">{{statistic.text}}</td>
             </tr>
             <tr class="expandable table-condensed" ng-show="statistic.expanded">
                 <td><b>Response: </b></td>
-                <td colspan="6">{{statistic.response}}</td>
+                <td colspan="7">{{statistic.response}}</td>
             </tr>
         </tbody>
     </table>
