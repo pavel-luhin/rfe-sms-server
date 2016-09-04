@@ -1,19 +1,16 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by PLugin on 14.11.2015.
@@ -32,7 +29,7 @@ public class CredentialsEntity extends CreationDetails {
     @JoinTable(
             name = "users_credentials"
     )
-    private List<UserEntity> users = new ArrayList<>();
+    private Set<UserEntity> users = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -64,11 +61,11 @@ public class CredentialsEntity extends CreationDetails {
         this.sender = sender;
     }
 
-    public List<UserEntity> getUsers() {
+    public Set<UserEntity> getUsers() {
         return users;
     }
 
-    public void setUsers(List<UserEntity> users) {
+    public void setUsers(Set<UserEntity> users) {
         this.users = users;
     }
 }

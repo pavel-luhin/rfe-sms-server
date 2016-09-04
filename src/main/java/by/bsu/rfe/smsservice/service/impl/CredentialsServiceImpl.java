@@ -1,7 +1,14 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
+import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
 import by.bsu.rfe.smsservice.repository.CredentialsRepository;
@@ -9,12 +16,6 @@ import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.UserService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
-
-import org.dozer.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * Created by pluhin on 3/20/16.
@@ -78,6 +79,16 @@ public class CredentialsServiceImpl implements CredentialsService {
     @Override
     public void removeCredentials(Integer id) {
         credentialsRepository.delete(id);
+        credentialsCache.reloadCache();
+    }
+
+    @Override
+    public void shareCredentials(ShareCredentialsDTO shareCredentialsDTO) {
+        UserEntity userEntity = userService.findById(shareCredentialsDTO.getUserId());
+        CredentialsEntity credentialsEntity = credentialsRepository.findOne(shareCredentialsDTO.getCredentialsId());
+
+        credentialsEntity.getUsers().add(userEntity);
+        credentialsRepository.saveAndFlush(credentialsEntity);
         credentialsCache.reloadCache();
     }
 }

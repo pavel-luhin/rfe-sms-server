@@ -1,6 +1,5 @@
 package by.bsu.rfe.smsservice.cache.credentials;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.ListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
-import by.bsu.rfe.smsservice.cache.SmsServerCache;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
@@ -61,7 +59,7 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
         for (CredentialsEntity credentials : allCredentials) {
             LOGGER.info("CACHE: LOADED CREDENTIALS WITH SENDER NAME: {}", credentials.getSender());
-            List<UserEntity> usersAllowedToUse = credentials.getUsers();
+            Set<UserEntity> usersAllowedToUse = credentials.getUsers();
             for (UserEntity userEntity : usersAllowedToUse) {
                 putToAllCache(userEntity, credentials);
                 putToDefaultCache(userEntity);

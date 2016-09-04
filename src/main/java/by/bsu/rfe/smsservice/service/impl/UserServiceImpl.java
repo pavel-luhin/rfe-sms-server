@@ -1,20 +1,5 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
-import by.bsu.rfe.smsservice.common.dto.AuthenticationDTO;
-import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
-import by.bsu.rfe.smsservice.common.dto.UserDTO;
-import by.bsu.rfe.smsservice.common.entity.AuthenticationTokenEntity;
-import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
-import by.bsu.rfe.smsservice.common.entity.UserEntity;
-import by.bsu.rfe.smsservice.repository.UserRepository;
-import by.bsu.rfe.smsservice.security.util.SecurityUtil;
-import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.EmailService;
-import by.bsu.rfe.smsservice.service.UserService;
-
-import by.bsu.rfe.smsservice.util.DozerUtil;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +12,31 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.security.SecureRandom;
-import java.util.*;
+
+import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
+import by.bsu.rfe.smsservice.common.dto.AuthenticationDTO;
+import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
+import by.bsu.rfe.smsservice.common.dto.UserDTO;
+import by.bsu.rfe.smsservice.common.entity.AuthenticationTokenEntity;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
+import by.bsu.rfe.smsservice.common.entity.UserEntity;
+import by.bsu.rfe.smsservice.repository.UserRepository;
+import by.bsu.rfe.smsservice.security.util.SecurityUtil;
+import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.UserService;
+import by.bsu.rfe.smsservice.util.DozerUtil;
 
 /**
  * Created by pluhin on 3/20/16.
@@ -107,6 +113,11 @@ public class UserServiceImpl implements UserService {
         } else {
             throw new UsernameNotFoundException("Invalid username");
         }
+    }
+
+    @Override
+    public UserEntity findById(Integer id) {
+        return userRepository.findOne(id);
     }
 
     @Override

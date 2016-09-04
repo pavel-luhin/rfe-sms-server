@@ -1,6 +1,6 @@
 angular.module('sms-server').controller('CredentialsController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModal',
-        function ($scope, $http, RestURLFactory, $uibModal) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModal', '$rootScope',
+        function ($scope, $http, RestURLFactory, $uibModal, $rootScope) {
 
             var getUserCredentials = function () {
                 $http.get(RestURLFactory.CREDENTIALS).then(function (data) {
@@ -27,6 +27,20 @@ angular.module('sms-server').controller('CredentialsController',
                 $http.delete(RestURLFactory.CREDENTIALS + '/' + id).then(function (data) {
                     getUserCredentials();
                 })
+            };
+
+            $scope.shareCredentials = function (id) {
+                $rootScope.shareCredentialsId = id;
+                $uibModal.open({
+                    animation: true,
+                    ariaLabelledBy: 'modal-title',
+                    ariaDescribedBy: 'modal-body',
+                    templateUrl: 'resources/templates/modal/shareCredentials-modal.html',
+                    controller: 'ShareCredentialsModalController',
+                    size: 'lg'
+                }).closed.then(function () {
+                    getUserCredentials();
+                });
             };
         }
     ]

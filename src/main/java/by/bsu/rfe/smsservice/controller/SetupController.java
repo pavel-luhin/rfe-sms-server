@@ -1,10 +1,23 @@
 package by.bsu.rfe.smsservice.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import java.util.List;
+
+import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
 import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
-import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
+import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.UserDTO;
-import by.bsu.rfe.smsservice.common.entity.EmailEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
@@ -12,13 +25,6 @@ import by.bsu.rfe.smsservice.service.EmailService;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * Created by pluhin on 9/3/16.
@@ -127,5 +133,11 @@ public class SetupController {
     @RequestMapping(value = "/emailTemplate/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteEmailTemplate(@PathVariable Integer id) {
         emailService.removeEmailTemplate(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/shareCredentials", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void shareCredentialsBetweenUser(@RequestBody ShareCredentialsDTO shareCredentialsDTO) {
+        credentialsService.shareCredentials(shareCredentialsDTO);
     }
 }

@@ -6,7 +6,9 @@ var application = angular.module('sms-server',
                                   'ngTagsInput',
                                   'ui.bootstrap',
                                   'ui.bootstrap.tpls',
-                                  'ui.bootstrap.tooltip'
+                                  'ui.bootstrap.tooltip',
+                                  'ngSanitize',
+                                  'ui.select'
                                  ]);
 
 application.config(['$httpProvider',
