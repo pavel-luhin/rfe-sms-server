@@ -7,6 +7,7 @@ public class ExternalApplicationDTO extends CreatedDetails {
     private Integer id;
     private String applicationName;
     private String authenticationToken;
+    private String credentialsSenderName;
 
     public Integer getId() {
         return id;
@@ -30,5 +31,13 @@ public class ExternalApplicationDTO extends CreatedDetails {
 
     public void setAuthenticationToken(String authenticationToken) {
         this.authenticationToken = authenticationToken;
+    }
+
+    public String getCredentialsSenderName() {
+        return credentialsSenderName;
+    }
+
+    public void setCredentialsSenderName(String credentialsSenderName) {
+        this.credentialsSenderName = credentialsSenderName;
     }
 }

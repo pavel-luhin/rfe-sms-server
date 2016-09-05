@@ -1,26 +1,19 @@
 package by.bsu.rfe.smsservice.controller;
 
 import by.bsu.rfe.smsservice.common.dto.AuthenticationDTO;
-import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.UserDTO;
-import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
-import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
-import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +44,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        String token = SecurityUtil.getAuthToken(request);
+        String token = SecurityUtil.getUserAuthToken(request);
         userService.logout(request, response, token);
     }
 

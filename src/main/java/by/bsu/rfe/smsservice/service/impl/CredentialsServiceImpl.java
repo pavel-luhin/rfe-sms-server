@@ -59,7 +59,7 @@ public class CredentialsServiceImpl implements CredentialsService {
     }
 
     @Override
-    public void addNewCredentials(CredentialsEntity credentialsEntity) {
+    public void saveCredentials(CredentialsEntity credentialsEntity) {
         credentialsRepository.saveAndFlush(credentialsEntity);
         credentialsCache.reloadCache();
     }

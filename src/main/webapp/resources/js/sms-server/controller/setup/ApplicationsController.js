@@ -25,7 +25,7 @@ angular.module('sms-server').controller('ApplicationsController',
 
             $scope.removeApplication = function (id) {
                 $http.delete(RestURLFactory.APPLICATION + '/' + id).then(function (data) {
-                    getUserCredentials();
+                    getAllApplications();
                 })
             };
         }

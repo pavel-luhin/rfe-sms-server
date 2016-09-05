@@ -4,6 +4,10 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -19,7 +23,8 @@ public class ExternalApplicationEntity extends CreationDetails {
     @Column(name = "authentication", nullable = false)
     private String authenticationToken;
 
-    @Column(name = "default_credentials")
+    @OneToOne
+    @JoinColumn(name = "default_credentials")
     private CredentialsEntity defaultCredentials;
 
     public String getApplicationName() {

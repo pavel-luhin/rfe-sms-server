@@ -1,8 +1,10 @@
 package by.bsu.rfe.smsservice.service.impl;
 
 import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.ExternalApplicationEntity;
 import by.bsu.rfe.smsservice.repository.ExternalApplicationRepository;
+import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 import org.dozer.Mapper;
@@ -22,6 +24,9 @@ public class ExternalApplicationServiceImpl implements ExternalApplicationServic
     private ExternalApplicationRepository externalApplicationRepository;
 
     @Autowired
+    private CredentialsService credentialsService;
+
+    @Autowired
     private Mapper mapper;
 
     @Override
@@ -36,11 +41,19 @@ public class ExternalApplicationServiceImpl implements ExternalApplicationServic
 
         String authenticationToken = UUID.randomUUID().toString().replace("-", "");
         externalApplicationEntity.setAuthenticationToken(authenticationToken);
+        CredentialsEntity credentialsEntity = credentialsService.getCredentialsForSenderName(externalApplicationDTO.getCredentialsSenderName());
+        externalApplicationEntity.setDefaultCredentials(credentialsEntity);
+
         externalApplicationRepository.saveAndFlush(externalApplicationEntity);
     }
 
     @Override
     public void removeExternalApplication(Integer id) {
         externalApplicationRepository.delete(id);
+    }
+
+    @Override
+    public ExternalApplicationEntity getByToken(String token) {
+        return externalApplicationRepository.getByToken(token);
     }
 }

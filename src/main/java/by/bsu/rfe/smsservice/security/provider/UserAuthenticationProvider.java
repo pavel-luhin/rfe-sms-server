@@ -34,7 +34,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
             SecurityContextHolder.getContext().setAuthentication(authResult);
             return authResult;
         } else {
-            throw new BadCredentialsException("Invalid password");
+            return null;
         }
     }
 

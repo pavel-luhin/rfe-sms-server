@@ -21,4 +21,13 @@
             <b>smsType</b>
         </field>
     </mapping>
+
+    <mapping type="one-way">
+        <class-a>by.bsu.rfe.smsservice.common.entity.ExternalApplicationEntity</class-a>
+        <class-b>by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO</class-b>
+        <field>
+            <a>defaultCredentials.sender</a>
+            <b>credentialsSenderName</b>
+        </field>
+    </mapping>
 </mappings>

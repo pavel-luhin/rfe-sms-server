@@ -16,7 +16,7 @@ public interface CredentialsService {
 
     CredentialsEntity getCredentialsForSenderName(String senderName);
 
-    void addNewCredentials(CredentialsEntity credentialsEntity);
+    void saveCredentials(CredentialsEntity credentialsEntity);
 
     List<CredentialsDTO> getUserCredentials(String username);
 

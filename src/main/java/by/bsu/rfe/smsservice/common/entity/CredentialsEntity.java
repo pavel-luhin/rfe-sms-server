@@ -31,12 +31,6 @@ public class CredentialsEntity extends CreationDetails {
     )
     private Set<UserEntity> users = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "applications_credentials"
-    )
-    private List<ExternalApplicationEntity> applications = new ArrayList<>();
-
     public String getUsername() {
         return username;
     }

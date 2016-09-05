@@ -6,6 +6,7 @@ package by.bsu.rfe.smsservice.common.dto;
 public class ShareCredentialsDTO {
     private Integer userId;
     private Integer credentialsId;
+    private Integer applicationId;
 
     public Integer getUserId() {
         return userId;
@@ -21,5 +22,13 @@ public class ShareCredentialsDTO {
 
     public void setCredentialsId(Integer credentialsId) {
         this.credentialsId = credentialsId;
+    }
+
+    public Integer getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(Integer applicationId) {
+        this.applicationId = applicationId;
     }
 }

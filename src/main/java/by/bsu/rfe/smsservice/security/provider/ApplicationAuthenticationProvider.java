@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.security.provider;
 
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
+import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,21 +20,12 @@ import java.util.ArrayList;
 public class ApplicationAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
-    private UserService userService;
+    private ExternalApplicationService externalApplicationService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        String username = (String) authentication.getPrincipal();
-        String password = (String) authentication.getCredentials();
-
-        UserEntity userEntity = userService.findByUsername(username);
-        if (userEntity.getPassword().equals(password)) {
-            UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<GrantedAuthority>());
-            SecurityContextHolder.getContext().setAuthentication(authResult);
-            return authResult;
-        } else {
-            throw new BadCredentialsException("Invalid password");
-        }
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return authentication;
     }
 
     @Override
