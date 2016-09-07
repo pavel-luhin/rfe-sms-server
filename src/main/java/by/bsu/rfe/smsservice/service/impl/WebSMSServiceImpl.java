@@ -75,7 +75,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         String smsType = smsDTO.getSmsTemplate().getSmsType();
         LOG.info("Preparing sms with SMSType {}", smsType);
         Map<String, RecipientType> recipients = MapUtils.emptyIfNull(smsDTO.getRecipients());
-        Map<String, Map<String, String>> smsParameters = smsDTO.getSmsParameters();
+        Map<String, Map<String, String>> smsParameters = MapUtils.emptyIfNull(smsDTO.getSmsParameters());
 
         SMSResultDTO smsResultDTO = new SMSResultDTO();
 
@@ -84,6 +84,7 @@ public class WebSMSServiceImpl implements WebSMSService {
                     smsDTO.isDuplicateEmail(), smsDTO.getSmsContent(), smsDTO.getRequestSenderName());
             setTotalSmsDTO(oneSMSResult, smsResultDTO);
         }
+
 
         return smsResultDTO;
     }

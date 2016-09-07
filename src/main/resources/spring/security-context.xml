@@ -12,10 +12,12 @@
             <constructor-arg>
                 <list>
                     <ref bean="userAuthenticationProvider" />
+                    <ref bean="applicationAuhenticationProvider"/>
                 </list>
             </constructor-arg>
         </bean>
 
+       <bean id="applicationAuhenticationProvider" class="by.bsu.rfe.smsservice.security.provider.ApplicationAuthenticationProvider"/>
        <bean id="userAuthenticationProvider" class="by.bsu.rfe.smsservice.security.provider.UserAuthenticationProvider"/>
        <bean id="authenticationFilter" class="by.bsu.rfe.smsservice.security.filter.AuthenticationTokenFilter"/>
        <bean id="unauthorizedEntryPoint" class="by.bsu.rfe.smsservice.security.UnauthorizedEntryPoint"/>

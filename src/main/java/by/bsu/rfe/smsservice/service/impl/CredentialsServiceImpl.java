@@ -14,6 +14,7 @@ import by.bsu.rfe.smsservice.common.entity.UserEntity;
 import by.bsu.rfe.smsservice.repository.CredentialsRepository;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.service.UserService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 
@@ -27,6 +28,8 @@ public class CredentialsServiceImpl implements CredentialsService {
     private CredentialsRepository credentialsRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ExternalApplicationService externalApplicationService;
     @Autowired
     private CredentialsCache credentialsCache;
     @Autowired
@@ -44,7 +47,12 @@ public class CredentialsServiceImpl implements CredentialsService {
         } else {
             String username = SecurityUtil.getCurrentUsername();
             UserEntity userEntity = userService.findByUsername(username);
-            return userEntity.getDefaultUserCredentials();
+
+            if (userEntity != null) {
+                return userEntity.getDefaultUserCredentials();
+            } else {
+                return externalApplicationService.getByName(username).getDefaultCredentials();
+            }
         }
     }
 

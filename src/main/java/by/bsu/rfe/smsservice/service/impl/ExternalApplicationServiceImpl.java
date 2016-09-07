@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -55,5 +56,15 @@ public class ExternalApplicationServiceImpl implements ExternalApplicationServic
     @Override
     public ExternalApplicationEntity getByToken(String token) {
         return externalApplicationRepository.getByToken(token);
+    }
+
+    @Override
+    public List<ExternalApplicationEntity> getAllApplicationEntities() {
+        return externalApplicationRepository.findAll();
+    }
+
+    @Override
+    public ExternalApplicationEntity getByName(String name) {
+        return externalApplicationRepository.getByName(name);
     }
 }

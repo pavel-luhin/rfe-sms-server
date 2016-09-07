@@ -29,7 +29,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
         String password = (String) authentication.getCredentials();
 
         UserEntity userEntity = userService.findByUsername(username);
-        if (userEntity.getPassword().equals(password)) {
+        if (userEntity != null && userEntity.getPassword().equals(password)) {
             UsernamePasswordAuthenticationToken authResult = new UsernamePasswordAuthenticationToken(username, password, new ArrayList<GrantedAuthority>());
             SecurityContextHolder.getContext().setAuthentication(authResult);
             return authResult;

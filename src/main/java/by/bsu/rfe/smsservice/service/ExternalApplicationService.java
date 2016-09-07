@@ -1,8 +1,10 @@
 package by.bsu.rfe.smsservice.service;
 
 import java.util.List;
+import java.util.Map;
 
 import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.ExternalApplicationEntity;
 
 /**
@@ -16,4 +18,8 @@ public interface ExternalApplicationService {
     void removeExternalApplication(Integer id);
 
     ExternalApplicationEntity getByToken(String token);
+
+    List<ExternalApplicationEntity> getAllApplicationEntities();
+
+    ExternalApplicationEntity getByName(String name);
 }

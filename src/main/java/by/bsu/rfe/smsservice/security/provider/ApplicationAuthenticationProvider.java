@@ -24,8 +24,11 @@ public class ApplicationAuthenticationProvider implements AuthenticationProvider
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return authentication;
+        if (authentication.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return authentication;
+        }
+        return null;
     }
 
     @Override
