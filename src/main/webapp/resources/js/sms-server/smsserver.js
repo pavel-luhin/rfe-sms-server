@@ -8,7 +8,8 @@ var application = angular.module('sms-server',
                                   'ui.bootstrap.tpls',
                                   'ui.bootstrap.tooltip',
                                   'ngSanitize',
-                                  'ui.select'
+                                  'ui.select',
+                                  'angular-md5'
                                  ]);
 
 application.config(['$httpProvider',

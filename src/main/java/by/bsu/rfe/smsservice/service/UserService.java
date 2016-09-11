@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import by.bsu.rfe.smsservice.common.dto.AuthenticationDTO;
+import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.UserDTO;
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
@@ -36,4 +37,6 @@ public interface UserService {
     void createUser(String username);
 
     void removeUser(Integer id);
+
+    void changePassword(ChangePasswordDTO passwordDTO);
 }

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
 import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
@@ -140,5 +141,11 @@ public class SetupController {
     @RequestMapping(value = "/shareCredentials", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void shareCredentialsBetweenUser(@RequestBody ShareCredentialsDTO shareCredentialsDTO) {
         credentialsService.shareCredentials(shareCredentialsDTO);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/changePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
+        userService.changePassword(passwordDTO);
     }
 }

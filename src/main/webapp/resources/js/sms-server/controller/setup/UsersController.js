@@ -23,6 +23,17 @@ angular.module('sms-server').controller('UsersController',
                 });
             };
 
+            $scope.changePasswordModal = function () {
+                $uibModal.open({
+                                   animation: true,
+                                   ariaLabelledBy: 'modal-title',
+                                   ariaDescribedBy: 'modal-body',
+                                   templateUrl: 'resources/templates/modal/changePassword-modal.html',
+                                   controller: 'ChangePasswordController',
+                                   size: 'lg'
+                               });
+            };
+
             $scope.removeUser = function (id) {
                 $http.delete(RestURLFactory.USERS + '/' + id).then(function (data) {
                     getUsers();

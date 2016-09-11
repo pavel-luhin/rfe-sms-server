@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.dto.AuthenticationDTO;
+import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.UserDTO;
 import by.bsu.rfe.smsservice.common.entity.AuthenticationTokenEntity;
@@ -172,7 +173,7 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
-        userEntity.setPassword(password);
+        userEntity.setPassword(encryptPassword(password));
 
         userRepository.saveAndFlush(userEntity);
         emailService.sendPostRegistrationEmail(username, password);
@@ -181,6 +182,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public void removeUser(Integer id) {
         userRepository.delete(id);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO passwordDTO) {
+        UserEntity userEntity = findByUsername(SecurityUtil.getCurrentUsername());
+
+        if (!userEntity.getPassword().equals(passwordDTO.getOldPassword())) {
+            throw new IllegalArgumentException("Old password is invalid");
+        }
+
+        userEntity.setPassword(passwordDTO.getNewPassword());
+        userRepository.saveAndFlush(userEntity);
     }
 
     private String generateToken() {
@@ -203,5 +216,9 @@ public class UserServiceImpl implements UserService {
             buf[i] = SYMBOLS[RANDOM.nextInt(SYMBOLS.length)];
         }
         return new String(buf);
+    }
+
+    private String encryptPassword(String password) {
+        return DigestUtils.md5Hex(password);
     }
 }
