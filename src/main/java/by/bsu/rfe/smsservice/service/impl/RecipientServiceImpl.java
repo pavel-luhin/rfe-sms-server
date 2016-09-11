@@ -100,4 +100,9 @@ public class RecipientServiceImpl implements RecipientService {
     public PersonEntity getPerson(String[] name) {
         return personRepository.getPersonByFirstNameAndLastName(name[0], name[1]);
     }
+
+    @Override
+    public GroupEntity getGroupByName(String groupName) {
+        return groupRepository.getGroupsByQuery(groupName).get(0);
+    }
 }

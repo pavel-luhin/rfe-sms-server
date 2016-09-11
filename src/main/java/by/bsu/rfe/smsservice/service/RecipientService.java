@@ -12,11 +12,18 @@ import java.util.List;
  */
 public interface RecipientService {
     void addGroup(String groupName);
+
     void addPersons(List<PersonEntity> personEntities);
+
     void assignPersonToGroup(Integer personId, Integer groupId);
+
     List<RecipientDTO> getAllRecpients();
+
     List<RecipientDTO> getRecipientByQuery(String query);
+
     GroupEntity getGroup(Integer groupId);
+
     PersonEntity getPerson(String[] name);
 
+    GroupEntity getGroupByName(String groupName);
 }

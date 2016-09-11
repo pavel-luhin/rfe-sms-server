@@ -2,6 +2,7 @@ package by.bsu.rfe.smsservice.service.impl;
 
 import static by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder.createMessage;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.dozer.Mapper;
@@ -24,10 +25,13 @@ import javax.mail.internet.MimeMessage;
 
 import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
 import by.bsu.rfe.smsservice.common.entity.EmailEntity;
+import by.bsu.rfe.smsservice.common.entity.GroupEntity;
+import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.EmailRepository;
 import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 
@@ -56,6 +60,8 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private SmsTemplateService smsTemplateService;
     @Autowired
+    private RecipientService recipientService;
+    @Autowired
     private Mapper mapper;
 
     @Override
@@ -66,15 +72,21 @@ public class EmailServiceImpl implements EmailService {
         parameterMap.put("${PASSWORD}", password);
         parameterMap.put("${USERNAME}", email.split("@")[0]);
 
-        Pair<String, RecipientType> recipient = new MutablePair<>(email, RecipientType.PERSON);
+        Pair<String, RecipientType> recipient = new MutablePair<>(email, null);
         processSendingEmail(recipient, parameterMap, REGISTER_USER_SMS_TYPE);
     }
 
     @Override
     public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsType) {
+        String address = processRecipients(recipient);
+
+        if (StringUtils.isEmpty(address)) {
+            return;
+        }
+
         EmailEntity emailEntity = emailRepository.findBySMSType(smsType);
         String message = createMessage(emailEntity.getContent(), parameters, emailEntity.getContent());
-        sendEmail(recipient.getKey(), emailEntity.getSubject(), message);
+        sendEmail(address, emailEntity.getSubject(), message);
     }
 
     @Override
@@ -122,5 +134,30 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void removeEmailTemplate(Integer id) {
         emailRepository.delete(id);
+    }
+
+    private String processRecipients(Map.Entry<String, RecipientType> recipient) {
+        if (recipient.getValue() == null) {
+            return recipient.getKey();
+        }
+
+        if (recipient.getValue() == RecipientType.NUMBER) {
+            return null;
+        } else if (recipient.getValue() == RecipientType.PERSON) {
+            PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
+            return personEntity.getEmail();
+        } else {
+            GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
+
+            StringBuilder emailBuilder = new StringBuilder();
+
+            for (PersonEntity personEntity : groupEntity.getPersons()) {
+                emailBuilder.append(personEntity.getEmail());
+                emailBuilder.append(",");
+            }
+
+            emailBuilder.deleteCharAt(emailBuilder.length() - 1);
+            return emailBuilder.toString();
+        }
     }
 }
