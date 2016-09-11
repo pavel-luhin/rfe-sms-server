@@ -9,6 +9,7 @@ public class CredentialsDTO extends CreatedDetails {
     private String username;
     private String smsType;
     private String sender;
+    private Double balance;
 
     public Integer getId() {
         return id;
@@ -48,5 +49,13 @@ public class CredentialsDTO extends CreatedDetails {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public Double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Double balance) {
+        this.balance = balance;
     }
 }

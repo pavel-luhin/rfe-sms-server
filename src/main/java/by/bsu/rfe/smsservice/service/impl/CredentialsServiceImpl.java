@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import by.bsu.rfe.smsservice.builder.BalanceRequestBuilder;
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
@@ -16,6 +17,7 @@ import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.service.UserService;
+import by.bsu.rfe.smsservice.service.WebSMSService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 
 /**
@@ -34,6 +36,8 @@ public class CredentialsServiceImpl implements CredentialsService {
     private CredentialsCache credentialsCache;
     @Autowired
     private Mapper mapper;
+    @Autowired
+    private WebSMSService webSMSService;
 
     @Override
     public List<CredentialsEntity> getAllCredentials() {
@@ -81,7 +85,17 @@ public class CredentialsServiceImpl implements CredentialsService {
             credentialsEntities = credentialsRepository.getAllUserCredentials(username);
         }
 
-        return DozerUtil.mapList(mapper, credentialsEntities, CredentialsDTO.class);
+        if (credentialsEntities == null) {
+            return null;
+        }
+
+        List<CredentialsDTO> credentialsDTOs = DozerUtil.mapList(mapper, credentialsEntities, CredentialsDTO.class);
+
+        for (CredentialsDTO credentialsDTO : credentialsDTOs) {
+            credentialsDTO.setBalance(webSMSService.getBalance(credentialsDTO.getUsername(), credentialsDTO.getApiKey()));
+        }
+
+        return credentialsDTOs;
     }
 
     @Override

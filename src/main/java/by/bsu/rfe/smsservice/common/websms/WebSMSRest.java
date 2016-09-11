@@ -5,7 +5,8 @@ package by.bsu.rfe.smsservice.common.websms;
  */
 public enum WebSMSRest {
     SEND_MESSAGE("msg_send"),
-    BULK_SEND_MESSAGE("msg_send_bulk");
+    BULK_SEND_MESSAGE("msg_send_bulk"),
+    BALANCE("user_balance");
 
     private static final String API_HOST = "http://cp.websms.by/?r=api/";
 

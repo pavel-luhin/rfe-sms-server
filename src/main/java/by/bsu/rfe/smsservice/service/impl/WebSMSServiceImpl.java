@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import by.bsu.rfe.smsservice.builder.BalanceRequestBuilder;
 import by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder;
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
@@ -57,11 +58,14 @@ public class WebSMSServiceImpl implements WebSMSService {
 
     private static final String STATUS_PARAM = "status";
     private static final String STATUS_SUCCESS = "success";
+    private static final String BALANCE_PARAM = "balance";
 
     private static final Integer MAX_BULK_SIZE = 500;
 
     @Autowired
     private SendSMSRequestBuilder smsRequestBuilder;
+    @Autowired
+    private BalanceRequestBuilder balanceRequestBuilder;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -160,6 +164,20 @@ public class WebSMSServiceImpl implements WebSMSService {
         return totalSMSResult;
     }
 
+    @Override
+    public Double getBalance(String username, String password) {
+        Request request = balanceRequestBuilder.buildRequest(username, password);
+        try {
+            HttpResponse response = execute(request);
+            String content = getContent(response);
+            return Double.valueOf(getParameterFromResponse(content, BALANCE_PARAM));
+        } catch (IOException e) {
+            LOG.error("Something went wrong while retrieving balance for {}", username);
+        }
+
+        return null;
+    }
+
     private SMSResultDTO prepareAndSendSMS(Map.Entry<String, RecipientType> recipient, Map<String, String> smsParameters, SmsTemplateEntity smsTemplate,
             Boolean duplicateEmail, String smsContent, String requestSenderName) {
         SMSResultDTO smsResultDTO = new SMSResultDTO();
@@ -235,7 +253,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         }
     }
 
-    private HttpResponse execute(Request request) throws IOException {
+    private static HttpResponse execute(Request request) throws IOException {
         String apiEndpoint = request.apiEndpoint();
 
         org.apache.http.client.methods.RequestBuilder requestBuilder = org.apache.http.client.methods.RequestBuilder.create("POST");
@@ -246,7 +264,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         return httpClient.execute(httpRequest);
     }
 
-    private String getContent(HttpResponse httpResponse) throws IOException {
+    private static String getContent(HttpResponse httpResponse) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
         String unicodeLine = "";
         StringBuilder unicodeContent = new StringBuilder();
@@ -258,14 +276,18 @@ public class WebSMSServiceImpl implements WebSMSService {
         return StringEscapeUtils.unescapeJava(unicodeContent.toString());
     }
 
-    private Boolean isSuccess(String response) {
+    private String getParameterFromResponse(String response, String parameter) {
         ObjectNode objectNode = null;
         try {
             objectNode = objectMapper.readValue(response, ObjectNode.class);
-            return objectNode.get(STATUS_PARAM).asText().equals(STATUS_SUCCESS);
+            return objectNode.get(parameter).asText();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
+    }
+
+    private Boolean isSuccess(String response) {
+        return STATUS_SUCCESS.equals(getParameterFromResponse(response, STATUS_PARAM));
     }
 }
