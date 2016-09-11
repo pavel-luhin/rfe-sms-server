@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   CONSTRAINT `def_creds_key` FOREIGN KEY (`default_credentials`) REFERENCES `credentials` (`id`) ON DELETE SET NULL
 );
 
-INSERT INTO `user` (username, password, created_by, created_date) VALUES ('pavel.luhin@gmail.com', 'q1w2e3r4t5', 'SYSTEM', NOW());
+INSERT INTO `user` (username, password, created_by, created_date) VALUES ('pavel.luhin@gmail.com', '42d8aa7cde9c78c4757862d84620c335', 'SYSTEM', NOW());
 
 CREATE TABLE `authentication_token` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
