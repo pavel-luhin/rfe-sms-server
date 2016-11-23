@@ -16,13 +16,7 @@ angular.module('sms-server').controller('GroupController', ['$scope', '$http', '
         };
 
         var sortOrder = {
-            error: sortConstants.notSorted,
-            smsType: sortConstants.notSorted,
-            senderName: sortConstants.notSorted,
-            number: sortConstants.notSorted,
-            recipientType: sortConstants.notSorted,
-            sentDate: sortConstants.desc,
-            initiatedBy: sortConstants.notSorted
+            name: sortConstants.notSorted
         };
 
         var sortField = 'createdDate';

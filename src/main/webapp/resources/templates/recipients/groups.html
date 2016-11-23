@@ -4,7 +4,7 @@
     <table class="table">
         <thead>
         <tr>
-            <th>Group name</th>
+            <th class="clickable" ng-click="sortBy('name')">Group name <i class="{{sortOrder.name.elementClass}}"></i></th>
             <th>Recipients count</th>
             <th>Edit</th>
             <th>Remove</th>

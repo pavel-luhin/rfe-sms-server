@@ -5,10 +5,10 @@
     <table class="table">
         <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Phone Number</th>
+            <th class="clickable" ng-click="sortBy('firstName')">First Name <i class="{{sortOrder.firstName.elementClass}}"></i></th>
+            <th class="clickable" ng-click="sortBy('lastName')">Last Name <i class="{{sortOrder.lastName.elementClass}}"></i></th>
+            <th class="clickable" ng-click="sortBy('email')">Email <i class="{{sortOrder.email.elementClass}}"></i></th>
+            <th class="clickable" ng-click="sortBy('phoneNumber')">Phone Number <i class="{{sortOrder.phoneNumber.elementClass}}"></i></th>
             <th>Remove</th>
             <th class="pull-right">Total: {{count}}</th>
         </tr>
