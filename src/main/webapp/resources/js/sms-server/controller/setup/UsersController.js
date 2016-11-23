@@ -1,6 +1,6 @@
 angular.module('sms-server').controller('UsersController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModal',
-        function ($scope, $http, RestURLFactory, $uibModal) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModal', 'ConfirmDeleteModalService',
+        function ($scope, $http, RestURLFactory, $uibModal, ConfirmDeleteModalService) {
 
             var getUsers = function () {
                 $http.get(RestURLFactory.USERS).then(function (data) {
@@ -34,10 +34,19 @@ angular.module('sms-server').controller('UsersController',
                                });
             };
 
+            var confirmDeleteModalOptions = {
+                closeButtonText: 'Cancel',
+                actionButtonText: 'Delete',
+                headerText: 'Delete User?',
+                bodyText: 'Are you sure you want to delete this user?'
+            };
+
             $scope.removeUser = function (id) {
-                $http.delete(RestURLFactory.USERS + '/' + id).then(function (data) {
-                    getUsers();
-                })
+                ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+                    $http.delete(RestURLFactory.USERS + '/' + id).then(function (data) {
+                        getUsers();
+                    })
+                });
             };
         }
     ]

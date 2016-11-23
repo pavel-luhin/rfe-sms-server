@@ -1,6 +1,6 @@
 angular.module('sms-server').controller('ApplicationsController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModal',
-        function ($scope, $http, RestURLFactory, $uibModal) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModal', 'ConfirmDeleteModalService',
+        function ($scope, $http, RestURLFactory, $uibModal, ConfirmDeleteModalService) {
 
             var getAllApplications = function () {
                 $http.get(RestURLFactory.APPLICATION).then(function (data) {
@@ -23,10 +23,19 @@ angular.module('sms-server').controller('ApplicationsController',
                 });
             };
 
+            var confirmDeleteModalOptions = {
+                closeButtonText: 'Cancel',
+                actionButtonText: 'Delete',
+                headerText: 'Delete Application?',
+                bodyText: 'Are you sure you want to delete this application?'
+            };
+
             $scope.removeApplication = function (id) {
-                $http.delete(RestURLFactory.APPLICATION + '/' + id).then(function (data) {
-                    getAllApplications();
-                })
+                ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+                    $http.delete(RestURLFactory.APPLICATION + '/' + id).then(function (data) {
+                        getAllApplications();
+                    })
+                });
             };
         }
     ]

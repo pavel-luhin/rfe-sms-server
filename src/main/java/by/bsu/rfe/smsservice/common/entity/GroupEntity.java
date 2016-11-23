@@ -5,6 +5,8 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -15,9 +17,16 @@ import java.util.List;
 @Entity
 @Table(name = "recipient_group")
 public class GroupEntity extends CreationDetails {
+
     @Column(name = "name", nullable = false)
     private String name;
-    @ManyToMany(mappedBy = "groups", fetch = FetchType.EAGER)
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "persons_have_groups",
+            inverseJoinColumns = @JoinColumn(name = "person_id"),
+            joinColumns = @JoinColumn(name = "group_id")
+    )
     private List<PersonEntity> persons;
 
     public String getName() {

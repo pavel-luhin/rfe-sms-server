@@ -48,16 +48,16 @@ application.config(['$routeProvider',
                 controller: 'AuthenticationController'
             })
             .when('/recipients', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'recipients.html',
-                controller: 'RecipientsController'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'recipients.html'
             })
             .when('/recipients/add', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewRecipient.html',
-                controller: 'RecipientsController'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewRecipient.html'
             })
             .when('/recipients/add-group', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
-                controller: 'RecipientsController'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html'
+            })
+            .when('/recipients/edit-group/:groupId', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html'
             })
             .when('/setup', {
                 templateUrl: BASE_TEMPLATE_LOCATION + 'setup.html',

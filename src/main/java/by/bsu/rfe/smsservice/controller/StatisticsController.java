@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.dto.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,8 @@ public class StatisticsController {
 
     @ResponseBody
     @RequestMapping(value = "/page", method = RequestMethod.GET, produces = {"application/json; charset=UTF-8"})
-    public List<StatisticsDTO> getStatisticsPage(@RequestParam int skip, @RequestParam int offset,
-                                          @RequestParam String sortField, @RequestParam String sortDirection) {
+    public PageResponseDTO getStatisticsPage(@RequestParam int skip, @RequestParam int offset,
+                                             @RequestParam String sortField, @RequestParam String sortDirection) {
         return statisticsService.getStatisticsPage(skip, offset, sortField, sortDirection);
     }
 

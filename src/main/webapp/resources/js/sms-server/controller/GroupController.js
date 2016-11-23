@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('PersonsController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmDeleteModalService',
-    function ($scope, $http, $location, RestURLFactory, ConfirmDeleteModalService) {
+angular.module('sms-server').controller('GroupController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmDeleteModalService', '$routeParams',
+    function ($scope, $http, $location, RestURLFactory, ConfirmDeleteModalService, $routeParams) {
 
         var sortConstants = {
             notSorted: {
@@ -52,7 +52,7 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
 
         $scope.sortBy = function (field) {
             sortBy(field);
-            $scope.getAllPersons();
+            $scope.getAllGroups();
         };
 
         var pageSize = {
@@ -109,64 +109,25 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
 
         $scope.getPage = function (targetPage) {
             changePage(targetPage);
-            $scope.getAllPersons();
+            $scope.getAllGroups();
         };
 
         $scope.changePageSize = function (targetPageSize) {
             console.log(targetPageSize);
             changePageSize(targetPageSize);
-            $scope.getAllPersons();
+            $scope.getAllGroups();
         };
 
-        var personsCount = 0;
-        $scope.persons = [];
-        $scope.selectedPersons = [];
-
-        var defaultPersonForm = {
-            name: null,
-            email: null,
-            phoneNumber: null,
-            personNumber: personsCount
+        $scope.editGroup = function (id) {
+            $location.path("recipients/edit-group/" + id);
         };
 
-        var allPersons = [];
-
-        $scope.addNewPersonForm = function () {
-            $scope.persons.push(angular.copy(defaultPersonForm));
-            personsCount++;
-        };
-
-        $scope.removePersonForm = function (index) {
-            $scope.persons.splice(index, 1);
-        };
-
-        $scope.addPersons = function (recipients) {
-            $http.post(RestURLFactory.PERSONS, recipients);
-            $location.path('/recipients');
-            $scope.getAllPersons();
-        };
-
-        var confirmDeleteModalOptions = {
-            closeButtonText: 'Cancel',
-            actionButtonText: 'Delete',
-            headerText: 'Delete Person?',
-            bodyText: 'Are you sure you want to delete this person?'
-        };
-
-        $scope.removePerson = function (id) {
-            ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
-                $http.delete(RestURLFactory.PERSONS + '?personId=' + id).then(function () {
-                    $scope.getAllPersons();
-                });
-            });
-        };
-
-        $scope.getAllPersons = function () {
-            $http.get(RestURLFactory.PERSONS +
+        $scope.getAllGroups = function () {
+            $http.get(RestURLFactory.GROUP +
                 '?skip=' + skip + '&offset=' + currentPageSize.value + '&sortField=' + sortField + '&sortDirection=' + sortDirection
             ).then(function (response) {
-                $scope.receivedPersons = response.data.items;
-                allPersons = response.data.items;
+                $scope.receivedGroups = response.data.items;
+                allGroups = response.data.items;
 
                 $scope.count = response.data.count;
                 count = Math.ceil(response.data.count / currentPageSize.value);
@@ -174,40 +135,33 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
             });
         };
 
-        $scope.selectPerson = function (index) {
-            $scope.selectedPersons.push($scope.receivedPersons[index]);
-            $scope.receivedPersons.splice(index, 1);
+        $scope.saveGroup = function () {
+            var groupToSave = {};
+            groupToSave.persons = $scope.selectedPersons;
+            groupToSave.name = $scope.groupName;
+
+            $http.post(RestURLFactory.GROUP, groupToSave).then(function () {
+                $scope.selectedPersons = [];
+                $location.path('/recipients');
+                $scope.getAllPersons();
+            })
         };
 
-        $scope.unselectPerson = function (index) {
-            $scope.receivedPersons.push($scope.selectedPersons[index]);
-            $scope.selectedPersons.splice(index, 1);
+        var confirmDeleteModalOptions = {
+            closeButtonText: 'Cancel',
+            actionButtonText: 'Delete',
+            headerText: 'Delete Group?',
+            bodyText: 'Are you sure you want to delete this group?'
         };
 
-        $scope.getAllPersons();
+        $scope.removeGroup = function (id) {
+            ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+                $http.delete(RestURLFactory.GROUP + '?groupId=' + id).then(function () {
+                    $scope.getAllGroups();
+                });
+            });
+        };
 
-        $scope.addNewPersonForm();
-
-        $scope.$watch('recipientsFilter', function (newVlaue) {
-            console.log(newVlaue);
-            if (newVlaue != undefined) {
-                $scope.receivedPersons = [];
-                if (newVlaue === '') {
-                    $scope.receivedPersons = allRecipients;
-                } else {
-                    for (var i = 0; i < allRecipients.length; i++) {
-                        if (allRecipients[i].firstName.toLowerCase().startsWith(newVlaue.toLowerCase())) {
-                            $scope.receivedPersons.push(allPersons[i]);
-                        }
-                        if (allRecipients[i].lastName.toLowerCase().startsWith(newVlaue.toLowerCase())) {
-                            $scope.receivedPersons.push(allPersons[i]);
-                        }
-                        if (allRecipients[i].phoneNumber.toLowerCase().startsWith(newVlaue.toLowerCase())) {
-                            $scope.receivedPersons.push(allPersons[i]);
-                        }
-                    }
-                }
-            }
-        });
+        $scope.getAllGroups();
     }
 ]);

@@ -12,7 +12,7 @@
                            template="autocomplete-template"></auto-complete>
         </tags-input>
     </div>
-    <div>
+    <div class="sms-tabs">
         <uib-tabset active="0">
             <uib-tab index="0" heading="Send Custom SMS" select="showTab(1)">
                 <div ng-if="activeTab === 1" ng-include="'/resources/templates/send-sms/custom.html'"></div>

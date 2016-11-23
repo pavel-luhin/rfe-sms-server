@@ -13,6 +13,6 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Integer> {
     @Query("FROM PersonEntity WHERE firstName=?1 AND lastName=?2")
     PersonEntity getPersonByFirstNameAndLastName(String firstName, String lastName);
 
-    @Query("FROM PersonEntity WHERE firstName LIKE %?1%")
+    @Query("FROM PersonEntity WHERE firstName LIKE %?1% OR lastName LIKE %?1%")
     List<PersonEntity> getPersonsByQuery(String query);
 }

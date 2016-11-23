@@ -1,30 +1,24 @@
-package by.bsu.rfe.smsservice.common.entity;
+package by.bsu.rfe.smsservice.common.dto;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 import java.util.List;
 
 /**
- * Created by pluhin on 3/20/16.
+ * Created by pluhin on 11/6/16.
  */
-@Entity
-@Table(name = "person")
-public class PersonEntity extends CreationDetails {
-    @Column(name = "first_name", nullable = false)
+public class PersonDTO {
+    private Integer id;
     private String firstName;
-    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
-    @Column(name = "email", nullable = false)
     private String email;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;

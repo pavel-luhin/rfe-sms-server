@@ -4,7 +4,9 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import by.bsu.rfe.smsservice.builder.BalanceRequestBuilder;
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
@@ -91,8 +93,16 @@ public class CredentialsServiceImpl implements CredentialsService {
 
         List<CredentialsDTO> credentialsDTOs = DozerUtil.mapList(mapper, credentialsEntities, CredentialsDTO.class);
 
+        Map<String, Double> balanceByUsername = new HashMap<>();
+
         for (CredentialsDTO credentialsDTO : credentialsDTOs) {
-            credentialsDTO.setBalance(webSMSService.getBalance(credentialsDTO.getUsername(), credentialsDTO.getApiKey()));
+
+            if (!balanceByUsername.containsKey(credentialsDTO.getUsername())) {
+                Double balance = webSMSService.getBalance(credentialsDTO.getUsername(), credentialsDTO.getApiKey());
+                balanceByUsername.put(credentialsDTO.getUsername(), balance);
+            }
+
+            credentialsDTO.setBalance(balanceByUsername.get(credentialsDTO.getUsername()));
         }
 
         return credentialsDTOs;

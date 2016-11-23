@@ -53,9 +53,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
 
             $http.post(RestURLFactory.SEND_CUSTOM_SMS, sms)
                 .then(function (data) {
-                    console.log(data.data.success == true);
-
-                    if (data.data.success == true) {
+                    if (data.data.errorCount == 0) {
                         alert("SMS sent successfully");
                     } else {
                         alert("Some error occured");
@@ -82,7 +80,6 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                 sameForAll = false;
             }
 
-            console.log(file);
             var fd = new FormData();
             fd.append('file', file);
             fd.append('sameContentForAll', sameForAll);
@@ -132,6 +129,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
             return $http.get(RestURLFactory.FIND_TEMPLATE + "?query=Cus")
                 .then(function (response) {
                     $scope.templates = response.data;
+                    console.log($scope.templates);
                 })
         };
 

@@ -21,6 +21,11 @@ public abstract class CreationDetails extends AbstractPersistable<Integer> {
     @Column(name = "created_date", nullable = false)
     private Date createdDate;
 
+    @Override
+    public void setId(Integer id) {
+        super.setId(id);
+    }
+
     public String getCreatedBy() {
         return createdBy;
     }

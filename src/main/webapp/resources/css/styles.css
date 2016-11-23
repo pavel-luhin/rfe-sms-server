@@ -116,7 +116,7 @@ body {
 }
 
 .small-input-field {
-	width: 200px;
+	width: 300px;
 	margin-right: 20px;
 }
 
@@ -304,4 +304,8 @@ body {
 	border-radius: 4px;
 	color: #00cccc;
 	font-weight: bold;
+}
+
+.sms-tabs {
+	margin-top: 30px;
 }

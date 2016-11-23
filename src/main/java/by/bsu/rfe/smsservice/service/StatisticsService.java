@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.service;
 
+import by.bsu.rfe.smsservice.common.dto.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
 import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
 
@@ -11,6 +12,6 @@ import java.util.List;
 public interface StatisticsService {
     List<StatisticsDTO> getFullStatistics();
     void saveStatistics(StatisticsEntity statisticsEntity);
-    List<StatisticsDTO> getStatisticsPage(int skip, int offset, String sortField, String sortDirection);
+    PageResponseDTO getStatisticsPage(int skip, int offset, String sortField, String sortDirection);
     Long count();
 }

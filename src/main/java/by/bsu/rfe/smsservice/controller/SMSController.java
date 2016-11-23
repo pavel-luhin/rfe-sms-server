@@ -21,6 +21,8 @@ import by.bsu.rfe.smsservice.common.sms.SmsDTO;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.WebSMSService;
 
+import java.util.List;
+
 /**
  * Created by pluhin on 12/27/15.
  */
@@ -63,7 +65,7 @@ public class SMSController {
 
     @ResponseBody
     @RequestMapping(value = "/sms/template", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SmsTemplateEntity getSMSTemplate(@RequestParam String query) {
-        return smsTemplateService.findSMSTemplate(query);
+    public List<SmsTemplateEntity> getSMSTemplate() {
+        return smsTemplateService.findSMSTemplate();
     }
 }

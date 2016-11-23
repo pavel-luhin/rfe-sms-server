@@ -30,4 +30,13 @@
             <b>credentialsSenderName</b>
         </field>
     </mapping>
+
+    <mapping>
+        <class-a>by.bsu.rfe.smsservice.common.entity.PersonEntity</class-a>
+        <class-b>by.bsu.rfe.smsservice.common.dto.PersonDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>id</b>
+        </field>
+    </mapping>
 </mappings>

@@ -1,6 +1,6 @@
 angular.module('sms-server').controller('TemplateController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModal',
-        function ($scope, $http, RestURLFactory, $uibModal) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModal', 'ConfirmDeleteModalService',
+        function ($scope, $http, RestURLFactory, $uibModal, ConfirmDeleteModalService) {
 
             var getSMSTemplates = function () {
                 $http.get(RestURLFactory.SMS_TEMPLATE).then(function (data) {
@@ -23,10 +23,19 @@ angular.module('sms-server').controller('TemplateController',
                 });
             };
 
+            var confirmDeleteModalOptions = {
+                closeButtonText: 'Cancel',
+                actionButtonText: 'Delete',
+                headerText: 'Delete SMS Template?',
+                bodyText: 'Are you sure you want to delete this sms template?'
+            };
+
             $scope.removeSMSTemplate = function (id) {
-                $http.delete(RestURLFactory.SMS_TEMPLATE + '/' + id).then(function (data) {
-                    getSMSTemplates();
-                })
+                ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+                    $http.delete(RestURLFactory.SMS_TEMPLATE + '/' + id).then(function (data) {
+                        getSMSTemplates();
+                    })
+                });
             };
         }
     ]

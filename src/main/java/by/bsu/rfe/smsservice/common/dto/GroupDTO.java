@@ -1,14 +1,14 @@
 package by.bsu.rfe.smsservice.common.dto;
 
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import java.util.List;
 
 /**
- * Created by pluhin on 7/11/16.
+ * Created by pluhin on 11/6/16.
  */
-public class RecipientDTO {
+public class GroupDTO {
     private Integer id;
     private String name;
-    private RecipientType recipientType;
+    private List<PersonDTO> persons;
 
     public Integer getId() {
         return id;
@@ -26,11 +26,11 @@ public class RecipientDTO {
         this.name = name;
     }
 
-    public RecipientType getRecipientType() {
-        return recipientType;
+    public List<PersonDTO> getPersons() {
+        return persons;
     }
 
-    public void setRecipientType(RecipientType recipientType) {
-        this.recipientType = recipientType;
+    public void setPersons(List<PersonDTO> persons) {
+        this.persons = persons;
     }
 }

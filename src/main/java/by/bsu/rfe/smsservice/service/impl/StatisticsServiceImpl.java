@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import by.bsu.rfe.smsservice.common.dto.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
 import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
 import by.bsu.rfe.smsservice.common.pagination.ChunkRequest;
@@ -34,11 +35,11 @@ public class StatisticsServiceImpl implements StatisticsService {
         return DozerUtil.mapList(mapper, statisticsEntities, StatisticsDTO.class);
     }
 
-    public List<StatisticsDTO> getStatisticsPage(int skip, int offset, String sortField, String sortDirection) {
+    public PageResponseDTO getStatisticsPage(int skip, int offset, String sortField, String sortDirection) {
         Sort sort = new Sort(new Sort.Order(Sort.Direction.fromString(sortDirection), sortField));
         Pageable pageable = new ChunkRequest(skip, offset, sort);
         Page<StatisticsEntity> entities = statisticsRepository.findAll(pageable);
-        return DozerUtil.mapList(mapper, entities.getContent(), StatisticsDTO.class);
+        return new PageResponseDTO<>(DozerUtil.mapList(mapper, entities.getContent(), StatisticsDTO.class), count());
     }
 
     @Override
