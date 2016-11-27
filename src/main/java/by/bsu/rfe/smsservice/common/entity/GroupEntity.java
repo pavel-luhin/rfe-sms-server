@@ -18,7 +18,7 @@ import java.util.List;
 @Table(name = "recipient_group")
 public class GroupEntity extends CreationDetails {
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
 
     @ManyToMany(fetch = FetchType.EAGER)

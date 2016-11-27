@@ -29,6 +29,7 @@ import java.util.List;
  */
 @Service
 public class RecipientServiceImpl implements RecipientService {
+
     @Autowired
     private PersonRepository personRepository;
     @Autowired
@@ -39,7 +40,17 @@ public class RecipientServiceImpl implements RecipientService {
     @Override
     public void addGroup(GroupDTO groupDTO) {
         GroupEntity groupEntity = mapper.map(groupDTO, GroupEntity.class);
-        groupRepository.saveAndFlush(groupEntity);
+
+        if (groupEntity.isNew()) {
+            groupRepository.saveAndFlush(groupEntity);
+            return;
+        }
+
+        GroupEntity oldGroupEntity = groupRepository.findOne(groupEntity.getId());
+        oldGroupEntity.setName(groupEntity.getName());
+        oldGroupEntity.setPersons(groupEntity.getPersons());
+
+        groupRepository.saveAndFlush(oldGroupEntity);
     }
 
     @Override
@@ -121,8 +132,8 @@ public class RecipientServiceImpl implements RecipientService {
     }
 
     @Override
-    public GroupEntity getGroup(Integer groupId) {
-        return groupRepository.findOne(groupId);
+    public GroupDTO getGroup(Integer groupId) {
+        return mapper.map(groupRepository.findOne(groupId), GroupDTO.class);
     }
 
     @Override
@@ -136,17 +147,44 @@ public class RecipientServiceImpl implements RecipientService {
     }
 
     @Override
-    public PageResponseDTO<PersonDTO> getPersons(int skip, int offset, String sortField, String sortDirection) {
+    public PageResponseDTO<PersonDTO> getPersons(int skip, int offset, String sortField, String sortDirection, String query) {
         Pageable pageable = getPage(skip, offset, sortField, sortDirection);
-        Page<PersonEntity> personEntitiesPage = personRepository.findAll(pageable);
-        return new PageResponseDTO<>(DozerUtil.mapList(mapper, personEntitiesPage.getContent(), PersonDTO.class), personRepository.count());
+
+        if (StringUtils.isEmpty(query)) {
+            Page<PersonEntity> personEntitiesPage = personRepository.findAll(pageable);
+            return new PageResponseDTO<>(DozerUtil.mapList(mapper, personEntitiesPage.getContent(), PersonDTO.class), personEntitiesPage.getTotalElements());
+        }
+
+        Page<PersonEntity> personEntitiesPage = personRepository.findPageByQuery(query, pageable);
+        return new PageResponseDTO<>(DozerUtil.mapList(mapper, personEntitiesPage.getContent(), PersonDTO.class), personEntitiesPage.getTotalElements());
     }
 
     @Override
-    public PageResponseDTO<GroupDTO> getGroups(int skip, int offset, String sortField, String sortDirection) {
+    public List<PersonDTO> getAllPersons() {
+        return DozerUtil.mapList(mapper, personRepository.findAll(), PersonDTO.class);
+    }
+
+    @Override
+    public List<PersonDTO> getPersonsWithGroup(Integer groupId) {
+        return DozerUtil.mapList(mapper, personRepository.getPersonsWithGroup(groupId), PersonDTO.class);
+    }
+
+    @Override
+    public List<PersonDTO> getPersonsWithoutGroup(Integer groupId) {
+        return DozerUtil.mapList(mapper, personRepository.getPersonsWithoutGroup(groupId), PersonDTO.class);
+    }
+
+    @Override
+    public PageResponseDTO<GroupDTO> getGroups(int skip, int offset, String sortField, String sortDirection, String query) {
         Pageable pageable = getPage(skip, offset, sortField, sortDirection);
-        Page<GroupEntity> groupEntitiesPage = groupRepository.findAll(pageable);
-        return new PageResponseDTO<>(DozerUtil.mapList(mapper, groupEntitiesPage.getContent(), GroupDTO.class), groupRepository.count());
+
+        if (StringUtils.isEmpty(query)) {
+            Page<GroupEntity> groupEntitiesPage = groupRepository.findAll(pageable);
+            return new PageResponseDTO<>(DozerUtil.mapList(mapper, groupEntitiesPage.getContent(), GroupDTO.class), groupEntitiesPage.getTotalElements());
+        }
+
+        Page<GroupEntity> groupEntityPage = groupRepository.findPageByQuery(query, pageable);
+        return new PageResponseDTO<>(DozerUtil.mapList(mapper, groupEntityPage.getContent(), GroupDTO.class), groupEntityPage.getTotalElements());
     }
 
     private Pageable getPage(int skip, int offset, String sortField, String sortDirection) {

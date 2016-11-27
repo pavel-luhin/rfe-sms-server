@@ -8,6 +8,8 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
+import by.bsu.rfe.smsservice.common.dto.GroupDTO;
+import by.bsu.rfe.smsservice.common.dto.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -63,8 +65,8 @@ public class SendSMSRequestBuilder {
         if (recipient.getValue() == RecipientType.NUMBER) {
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
         } else if (recipient.getValue() == RecipientType.GROUP) {
-            GroupEntity groupEntity = recipientService.getGroup(Integer.valueOf(recipient.getKey()));
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
+            GroupDTO groupDTO = recipientService.getGroup(Integer.valueOf(recipient.getKey()));
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupDTO)));
         } else {
             PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
@@ -108,9 +110,9 @@ public class SendSMSRequestBuilder {
         return request;
     }
 
-    private String getAllRecipientsFromGroup(GroupEntity group) {
+    private String getAllRecipientsFromGroup(GroupDTO group) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (PersonEntity person : group.getPersons()) {
+        for (PersonDTO person : group.getPersons()) {
             stringBuilder.append(person.getPhoneNumber());
             stringBuilder.append(",");
         }

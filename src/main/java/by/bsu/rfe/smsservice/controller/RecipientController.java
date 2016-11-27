@@ -36,6 +36,12 @@ public class RecipientController {
         recipientService.addGroup(groupDTO);
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/group/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public GroupDTO getGroup(@PathVariable("id") Integer id) {
+        return recipientService.getGroup(id);
+    }
+
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/group", method = RequestMethod.DELETE)
     public void removeGroup(@RequestParam Integer groupId) {
@@ -51,8 +57,27 @@ public class RecipientController {
     @ResponseBody
     @RequestMapping(value = "/persons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponseDTO<PersonDTO> getPersons(@RequestParam int skip, @RequestParam int offset,
-                                      @RequestParam String sortField, @RequestParam String sortDirection) {
-        return recipientService.getPersons(skip, offset, sortField, sortDirection);
+                                      @RequestParam String sortField, @RequestParam String sortDirection,
+                                      @RequestParam(required = false) String query) {
+        return recipientService.getPersons(skip, offset, sortField, sortDirection, query);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/persons/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PersonDTO> getAllPersons() {
+        return recipientService.getAllPersons();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/persons/withGroup/{groupId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PersonDTO> getPersonsWithGroup(@PathVariable Integer groupId) {
+        return recipientService.getPersonsWithGroup(groupId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/persons/withoutGroup/{groupId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<PersonDTO> getPersonsWithoutGroup(@PathVariable Integer groupId) {
+        return recipientService.getPersonsWithoutGroup(groupId);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -64,8 +89,9 @@ public class RecipientController {
     @ResponseBody
     @RequestMapping(value = "/group", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public PageResponseDTO<GroupDTO> getGroups(@RequestParam int skip, @RequestParam int offset,
-            @RequestParam String sortField, @RequestParam String sortDirection) {
-        return recipientService.getGroups(skip, offset, sortField, sortDirection);
+            @RequestParam String sortField, @RequestParam String sortDirection,
+            @RequestParam(required = false) String query) {
+        return recipientService.getGroups(skip, offset, sortField, sortDirection, query);
     }
 
     @ResponseStatus(HttpStatus.OK)

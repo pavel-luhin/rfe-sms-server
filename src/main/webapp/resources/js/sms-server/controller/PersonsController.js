@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('PersonsController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmDeleteModalService',
-    function ($scope, $http, $location, RestURLFactory, ConfirmDeleteModalService) {
+angular.module('sms-server').controller('PersonsController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmDeleteModalService', '$routeParams',
+    function ($scope, $http, $location, RestURLFactory, ConfirmDeleteModalService, $routeParams) {
 
         var sortConstants = {
             notSorted: {
@@ -138,8 +138,10 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
         };
 
         $scope.addPersons = function (recipients) {
-            $http.post(RestURLFactory.PERSONS, recipients);
-            $location.path('/recipients');
+            $http.post(RestURLFactory.PERSONS, recipients)
+                .success(function (data) {
+                    $location.path('/recipients');
+                });
             $scope.getAllPersons();
         };
 
@@ -171,40 +173,25 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
             });
         };
 
-        $scope.selectPerson = function (index) {
-            $scope.selectedPersons.push($scope.receivedPersons[index]);
-            $scope.receivedPersons.splice(index, 1);
-        };
-
-        $scope.unselectPerson = function (index) {
-            $scope.receivedPersons.push($scope.selectedPersons[index]);
-            $scope.selectedPersons.splice(index, 1);
-        };
-
         $scope.getAllPersons();
 
         $scope.addNewPersonForm();
 
-        $scope.$watch('recipientsFilter', function (newVlaue) {
-            console.log(newVlaue);
-            if (newVlaue != undefined) {
-                $scope.receivedPersons = [];
-                if (newVlaue === '') {
-                    $scope.receivedPersons = allRecipients;
-                } else {
-                    for (var i = 0; i < allRecipients.length; i++) {
-                        if (allRecipients[i].firstName.toLowerCase().startsWith(newVlaue.toLowerCase())) {
-                            $scope.receivedPersons.push(allPersons[i]);
-                        }
-                        if (allRecipients[i].lastName.toLowerCase().startsWith(newVlaue.toLowerCase())) {
-                            $scope.receivedPersons.push(allPersons[i]);
-                        }
-                        if (allRecipients[i].phoneNumber.toLowerCase().startsWith(newVlaue.toLowerCase())) {
-                            $scope.receivedPersons.push(allPersons[i]);
-                        }
-                    }
-                }
-            }
+        $scope.$watch('personsFilter', function (newVlaue) {
+            $http.get(RestURLFactory.PERSONS +
+                '?skip=' + skip +
+                '&offset=' + currentPageSize.value +
+                '&sortField=' + sortField +
+                '&sortDirection=' + sortDirection +
+                '&query=' + newVlaue
+            ).then(function (response) {
+                $scope.receivedPersons = response.data.items;
+                allPersons = response.data.items;
+
+                $scope.count = response.data.count;
+                count = Math.ceil(response.data.count / currentPageSize.value);
+                recalculatePages();
+            });
         });
     }
 ]);

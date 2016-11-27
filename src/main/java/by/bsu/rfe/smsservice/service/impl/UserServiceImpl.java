@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -76,12 +77,17 @@ public class UserServiceImpl implements UserService {
         SYMBOLS = tmp.toString().toCharArray();
     }
 
-
     @Override
     @Transactional
     public UserDTO authenticate(AuthenticationDTO authenticationDTO) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(authenticationDTO.getUsername(), authenticationDTO.getPassword());
-        authenticationManager.authenticate(authentication);
+
+        try {
+            authenticationManager.authenticate(authentication);
+        } catch (Exception ex) {
+            throw new BadCredentialsException("Bad credentials");
+        }
+
         UserEntity userEntity = userRepository.findByUsername(authenticationDTO.getUsername());
         String token = generateToken();
         AuthenticationTokenEntity tokenEntity = new AuthenticationTokenEntity();

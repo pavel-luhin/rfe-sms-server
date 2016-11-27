@@ -126,9 +126,9 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void saveEmailTemplate(EmailTemplateDTO emailTemplateDTO) {
         EmailEntity emailEntity = mapper.map(emailTemplateDTO, EmailEntity.class);
-        SmsTemplateEntity smsTemplateEntity = smsTemplateService.findSMSTemplate(emailTemplateDTO.getSmsType());
-        emailEntity.setSmsTemplate(smsTemplateEntity);
-        emailRepository.saveAndFlush(emailEntity);
+//        SmsTemplateEntity smsTemplateEntity = smsTemplateService.findSMSTemplate(emailTemplateDTO.getSmsType());
+//        emailEntity.setSmsTemplate(smsTemplateEntity);
+//        emailRepository.saveAndFlush(emailEntity);
     }
 
     @Override

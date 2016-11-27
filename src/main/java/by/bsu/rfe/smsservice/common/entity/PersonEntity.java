@@ -1,8 +1,7 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by pluhin on 3/20/16.
@@ -18,6 +17,8 @@ public class PersonEntity extends CreationDetails {
     private String phoneNumber;
     @Column(name = "email", nullable = false, unique = true)
     private String email;
+    @ManyToMany(mappedBy = "persons", fetch = FetchType.EAGER)
+    private List<GroupEntity> groups;
 
     public String getFirstName() {
         return firstName;
@@ -49,5 +50,13 @@ public class PersonEntity extends CreationDetails {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<GroupEntity> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<GroupEntity> groups) {
+        this.groups = groups;
     }
 }

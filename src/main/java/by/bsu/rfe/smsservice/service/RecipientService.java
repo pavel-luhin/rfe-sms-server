@@ -28,13 +28,19 @@ public interface RecipientService {
 
     void removePerson(Integer personId);
 
-    GroupEntity getGroup(Integer groupId);
+    GroupDTO getGroup(Integer groupId);
 
     PersonEntity getPerson(String[] name);
 
     GroupEntity getGroupByName(String groupName);
 
-    PageResponseDTO<PersonDTO> getPersons(int skip, int offset, String sortField, String sortDirection);
+    PageResponseDTO<PersonDTO> getPersons(int skip, int offset, String sortField, String sortDirection, String query);
 
-    PageResponseDTO<GroupDTO> getGroups(int skip, int offset, String sortField, String sortDirection);
+    List<PersonDTO> getAllPersons();
+
+    List<PersonDTO> getPersonsWithGroup(Integer groupId);
+
+    List<PersonDTO> getPersonsWithoutGroup(Integer groupId);
+
+    PageResponseDTO<GroupDTO> getGroups(int skip, int offset, String sortField, String sortDirection, String query);
 }

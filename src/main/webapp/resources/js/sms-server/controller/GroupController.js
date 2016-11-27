@@ -129,18 +129,6 @@ angular.module('sms-server').controller('GroupController', ['$scope', '$http', '
             });
         };
 
-        $scope.saveGroup = function () {
-            var groupToSave = {};
-            groupToSave.persons = $scope.selectedPersons;
-            groupToSave.name = $scope.groupName;
-
-            $http.post(RestURLFactory.GROUP, groupToSave).then(function () {
-                $scope.selectedPersons = [];
-                $location.path('/recipients');
-                $scope.getAllPersons();
-            })
-        };
-
         var confirmDeleteModalOptions = {
             closeButtonText: 'Cancel',
             actionButtonText: 'Delete',
@@ -157,5 +145,22 @@ angular.module('sms-server').controller('GroupController', ['$scope', '$http', '
         };
 
         $scope.getAllGroups();
+
+        $scope.$watch('groupFilter', function (newVlaue) {
+            $http.get(RestURLFactory.GROUP +
+                '?skip=' + skip +
+                '&offset=' + currentPageSize.value +
+                '&sortField=' + sortField +
+                '&sortDirection=' + sortDirection +
+                '&query=' + newVlaue
+            ).then(function (response) {
+                $scope.receivedGroups = response.data.items;
+                allGroups = response.data.items;
+
+                $scope.count = response.data.count;
+                count = Math.ceil(response.data.count / currentPageSize.value);
+                recalculatePages();
+            });
+        });
     }
 ]);

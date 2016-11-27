@@ -1,6 +1,6 @@
 angular.module('sms-server').controller('AuthenticationController',
-    ['$scope', 'AuthenticationProvider', '$cookies', '$location', '$http', 'ngProgressFactory', 'RestURLFactory', 'md5',
-    function ($scope, AuthenticationProvider, $cookies, $location, $http, ngProgressFactory, RestURLFactory, md5) {
+    ['$scope', 'AuthenticationProvider', '$cookies', '$location', '$http', 'ngProgressFactory', 'RestURLFactory', 'md5', 'toaster',
+    function ($scope, AuthenticationProvider, $cookies, $location, $http, ngProgressFactory, RestURLFactory, md5, toaster) {
         var progress = ngProgressFactory.createInstance();
         progress.setColor('#00e6e6');
         $scope.login = function (user) {
@@ -13,6 +13,7 @@ angular.module('sms-server').controller('AuthenticationController',
                     progress.complete();
                 })
                 .error(function() {
+
                     $scope.error = 'Unable to authenticate. Please, check your login and password.';
                     progress.complete();
                 })

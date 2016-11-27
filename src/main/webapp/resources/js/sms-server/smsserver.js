@@ -9,7 +9,8 @@ var application = angular.module('sms-server',
                                   'ui.bootstrap.tooltip',
                                   'ngSanitize',
                                   'ui.select',
-                                  'angular-md5'
+                                  'angular-md5',
+                                  'toaster'
                                  ]);
 
 application.config(['$httpProvider',
@@ -54,10 +55,12 @@ application.config(['$routeProvider',
                 templateUrl: BASE_TEMPLATE_LOCATION + 'addNewRecipient.html'
             })
             .when('/recipients/add-group', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
+                controller: 'AddOrEditGroupController'
             })
             .when('/recipients/edit-group/:groupId', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
+                controller: 'AddOrEditGroupController'
             })
             .when('/setup', {
                 templateUrl: BASE_TEMPLATE_LOCATION + 'setup.html',
@@ -94,7 +97,7 @@ application.config(['$routeProvider',
 ]);
 
 application.factory('myHttpInterceptor',
-    function($q, $location) {
+    function($q, $location, toaster) {
         return {
             'requestError': function (rejection) {
                 if (canRecover(rejection)) {
@@ -104,9 +107,22 @@ application.factory('myHttpInterceptor',
             },
 
             'responseError': function (rejection) {
+
                 if (rejection.status === 401) {
                     $location.path('/login');
                 }
+
+                if (rejection.status === 500) {
+                    var body = rejection.data;
+                    var messageObject = JSON.parse(body);
+                    toaster.pop({
+                        type: 'error',
+                        title: 'Error',
+                        body: messageObject.message,
+                        timeout: 0
+                    });
+                }
+
                 return $q.reject(rejection);
             }
         };

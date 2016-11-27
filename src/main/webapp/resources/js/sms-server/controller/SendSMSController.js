@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('SendSMSController', ['$scope', '$http', 'RestURLFactory',
-    function ($scope, $http, RestURLFactory) {
+angular.module('sms-server').controller('SendSMSController', ['$scope', '$http', 'RestURLFactory', 'toaster',
+    function ($scope, $http, RestURLFactory, toaster) {
         var defaultSymbolsLeft = 160;
         $scope.symbolsLeft = defaultSymbolsLeft;
         $scope.smsCount = 1;
@@ -54,9 +54,19 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
             $http.post(RestURLFactory.SEND_CUSTOM_SMS, sms)
                 .then(function (data) {
                     if (data.data.errorCount == 0) {
-                        alert("SMS sent successfully");
+                        toaster.pop({
+                            type: 'success',
+                            title: 'Success',
+                            body: 'SMS sent successfully',
+                            timeout: 0
+                        });
                     } else {
-                        alert("Some error occured");
+                        toaster.pop({
+                            type: 'error',
+                            title: 'SMS was not sent',
+                            body: data.data.lastError,
+                            timeout: 0
+                        });
                     }
 
                     $scope.messages = [];

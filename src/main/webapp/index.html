@@ -15,6 +15,7 @@
 	<script type="text/javascript" src="resources/js/libs/angular/ng-tags-input.min.js"></script>
 	<script type="text/javascript" src="resources/js/libs/angular/ui-select.min.js"></script>
 	<script type="text/javascript" src="resources/js/libs/angular/angular-md5.min.js"></script>
+	<script type="text/javascript" src="resources/js/libs/angular/toaster.min.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="resources/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="resources/css/font-awesome.min.css">
@@ -24,6 +25,7 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/ng-tags-input.css"/>
 	<link rel="stylesheet" type="text/css" href="resources/css/ui-select.min.css"/>
 	<link rel="stylesheet" type="text/css" href="resources/css/select2.css">
+	<link rel="stylesheet" type="text/css" href="resources/css/toaster.min.css"/>
 
 	<link rel="icon" type="image/png" href="resources/favicon-32x32.png" sizes="32x32" />
 	<link rel="icon" type="image/png" href="resources/favicon-16x16.png" sizes="16x16" />
@@ -31,6 +33,7 @@
 <body ng-controller="ApplicationController">
 	<div ng-show="authenticated" ng-include="'resources/templates/common/navbar.html'"></div>
 	<div class="col-md-12">
+		<toaster-container toaster-options="{'position-class': 'toast-top-full-width'}"></toaster-container>
 		<ng-view/>
 	</div>
 
@@ -44,6 +47,7 @@
 	<script type="text/javascript" src="resources/js/sms-server/controller/AuthenticationController.js"></script>
 	<script type="text/javascript" src="resources/js/sms-server/controller/PersonsController.js"></script>
 	<script type="text/javascript" src="resources/js/sms-server/controller/GroupController.js"></script>
+	<script type="text/javascript" src="resources/js/sms-server/controller/AddOrEditGroupController.js"></script>
 	<script type="text/javascript" src="resources/js/sms-server/controller/SetupController.js"></script>
 	<script type="text/javascript" src="resources/js/sms-server/controller/setup/TemplateController.js"></script>
 	<script type="text/javascript" src="resources/js/sms-server/controller/setup/CredentialsController.js"></script>
