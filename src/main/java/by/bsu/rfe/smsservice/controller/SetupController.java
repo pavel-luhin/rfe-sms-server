@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,12 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
-import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
-import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
-import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
-import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
-import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
-import by.bsu.rfe.smsservice.common.dto.UserDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
@@ -147,5 +142,11 @@ public class SetupController {
     @RequestMapping(value = "/changePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
         userService.changePassword(passwordDTO);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/version", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public VersionDTO getApplicationVersion() {
+        return VersionDTO.loadFromProperties("version.properties");
     }
 }
