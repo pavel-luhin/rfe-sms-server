@@ -1,13 +1,20 @@
 angular.module('sms-server').controller('ChangePasswordController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'md5',
-        function ($scope, $http, RestURLFactory, $uibModalInstance, md5) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'md5', 'toaster',
+        function ($scope, $http, RestURLFactory, $uibModalInstance, md5, toaster) {
 
             $scope.selected = {};
             $scope.selected.credentials = {};
 
             $scope.changePassword = function (oldPassword, newPassword, anotherNewPassword) {
                 if (!oldPassword || !newPassword || !anotherNewPassword || newPassword != anotherNewPassword) {
-                    $scope.error = "Please, fill all required fields with correct data.";
+
+                    toaster.pop({
+                        type: 'error',
+                        title: 'Error',
+                        body: 'Please, fill all required fields with correct data.',
+                        timeout: 0
+                    });
+
                     return;
                 }
 

@@ -1,9 +1,16 @@
 angular.module('sms-server').controller('AddNewCredentialsModalController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance',
-        function ($scope, $http, RestURLFactory, $uibModalInstance) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'toaster',
+        function ($scope, $http, RestURLFactory, $uibModalInstance, toaster) {
             $scope.addCredentials = function (credentials) {
                 if (!credentials || !credentials.apiKey || !credentials.sender || !credentials.username) {
-                    $scope.error = "Please, fill all required fields with correct data.";
+
+                    toaster.pop({
+                        type: 'error',
+                        title: 'Error',
+                        body: 'Please, fill all required fields with correct data.',
+                        timeout: 0
+                    });
+
                     return;
                 }
 

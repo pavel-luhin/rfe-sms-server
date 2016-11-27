@@ -1,7 +1,6 @@
 <div class="loader" ng-show="{{loading}}"></div>
 <div ng-class="{loading : transparent}">
     <form ng-submit="sendSMS(sms)">
-        <span ng-show="error" class="login-error">{{error}}</span>
         <textarea placeholder="Message content" class="sms-content-textarea" ng-change="countSymbols()"
                   ng-model="sms.content"></textarea>
         <p ng-show="smsCount > 1" class="sms-content-status">{{smsCount}} sms&nbsp;</p>

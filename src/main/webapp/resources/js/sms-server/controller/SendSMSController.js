@@ -104,11 +104,25 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
 
         function isSMSValid(sms) {
             if (!sms || !sms.recipient) {
-                $scope.error = 'You must select at least one recipient or recipients group';
+
+                toaster.pop({
+                    type: 'error',
+                    title: 'Error',
+                    body: 'You must select at least one recipient or recipients group',
+                    timeout: 0
+                });
+
                 return false;
             }
             if (!sms.content) {
-                $scope.error = 'You must enter message';
+
+                toaster.pop({
+                    type: 'error',
+                    title: 'Error',
+                    body: 'You must enter message',
+                    timeout: 0
+                });
+
                 return false;
             }
             return true;

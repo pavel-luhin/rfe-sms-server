@@ -1,9 +1,16 @@
 angular.module('sms-server').controller('AddNewEmailTemplateModalController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance',
-        function ($scope, $http, RestURLFactory, $uibModalInstance) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'toaster',
+        function ($scope, $http, RestURLFactory, $uibModalInstance, toaster) {
             $scope.addTemplate = function (template) {
                 if (!template || !template.subject || !template.content || !template.smsType) {
-                    $scope.error = "Please, fill all required fields with correct data.";
+
+                    toaster.pop({
+                        type: 'error',
+                        title: 'Error',
+                        body: 'Please, fill all required fields with correct data.',
+                        timeout: 0
+                    });
+
                     return;
                 }
 

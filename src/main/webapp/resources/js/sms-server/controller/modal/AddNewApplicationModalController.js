@@ -1,13 +1,20 @@
 angular.module('sms-server').controller('AddNewApplicationModalController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance',
-        function ($scope, $http, RestURLFactory, $uibModalInstance) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'toaster',
+        function ($scope, $http, RestURLFactory, $uibModalInstance, toaster) {
 
             $scope.selected = {};
             $scope.selected.credentials = {};
 
             $scope.addApplication = function (app) {
                 if (!app || !app.applicationName) {
-                    $scope.error = "Please, fill all required fields with correct data.";
+
+                    toaster.pop({
+                        type: 'error',
+                        title: 'Error',
+                        body: 'Please, fill application name.',
+                        timeout: 0
+                    });
+
                     return;
                 }
 
