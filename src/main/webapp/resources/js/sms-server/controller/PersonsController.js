@@ -178,20 +178,23 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
         $scope.addNewPersonForm();
 
         $scope.$watch('personsFilter', function (newVlaue) {
-            $http.get(RestURLFactory.PERSONS +
-                '?skip=' + skip +
-                '&offset=' + currentPageSize.value +
-                '&sortField=' + sortField +
-                '&sortDirection=' + sortDirection +
-                '&query=' + newVlaue
-            ).then(function (response) {
-                $scope.receivedPersons = response.data.items;
-                allPersons = response.data.items;
 
-                $scope.count = response.data.count;
-                count = Math.ceil(response.data.count / currentPageSize.value);
-                recalculatePages();
-            });
+            if (newVlaue != undefined) {
+                $http.get(RestURLFactory.PERSONS +
+                    '?skip=' + skip +
+                    '&offset=' + currentPageSize.value +
+                    '&sortField=' + sortField +
+                    '&sortDirection=' + sortDirection +
+                    '&query=' + newVlaue
+                ).then(function (response) {
+                    $scope.receivedPersons = response.data.items;
+                    allPersons = response.data.items;
+
+                    $scope.count = response.data.count;
+                    count = Math.ceil(response.data.count / currentPageSize.value);
+                    recalculatePages();
+                });
+            }
         });
     }
 ]);

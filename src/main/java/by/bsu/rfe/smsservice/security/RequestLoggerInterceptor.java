@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 
+import java.util.Map;
+
 /**
  * Created by pluhin on 6/14/16.
  */
@@ -28,6 +30,17 @@ public class RequestLoggerInterceptor extends HandlerInterceptorAdapter {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         long startMillis = (long) request.getAttribute("startMillis");
         long endMillis = System.currentTimeMillis();
-        LOGGER.info("Request for user " + SecurityUtil.getCurrentUsername() + " to " + request.getRequestURI() + " took " + (endMillis - startMillis));
+
+        String parameters = "?";
+
+        for (Map.Entry parameter : request.getParameterMap().entrySet()) {
+            String[] params = (String[]) parameter.getValue();
+            parameters = parameters + parameter.getKey() + "=" + params[0] + "&";
+        }
+
+        parameters = parameters.substring(0, parameters.length() - 1);
+
+        LOGGER.info("Request for user " + SecurityUtil.getCurrentUsername() + " to " + request.getRequestURI() + parameters
+                + " method: " + request.getMethod() + " took " + (endMillis - startMillis));
     }
 }

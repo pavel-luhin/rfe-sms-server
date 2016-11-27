@@ -147,20 +147,22 @@ angular.module('sms-server').controller('GroupController', ['$scope', '$http', '
         $scope.getAllGroups();
 
         $scope.$watch('groupFilter', function (newVlaue) {
-            $http.get(RestURLFactory.GROUP +
-                '?skip=' + skip +
-                '&offset=' + currentPageSize.value +
-                '&sortField=' + sortField +
-                '&sortDirection=' + sortDirection +
-                '&query=' + newVlaue
-            ).then(function (response) {
-                $scope.receivedGroups = response.data.items;
-                allGroups = response.data.items;
+            if (newVlaue != undefined) {
+                $http.get(RestURLFactory.GROUP +
+                    '?skip=' + skip +
+                    '&offset=' + currentPageSize.value +
+                    '&sortField=' + sortField +
+                    '&sortDirection=' + sortDirection +
+                    '&query=' + newVlaue
+                ).then(function (response) {
+                    $scope.receivedGroups = response.data.items;
+                    allGroups = response.data.items;
 
-                $scope.count = response.data.count;
-                count = Math.ceil(response.data.count / currentPageSize.value);
-                recalculatePages();
-            });
+                    $scope.count = response.data.count;
+                    count = Math.ceil(response.data.count / currentPageSize.value);
+                    recalculatePages();
+                });
+            }
         });
     }
 ]);
