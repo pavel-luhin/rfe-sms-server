@@ -4,6 +4,6 @@ INSERT INTO `sms_template` (sms_type, template, uri_path, created_by, created_da
    '/rest/sms/interview', 'SYSTEM', NOW());
 UPDATE `sms_template`
 SET
-  `template` = '${STUDENT_FIRST_NAME}, ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_DATE} по адресу ${COMPANY_ADDRESS}'
+  `template` = '${STUDENT_FIRST_NAME}, ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_TIME} по адресу ${COMPANY_ADDRESS}'
 WHERE
   `sms_type` = 'InterviewSMS';
