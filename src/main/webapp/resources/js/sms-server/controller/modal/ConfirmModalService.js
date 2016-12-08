@@ -1,4 +1,4 @@
-angular.module('sms-server').service('ConfirmDeleteModalService', ['$uibModal',
+angular.module('sms-server').service('ConfirmModalService', ['$uibModal',
     function ($modal) {
 
         var modalDefaults = {

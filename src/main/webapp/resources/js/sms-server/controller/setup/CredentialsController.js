@@ -1,6 +1,6 @@
 angular.module('sms-server').controller('CredentialsController',
-    ['$scope', '$http', 'RestURLFactory', '$uibModal', '$rootScope', 'ConfirmDeleteModalService',
-        function ($scope, $http, RestURLFactory, $uibModal, $rootScope, ConfirmDeleteModalService) {
+    ['$scope', '$http', 'RestURLFactory', '$uibModal', '$rootScope', 'ConfirmModalService',
+        function ($scope, $http, RestURLFactory, $uibModal, $rootScope, ConfirmModalService) {
 
             var getUserCredentials = function () {
                 $http.get(RestURLFactory.CREDENTIALS).then(function (data) {
@@ -31,7 +31,7 @@ angular.module('sms-server').controller('CredentialsController',
             };
 
             $scope.removeCredentials = function (id) {
-                ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+                ConfirmModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
                     $http.delete(RestURLFactory.CREDENTIALS + '/' + id).then(function (data) {
                         getUserCredentials();
                     })

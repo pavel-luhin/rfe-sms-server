@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('GroupController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmDeleteModalService', '$routeParams',
-    function ($scope, $http, $location, RestURLFactory, ConfirmDeleteModalService, $routeParams) {
+angular.module('sms-server').controller('GroupController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmModalService', '$routeParams',
+    function ($scope, $http, $location, RestURLFactory, ConfirmModalService, $routeParams) {
 
         var sortConstants = {
             notSorted: {
@@ -137,7 +137,7 @@ angular.module('sms-server').controller('GroupController', ['$scope', '$http', '
         };
 
         $scope.removeGroup = function (id) {
-            ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+            ConfirmModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
                 $http.delete(RestURLFactory.GROUP + '?groupId=' + id).then(function () {
                     $scope.getAllGroups();
                 });

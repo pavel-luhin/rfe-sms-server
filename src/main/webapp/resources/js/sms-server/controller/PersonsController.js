@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('PersonsController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmDeleteModalService', '$routeParams',
-    function ($scope, $http, $location, RestURLFactory, ConfirmDeleteModalService, $routeParams) {
+angular.module('sms-server').controller('PersonsController', ['$scope', '$http', '$location', 'RestURLFactory', 'ConfirmModalService', '$routeParams',
+    function ($scope, $http, $location, RestURLFactory, ConfirmModalService, $routeParams) {
 
         var sortConstants = {
             notSorted: {
@@ -153,7 +153,7 @@ angular.module('sms-server').controller('PersonsController', ['$scope', '$http',
         };
 
         $scope.removePerson = function (id) {
-            ConfirmDeleteModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+            ConfirmModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
                 $http.delete(RestURLFactory.PERSONS + '?personId=' + id).then(function () {
                     $scope.getAllPersons();
                 });
