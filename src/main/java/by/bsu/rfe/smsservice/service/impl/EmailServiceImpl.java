@@ -6,6 +6,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.dozer.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,8 @@ public class EmailServiceImpl implements EmailService {
     @Value("${email.starttls.enable}")
     private String emailStartTLSEnable;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
+
     private static final String REGISTER_USER_SMS_TYPE = "RegisterUserSMS";
     private static final String EMAIL_PARAMETERS_KEY = "email_address";
 
@@ -81,6 +85,7 @@ public class EmailServiceImpl implements EmailService {
     public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsType) {
         String address = processRecipients(recipient, parameters);
 
+        LOGGER.info("Fetching recipients for email for sms type {}", smsType);
         if (StringUtils.isEmpty(address)) {
             return;
         }
@@ -114,7 +119,10 @@ public class EmailServiceImpl implements EmailService {
             message.setContent(body, "text/html; charset=utf-8");
 
             Transport.send(message);
+            LOGGER.info("Email to {} address successfully sent", address);
         } catch (MessagingException e) {
+            LOGGER.error("Could not send email. Exception message is: {}", e.getMessage());
+            LOGGER.error("{}", e);
             throw new RuntimeException(e);
         }
     }
@@ -149,6 +157,9 @@ public class EmailServiceImpl implements EmailService {
                     return parameter.getValue();
                 }
             }
+
+            LOGGER.error("Could not find email address for recipient {}", recipient.getKey());
+            LOGGER.error("Parameters are: {}", parameters);
 
             return null;
         } else if (recipient.getValue() == RecipientType.PERSON) {
