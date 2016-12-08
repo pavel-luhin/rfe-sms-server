@@ -65,8 +65,8 @@ public class SendSMSRequestBuilder {
         if (recipient.getValue() == RecipientType.NUMBER) {
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
         } else if (recipient.getValue() == RecipientType.GROUP) {
-            GroupDTO groupDTO = recipientService.getGroup(Integer.valueOf(recipient.getKey()));
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupDTO)));
+            GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
         } else {
             PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
@@ -110,9 +110,9 @@ public class SendSMSRequestBuilder {
         return request;
     }
 
-    private String getAllRecipientsFromGroup(GroupDTO group) {
+    private String getAllRecipientsFromGroup(GroupEntity groupEntity) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (PersonDTO person : group.getPersons()) {
+        for (PersonEntity person : groupEntity.getPersons()) {
             stringBuilder.append(person.getPhoneNumber());
             stringBuilder.append(",");
         }

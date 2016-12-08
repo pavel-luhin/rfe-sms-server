@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('AddOrEditGroupController', ['$scope', '$http', '$location', 'RestURLFactory', '$routeParams',
-    function ($scope, $http, $location, RestURLFactory, $routeParams) {
+angular.module('sms-server').controller('AddOrEditGroupController', ['$scope', '$http', '$location', 'RestURLFactory', '$routeParams', 'toaster',
+    function ($scope, $http, $location, RestURLFactory, $routeParams, toaster) {
 
         $scope.receivedPersons = [];
         $scope.selectedPersons = [];
@@ -46,6 +46,19 @@ angular.module('sms-server').controller('AddOrEditGroupController', ['$scope', '
         }
 
         $scope.saveGroup = function () {
+            var groupName = $scope.groupName;
+
+            if (groupName.indexOf(' ') >= 0) {
+                toaster.pop({
+                    type: 'error',
+                    title: 'Error',
+                    body: 'Group name could not contains spaces',
+                    timeout: 0
+                });
+
+                return;
+            }
+
             var groupToSave = {};
 
             if ($routeParams.groupId != undefined) {
