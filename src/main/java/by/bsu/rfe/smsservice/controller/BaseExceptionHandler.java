@@ -24,9 +24,15 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleException(Exception e) throws JsonProcessingException {
         BaseExceptionDTO baseExceptionDTO = new BaseExceptionDTO();
         baseExceptionDTO.setCode(500);
-        baseExceptionDTO.setMessage(ExceptionUtils.getRootCause(e).getMessage());
+        baseExceptionDTO.setMessage(getMessage(e));
 
         return new ResponseEntity<>(objectMapper.writeValueAsString(baseExceptionDTO), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    private String getMessage(Throwable throwable) {
+        Throwable root = ExceptionUtils.getRootCause(throwable);
+        root = root == null ? throwable : root;
+        return root.getMessage();
     }
 
 }
