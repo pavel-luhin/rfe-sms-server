@@ -54,6 +54,7 @@ public class EmailServiceImpl implements EmailService {
     private String emailStartTLSEnable;
 
     private static final String REGISTER_USER_SMS_TYPE = "RegisterUserSMS";
+    private static final String EMAIL_PARAMETERS_KEY = "email_address";
 
     @Autowired
     private EmailRepository emailRepository;
@@ -78,7 +79,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void processSendingEmail(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsType) {
-        String address = processRecipients(recipient);
+        String address = processRecipients(recipient, parameters);
 
         if (StringUtils.isEmpty(address)) {
             return;
@@ -126,9 +127,9 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void saveEmailTemplate(EmailTemplateDTO emailTemplateDTO) {
         EmailEntity emailEntity = mapper.map(emailTemplateDTO, EmailEntity.class);
-//        SmsTemplateEntity smsTemplateEntity = smsTemplateService.findSMSTemplate(emailTemplateDTO.getSmsType());
-//        emailEntity.setSmsTemplate(smsTemplateEntity);
-//        emailRepository.saveAndFlush(emailEntity);
+        SmsTemplateEntity smsTemplateEntity = smsTemplateService.findSMSTemplate(emailTemplateDTO.getSmsType());
+        emailEntity.setSmsTemplate(smsTemplateEntity);
+        emailRepository.saveAndFlush(emailEntity);
     }
 
     @Override
@@ -136,12 +137,19 @@ public class EmailServiceImpl implements EmailService {
         emailRepository.delete(id);
     }
 
-    private String processRecipients(Map.Entry<String, RecipientType> recipient) {
+    private String processRecipients(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
         if (recipient.getValue() == null) {
             return recipient.getKey();
         }
 
         if (recipient.getValue() == RecipientType.NUMBER) {
+
+            for (Map.Entry<String, String> parameter : parameters.entrySet()) {
+                if (parameter.getKey().equals(EMAIL_PARAMETERS_KEY)) {
+                    return parameter.getValue();
+                }
+            }
+
             return null;
         } else if (recipient.getValue() == RecipientType.PERSON) {
             PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
