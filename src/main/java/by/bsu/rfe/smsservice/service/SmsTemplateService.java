@@ -12,5 +12,6 @@ public interface SmsTemplateService {
     List<SmsTemplateEntity> getSmsTemplates();
     void removeSMSTemplate(Integer id);
     SmsTemplateEntity addSMSTemplate(SmsTemplateEntity smsTemplateEntity);
-    List<SmsTemplateEntity> findSMSTemplate();
+    SmsTemplateEntity findSMSTemplate(String smsType);
+    List<SmsTemplateEntity> getAllSmsTemplates();
 }

@@ -39,7 +39,12 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     }
 
     @Override
-    public List<SmsTemplateEntity> findSMSTemplate() {
+    public SmsTemplateEntity findSMSTemplate(String smsType) {
+        return smsTemplateRepository.findSMSTemplate(smsType);
+    }
+
+    @Override
+    public List<SmsTemplateEntity> getAllSmsTemplates() {
         return smsTemplateRepository.findAll();
     }
 }

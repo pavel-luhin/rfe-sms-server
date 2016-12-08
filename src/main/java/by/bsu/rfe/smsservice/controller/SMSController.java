@@ -66,6 +66,6 @@ public class SMSController {
     @ResponseBody
     @RequestMapping(value = "/sms/template", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SmsTemplateEntity> getSMSTemplate() {
-        return smsTemplateService.findSMSTemplate();
+        return smsTemplateService.getAllSmsTemplates();
     }
 }
