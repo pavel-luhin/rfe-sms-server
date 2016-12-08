@@ -2,7 +2,6 @@ angular.module('sms-server').controller('AddNewSMSTemplateModalController',
     ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'toaster',
         function ($scope, $http, RestURLFactory, $uibModalInstance, toaster) {
             $scope.addTemplate = function (template) {
-                console.log("lalka");
                 if (!template || !template.smsType || !template.uriPath) {
 
                     toaster.pop({
@@ -14,6 +13,7 @@ angular.module('sms-server').controller('AddNewSMSTemplateModalController',
 
                     return;
                 }
+                template.enabled = true;
 
                 $http.post(RestURLFactory.SMS_TEMPLATE, template).then(function (data) {
                     $uibModalInstance.dismiss();
