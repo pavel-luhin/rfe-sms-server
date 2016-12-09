@@ -1,6 +1,5 @@
 package by.bsu.rfe.smsservice.controller;
 
-import by.bsu.rfe.smsservice.common.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,6 +14,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
 
+import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
+import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
+import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
+import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
+import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
+import by.bsu.rfe.smsservice.common.dto.UserDTO;
+import by.bsu.rfe.smsservice.common.dto.VersionDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
@@ -130,6 +136,12 @@ public class SetupController {
     @RequestMapping(value = "/emailTemplate/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteEmailTemplate(@PathVariable Integer id) {
         emailService.removeEmailTemplate(id);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/emailTemplate/smsTypes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<String> getAvailableSmsTypesForEmailTemplate() {
+        return smsTemplateService.getAvailableSmsTypesForEmailTemplate();
     }
 
     @ResponseStatus(HttpStatus.OK)

@@ -11,7 +11,7 @@ import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
  * Created by pluhin on 3/20/16.
  */
 public interface SmsTemplateRepository extends JpaRepository<SmsTemplateEntity, Integer> {
-    @Query("FROM SmsTemplateEntity WHERE uriPath=?1 AND enabled=true")
+    @Query("FROM SmsTemplateEntity WHERE uriPath=?1")
     SmsTemplateEntity getByURIPath(String uriPath);
 
     @Query("FROM SmsTemplateEntity WHERE smsType LIKE %?1%")
@@ -19,4 +19,7 @@ public interface SmsTemplateRepository extends JpaRepository<SmsTemplateEntity, 
 
     @Query("FROM SmsTemplateEntity WHERE enabled=true")
     List<SmsTemplateEntity> findAll();
+
+    @Query("FROM SmsTemplateEntity WHERE smsType NOT IN ?1 AND enabled=true")
+    List<SmsTemplateEntity> getAllSmsTemplatesExcept(List<String> templates);
 }

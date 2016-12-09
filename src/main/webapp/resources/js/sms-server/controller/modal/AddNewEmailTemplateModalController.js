@@ -1,6 +1,13 @@
 angular.module('sms-server').controller('AddNewEmailTemplateModalController',
     ['$scope', '$http', 'RestURLFactory', '$uibModalInstance', 'toaster',
         function ($scope, $http, RestURLFactory, $uibModalInstance, toaster) {
+
+            $http.get(RestURLFactory.AVAILABLE_SMS_TEMPLATES).then(function (response) {
+                $scope.smsTypes = response.data;
+            });
+
+            $scope.template = {};
+
             $scope.addTemplate = function (template) {
                 if (!template || !template.subject || !template.content || !template.smsType) {
 

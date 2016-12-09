@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.repository.SmsTemplateRepository;
+import by.bsu.rfe.smsservice.service.EmailService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 
 /**
@@ -17,6 +20,9 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
 
     @Autowired
     private SmsTemplateRepository smsTemplateRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public SmsTemplateEntity getByRequestUri(String requestUri) {
@@ -46,5 +52,15 @@ public class SmsTemplateServiceImpl implements SmsTemplateService {
     @Override
     public List<SmsTemplateEntity> getAllSmsTemplates() {
         return smsTemplateRepository.findAll();
+    }
+
+    @Override
+    public List<String> getAvailableSmsTypesForEmailTemplate() {
+        List<EmailTemplateDTO> emailTemplates = emailService.getAllEmailTemplates();
+        List<String> smsTypes = emailTemplates.stream().map(EmailTemplateDTO::getSmsType).collect(Collectors.toList());
+
+        List<SmsTemplateEntity> smsTemplateEntities = smsTemplateRepository.getAllSmsTemplatesExcept(smsTypes);
+
+        return smsTemplateEntities.stream().map(SmsTemplateEntity::getSmsType).collect(Collectors.toList());
     }
 }

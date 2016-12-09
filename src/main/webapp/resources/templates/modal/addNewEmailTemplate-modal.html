@@ -3,7 +3,11 @@
 </div>
 
 <div class="modal-body" id="modal-body">
-	<input type="text" ng-model="template.smsType" class="input-field" placeholder="SMS Type">
+	<ui-select ng-model="template.smsType" theme="bootstrap">
+		<ui-select-match placeholder="Start enter Sms Type">{{$select.selected}}</ui-select-match>
+		<ui-select-choices repeat="smsType in smsTypes | filter: $select.search track by smsType">{{smsType}}</ui-select-choices>
+	</ui-select>
+	<br>
 	<input type="text" ng-model="template.subject" class="input-field" placeholder="Subject">
 
 	<textarea class="sms-content-textarea" ng-model="template.content" placeholder="Email Template"></textarea>
