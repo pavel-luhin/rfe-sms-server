@@ -30,11 +30,20 @@ angular.module('sms-server').controller('TemplateController',
                 bodyText: 'Are you sure you want to delete this sms template?'
             };
 
+	        var confirmDeleteEmailTemplateModalOptions = {
+		        closeButtonText: 'Cancel',
+		        actionButtonText: 'Delete',
+		        headerText: 'Delete Email Template?',
+		        bodyText: 'If you will remove this SMS template, email template will be removed too. Are you wish to continue?'
+	        };
+
             $scope.removeSMSTemplate = function (id) {
                 ConfirmModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
-                    $http.delete(RestURLFactory.SMS_TEMPLATE + '/' + id).then(function (data) {
-                        getSMSTemplates();
-                    })
+                    ConfirmModalService.showModal({}, confirmDeleteEmailTemplateModalOptions).then(function (result) {
+	                    $http.delete(RestURLFactory.SMS_TEMPLATE + '/' + id).then(function (data) {
+		                    getSMSTemplates();
+	                    })
+                    });
                 });
             };
         }
