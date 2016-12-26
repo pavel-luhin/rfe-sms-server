@@ -26,7 +26,6 @@
                       use-expressions="true" entry-point-ref="unauthorizedEntryPoint">
               <security:custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER"/>
               <security:intercept-url pattern="/rest/user/authenticate" access="permitAll()"/>
-              <security:intercept-url pattern="/rest/sms/interview" access="permitAll()"/>
               <security:intercept-url pattern="/**" access="isAuthenticated()"/>
               <security:csrf disabled="true"/>
        </security:http>
