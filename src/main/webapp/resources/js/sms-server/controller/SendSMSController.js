@@ -4,6 +4,8 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
         $scope.symbolsLeft = defaultSymbolsLeft;
         $scope.smsCount = 1;
 
+        $scope.sendSmsScope = $scope;
+
         $scope.messages = [];
 
         $scope.loading = true;
@@ -84,6 +86,8 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
         $scope.sendBulkSMS = function () {
             $scope.loading = true;
             var file = $scope.myFile;
+
+            console.log(file);
 
             var sameForAll = $scope.sameForAll;
             if (sameForAll === undefined) {
