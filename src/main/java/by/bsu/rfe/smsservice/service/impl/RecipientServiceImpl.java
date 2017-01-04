@@ -76,24 +76,7 @@ public class RecipientServiceImpl implements RecipientService {
     public List<RecipientDTO> getAllRecpients() {
         List<PersonEntity> persons = personRepository.findAll();
         List<GroupEntity> groups = groupRepository.findAll();
-
-        List<RecipientDTO> recipients = new ArrayList<>(persons.size() + groups.size());
-
-        for (PersonEntity personEntity : persons) {
-            RecipientDTO recipientDTO = new RecipientDTO();
-            recipientDTO.setName(personEntity.getFirstName());
-            recipientDTO.setRecipientType(RecipientType.PERSON);
-            recipients.add(recipientDTO);
-        }
-
-        for (GroupEntity groupEntity : groups) {
-            RecipientDTO recipientDTO = new RecipientDTO();
-            recipientDTO.setName(groupEntity.getName());
-            recipientDTO.setRecipientType(RecipientType.GROUP);
-            recipients.add(recipientDTO);
-        }
-
-        return recipients;
+        return mapRecipientListsToRecipientDTOs(persons, groups);
     }
 
     @Override
@@ -101,26 +84,7 @@ public class RecipientServiceImpl implements RecipientService {
         if (StringUtils.isNotEmpty(query)) {
             List<PersonEntity> persons = personRepository.getPersonsByQuery(query);
             List<GroupEntity> groups = groupRepository.getGroupsByQuery(query);
-
-            List<RecipientDTO> recipients = new ArrayList<>(persons.size() + groups.size());
-
-            for (PersonEntity personEntity : persons) {
-                RecipientDTO recipientDTO = new RecipientDTO();
-                recipientDTO.setId(personEntity.getId());
-                recipientDTO.setName(personEntity.getFirstName() + " " + personEntity.getLastName());
-                recipientDTO.setRecipientType(RecipientType.PERSON);
-                recipients.add(recipientDTO);
-            }
-
-            for (GroupEntity groupEntity : groups) {
-                RecipientDTO recipientDTO = new RecipientDTO();
-                recipientDTO.setId(groupEntity.getId());
-                recipientDTO.setName(groupEntity.getName());
-                recipientDTO.setRecipientType(RecipientType.GROUP);
-                recipients.add(recipientDTO);
-            }
-
-            return recipients;
+            return mapRecipientListsToRecipientDTOs(persons, groups);
         } else {
             return getAllRecpients();
         }
@@ -185,6 +149,28 @@ public class RecipientServiceImpl implements RecipientService {
 
         Page<GroupEntity> groupEntityPage = groupRepository.findPageByQuery(query, pageable);
         return new PageResponseDTO<>(DozerUtil.mapList(mapper, groupEntityPage.getContent(), GroupDTO.class), groupEntityPage.getTotalElements());
+    }
+
+    private List<RecipientDTO> mapRecipientListsToRecipientDTOs(List<PersonEntity> personEntities, List<GroupEntity> groupEntities) {
+        List<RecipientDTO> recipients = new ArrayList<>(personEntities.size() + groupEntities.size());
+
+        for (PersonEntity personEntity : personEntities) {
+            RecipientDTO recipientDTO = new RecipientDTO();
+            recipientDTO.setId(personEntity.getId());
+            recipientDTO.setName(personEntity.getFirstName() + " " + personEntity.getLastName());
+            recipientDTO.setRecipientType(RecipientType.PERSON);
+            recipients.add(recipientDTO);
+        }
+
+        for (GroupEntity groupEntity : groupEntities) {
+            RecipientDTO recipientDTO = new RecipientDTO();
+            recipientDTO.setId(groupEntity.getId());
+            recipientDTO.setName(groupEntity.getName());
+            recipientDTO.setRecipientType(RecipientType.GROUP);
+            recipients.add(recipientDTO);
+        }
+
+        return recipients;
     }
 
     private Pageable getPage(int skip, int offset, String sortField, String sortDirection) {
