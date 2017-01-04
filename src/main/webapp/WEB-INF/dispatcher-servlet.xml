@@ -21,4 +21,7 @@
        <mvc:interceptors>
               <bean class="by.bsu.rfe.smsservice.security.RequestLoggerInterceptor"/>
        </mvc:interceptors>
+
+       <bean id="multipartResolver"
+             class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 </beans>

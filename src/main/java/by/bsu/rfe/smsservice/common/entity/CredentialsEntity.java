@@ -1,30 +1,35 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
 
 /**
  * Created by PLugin on 14.11.2015.
  */
 @Entity
 @Table(name = "credentials")
-public class CredentialsEntity extends AbstractPersistable<Integer> {
+public class CredentialsEntity extends CreationDetails {
     @Column(name = "username")
     private String username;
     @Column(name = "sender")
     private String sender;
     @Column(name = "api_key")
     private String apiKey;
-    @OneToMany
-    @JoinColumn(name = "credentials_id")
-    private List<SmsTypeEntity> smsType;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_credentials"
+    )
+    private Set<UserEntity> users = new HashSet<>();
 
     public String getUsername() {
         return username;
@@ -50,11 +55,11 @@ public class CredentialsEntity extends AbstractPersistable<Integer> {
         this.sender = sender;
     }
 
-    public List<SmsTypeEntity> getSmsType() {
-        return smsType;
+    public Set<UserEntity> getUsers() {
+        return users;
     }
 
-    public void setSmsType(List<SmsTypeEntity> smsType) {
-        this.smsType = smsType;
+    public void setUsers(Set<UserEntity> users) {
+        this.users = users;
     }
 }

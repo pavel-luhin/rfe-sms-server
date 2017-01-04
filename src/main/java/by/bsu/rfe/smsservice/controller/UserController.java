@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,7 +44,13 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        String token = SecurityUtil.getAuthToken(request);
+        String token = SecurityUtil.getUserAuthToken(request);
         userService.logout(request, response, token);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/senderNames", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Set<String> getSenderNamesForUser() {
+        return userService.getSenderNames();
     }
 }

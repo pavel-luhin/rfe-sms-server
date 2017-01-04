@@ -12,16 +12,26 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class SecurityUtil {
 
-    public static final String AUTH_TOKEN_KEY = "auth_token";
+    public static final String USER_AUTH_TOKEN_KEY = "auth_token";
+    public static final String APPLICATION_AUTH_TOKEN_KEY = "application_token";
+
     public static final String ANONYMOUS_USERNAME = "Anonymous";
 
-    public static String getAuthToken(HttpServletRequest request) {
-        String token = request.getHeader(AUTH_TOKEN_KEY);
+    public static String getUserAuthToken(HttpServletRequest request) {
+        return getAuthenticationTokenFromRequest(request, USER_AUTH_TOKEN_KEY);
+    }
+
+    public static String getApplicationAuthToken(HttpServletRequest request) {
+        return getAuthenticationTokenFromRequest(request, APPLICATION_AUTH_TOKEN_KEY);
+    }
+
+    private static String getAuthenticationTokenFromRequest(HttpServletRequest request, String tokenKey) {
+        String token = request.getHeader(tokenKey);
         if (StringUtils.isEmpty(token)) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null && cookies.length > 0) {
                 for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals(AUTH_TOKEN_KEY)) {
+                    if (cookie.getName().equals(tokenKey)) {
                         token = cookie.getValue();
                     }
                 }

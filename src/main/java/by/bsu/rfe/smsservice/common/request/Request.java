@@ -14,7 +14,7 @@ public class Request {
     private List<NameValuePair> parameters;
 
     public Request() {
-        ;parameters = new ArrayList<NameValuePair>();
+        parameters = new ArrayList<NameValuePair>();
     }
 
     public String apiEndpoint() {

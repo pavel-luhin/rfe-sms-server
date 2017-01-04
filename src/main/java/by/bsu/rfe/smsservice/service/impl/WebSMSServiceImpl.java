@@ -1,40 +1,50 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import by.bsu.rfe.smsservice.builder.RequestBuilder;
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
-import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
-import by.bsu.rfe.smsservice.common.entity.EmailEntity;
-import by.bsu.rfe.smsservice.common.entity.SmsTypeEntity;
-import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
-import by.bsu.rfe.smsservice.common.request.Request;
-import by.bsu.rfe.smsservice.common.sms.base.BaseSMS;
-import by.bsu.rfe.smsservice.common.sms.base.EmailSMS;
-import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.EmailService;
-import by.bsu.rfe.smsservice.service.SmsInfoService;
-import by.bsu.rfe.smsservice.service.StatisticsService;
-import by.bsu.rfe.smsservice.service.WebSMSService;
-import by.bsu.rfe.smsservice.util.MessageTemplateUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getMessagesFromSheet;
+import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getSheetFromFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+
+import by.bsu.rfe.smsservice.builder.BalanceRequestBuilder;
+import by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder;
+import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
+import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
+import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.common.request.Request;
+import by.bsu.rfe.smsservice.common.sms.SmsDTO;
+import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
+import by.bsu.rfe.smsservice.security.util.SecurityUtil;
+import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.StatisticsService;
+import by.bsu.rfe.smsservice.service.WebSMSService;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -48,79 +58,202 @@ public class WebSMSServiceImpl implements WebSMSService {
 
     private static final String STATUS_PARAM = "status";
     private static final String STATUS_SUCCESS = "success";
+    private static final String BALANCE_PARAM = "balance";
+
+    private static final Integer MAX_BULK_SIZE = 500;
 
     @Autowired
-    @Qualifier("sendSMS")
-    private RequestBuilder<BaseSMS> smsRequestBuilder;
+    private SendSMSRequestBuilder smsRequestBuilder;
     @Autowired
-    private SmsInfoService smsInfoService;
+    private BalanceRequestBuilder balanceRequestBuilder;
     @Autowired
-    private CredentialsService credentialsService;
-    @Autowired
-    private StatisticsService statisticsService;
+    private ObjectMapper objectMapper;
     @Autowired
     private EmailService emailService;
     @Autowired
-    private ObjectMapper objectMapper;
+    private StatisticsService statisticsService;
+    @Autowired
+    private CredentialsService credentialsService;
 
-    public SMSResultDTO sendSMS(BaseSMS sms) {
-        Request request = smsRequestBuilder.buildRequest(sms);
-        LOG.info("Prepared request with parameters:");
-        LOG.info("" + request.getParameters());
-        StatisticsEntity statisticsEntity = new StatisticsEntity();
-        statisticsEntity.setRecipientType(sms.recipientType());
-        statisticsEntity.setNumber(sms.getRecipient());
-        statisticsEntity.setText(sms.getContent());
-        statisticsEntity.setSentDate(new Date());
+    public SMSResultDTO sendSMS(SmsDTO smsDTO) {
+        String smsType = smsDTO.getSmsTemplate().getSmsType();
+        LOG.info("Preparing sms with SMSType {}", smsType);
+        Map<String, RecipientType> recipients = MapUtils.emptyIfNull(smsDTO.getRecipients());
+        Map<String, Map<String, String>> smsParameters = MapUtils.emptyIfNull(smsDTO.getSmsParameters());
 
-        SmsTypeEntity smsTypeEntity = smsInfoService.getSMSTypeEntity(sms.getClass().getSimpleName());
-        statisticsEntity.setSmsType(smsTypeEntity);
+        SMSResultDTO smsResultDTO = new SMSResultDTO();
 
-        CredentialsEntity credentialsEntity = credentialsService.getCredentials(sms.getClass().getSimpleName());
-        statisticsEntity.setCredentials(credentialsEntity);
+        for (Map.Entry<String, RecipientType> recipient : recipients.entrySet()) {
+            SMSResultDTO oneSMSResult = prepareAndSendSMS(recipient, smsParameters.get(recipient.getKey()), smsDTO.getSmsTemplate(),
+                    smsDTO.isDuplicateEmail(), smsDTO.getSmsContent(), smsDTO.getRequestSenderName());
+            setTotalSmsDTO(oneSMSResult, smsResultDTO);
+        }
 
-        SMSResultDTO smsResult = new SMSResultDTO();
+
+        return smsResultDTO;
+    }
+
+    @Override
+    public SMSResultDTO bulkSendSMS(MultipartFile file, SmsTemplateEntity smsTemplate, Boolean sameContentForAll, String requestSenderName) {
+        LOG.info("Preparing bulk send sms for file: {}", file.getOriginalFilename());
+        Sheet sheet = getSheetFromFile(file);
+        Map<String, String> totalMessages = getMessagesFromSheet(sheet);
+        LOG.info("Retrieved {} messages", totalMessages.size());
+
+        SMSResultDTO totalSMSResult = new SMSResultDTO();
+
+        Boolean oneMoreTime = true;
+
+        while (oneMoreTime) {
+            StatisticsEntity statisticsEntity = new StatisticsEntity();
+            oneMoreTime = false;
+            try {
+                Map<String, String> messages = null;
+                if (totalMessages.size() <= MAX_BULK_SIZE) {
+                    messages = totalMessages;
+                } else {
+                    messages = new HashMap<>();
+                    int count = 1;
+                    Iterator<Map.Entry<String, String>> entryIterator = totalMessages.entrySet().iterator();
+                    while (count <= MAX_BULK_SIZE) {
+                        oneMoreTime = true;
+                        Map.Entry<String, String> entry = entryIterator.next();
+                        messages.put(entry.getKey(), entry.getValue());
+                        entryIterator.remove();
+                        count++;
+                    }
+                }
+
+                Request request = smsRequestBuilder.buildBulkRequest(messages, requestSenderName);
+                HttpResponse response = execute(request);
+                String stringResponse = getContent(response);
+
+                CredentialsEntity credentialsEntity = null;
+                if (StringUtils.isEmpty(requestSenderName)) {
+                    credentialsEntity = credentialsService.getDefaultCredentialsForCurrentUser();
+                } else {
+                    credentialsEntity = credentialsService.getCredentialsForSenderName(requestSenderName);
+                }
+
+                statisticsEntity.setSender(credentialsEntity.getSender());
+                statisticsEntity.setSmsType(smsTemplate.getSmsType());
+                statisticsEntity.setRecipientType(RecipientType.NUMBER);
+                statisticsEntity.setSentDate(new Date());
+                statisticsEntity.setResponse(stringResponse);
+                statisticsEntity.setText("//Bulk sending statistics currently doesn't support displaying recipient-specific parameters//. Sent sms count " + messages.size());
+                statisticsEntity.setRecipient("BULK");
+                statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+
+                if (isSuccess(stringResponse)) {
+                    LOG.info("Bulk send was successful");
+                    totalSMSResult.setCount(totalMessages.size());
+                    statisticsEntity.setError(false);
+                } else {
+                    LOG.info("Something went wrong with bulk send");
+                    totalSMSResult.incrementErrorCount();
+                    statisticsEntity.setError(true);
+                    //TODO process retrieving error
+                }
+
+                statisticsService.saveStatistics(statisticsEntity);
+            } catch (IOException e) {
+                LOG.info("Something went wrong with bulk send. {}", e);
+            }
+        }
+
+        return totalSMSResult;
+    }
+
+    @Override
+    public Double getBalance(String username, String password) {
+        Request request = balanceRequestBuilder.buildRequest(username, password);
+        try {
+            HttpResponse response = execute(request);
+            String content = getContent(response);
+            return Double.valueOf(getParameterFromResponse(content, BALANCE_PARAM));
+        } catch (IOException e) {
+            LOG.error("Something went wrong while retrieving balance for {}", username);
+        }
+
+        return null;
+    }
+
+    private SMSResultDTO prepareAndSendSMS(Map.Entry<String, RecipientType> recipient, Map<String, String> smsParameters, SmsTemplateEntity smsTemplate,
+            Boolean duplicateEmail, String smsContent, String requestSenderName) {
+        SMSResultDTO smsResultDTO = new SMSResultDTO();
+        smsResultDTO.incrementTotalCount();
+        Request request = null;
+
+        if (StringUtils.isNotEmpty(smsTemplate.getTemplate())) {
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsTemplate.getTemplate(), requestSenderName);
+        } else {
+            request = smsRequestBuilder.buildRequest(recipient, smsParameters, smsContent, requestSenderName);
+        }
+
+        LOG.info("Prepared sms with parameters {}", request.getParameters());
 
         try {
             HttpResponse response = execute(request);
             String content = getContent(response);
-            statisticsEntity.setResponse(content);
 
-            ObjectNode objectNode = objectMapper.readValue(content, ObjectNode.class);
-            if (objectNode.get(STATUS_PARAM).asText().equals(STATUS_SUCCESS)) {
-                LOG.debug("Sms sent successfully");
-                statisticsEntity.setError(false);
-                smsResult.setSuccess(true);
-            } else {
-                LOG.debug("Error while sending sms");
-                statisticsEntity.setError(true);
-                smsResult.setSuccess(false);
-            }
-            if (sms instanceof EmailSMS) {
-                EmailSMS emailSMS = (EmailSMS) sms;
-                EmailEntity emailEntity = emailService.getEmailEntity(sms.getClass().getSimpleName());
-                if (emailEntity != null) {
-                    String emailTemplate = emailEntity.getContent();
-                    Map<String, String> templateParameters = MessageTemplateUtils.getParametersFromSMS(sms);
+            StatisticsEntity statisticsEntity = new StatisticsEntity();
 
-                    for (Map.Entry<String, String> parameter : templateParameters.entrySet()) {
-                        emailTemplate = emailTemplate.replace(parameter.getKey(), parameter.getValue());
-                    }
-
-                    emailService.sendEmail(emailSMS.getEmail(), emailEntity.getSubject(), emailTemplate);
-                } else {
-                    emailService.sendEmail(emailSMS.getEmail(), emailSMS.getClass().getSimpleName(), emailSMS.getContent());
+            for (NameValuePair parameter : request.getParameters()) {
+                if (parameter.getName().equals(WebSMSParam.MESSAGE.getRequestParam())) {
+                    statisticsEntity.setText(parameter.getValue());
+                    break;
                 }
             }
+
+            CredentialsEntity credentialsEntity = null;
+            if (StringUtils.isEmpty(requestSenderName)) {
+                credentialsEntity = credentialsService.getDefaultCredentialsForCurrentUser();
+            } else {
+                credentialsEntity = credentialsService.getCredentialsForSenderName(requestSenderName);
+            }
+
+            statisticsEntity.setSender(credentialsEntity.getSender());
+            statisticsEntity.setSmsType(smsTemplate.getSmsType());
+            statisticsEntity.setRecipientType(recipient.getValue());
+            statisticsEntity.setSentDate(new Date());
+            statisticsEntity.setResponse(content);
+            statisticsEntity.setRecipient(recipient.getKey());
+            statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+
+            if (isSuccess(content)) {
+                LOG.info("SMS sent successfully");
+                statisticsEntity.setError(false);
+            } else {
+                LOG.error("Error while sending sms");
+                LOG.error("Detail response is:");
+                LOG.error("{}", content);
+                smsResultDTO.setLastError(content);
+                smsResultDTO.incrementErrorCount();
+                statisticsEntity.setError(true);
+            }
+
+            statisticsService.saveStatistics(statisticsEntity);
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            statisticsService.saveStatistics(statisticsEntity);
         }
-        return smsResult;
+
+        if (duplicateEmail) {
+            emailService.processSendingEmail(recipient, smsParameters, smsTemplate.getSmsType());
+        }
+        return smsResultDTO;
     }
 
-    private HttpResponse execute(Request request) throws IOException {
+    private void setTotalSmsDTO(SMSResultDTO resultPerSMS, SMSResultDTO totalResult) {
+        if (StringUtils.isEmpty(resultPerSMS.getLastError())) {
+            totalResult.incrementTotalCount();
+        } else {
+            totalResult.incrementTotalCount();
+            totalResult.incrementErrorCount();
+            totalResult.setLastError(resultPerSMS.getLastError());
+        }
+    }
+
+    private static HttpResponse execute(Request request) throws IOException {
         String apiEndpoint = request.apiEndpoint();
 
         org.apache.http.client.methods.RequestBuilder requestBuilder = org.apache.http.client.methods.RequestBuilder.create("POST");
@@ -131,7 +264,7 @@ public class WebSMSServiceImpl implements WebSMSService {
         return httpClient.execute(httpRequest);
     }
 
-    private String getContent(HttpResponse httpResponse) throws IOException {
+    private static String getContent(HttpResponse httpResponse) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
         String unicodeLine = "";
         StringBuilder unicodeContent = new StringBuilder();
@@ -141,5 +274,20 @@ public class WebSMSServiceImpl implements WebSMSService {
         }
 
         return StringEscapeUtils.unescapeJava(unicodeContent.toString());
+    }
+
+    private String getParameterFromResponse(String response, String parameter) {
+        ObjectNode objectNode = null;
+        try {
+            objectNode = objectMapper.readValue(response, ObjectNode.class);
+            return objectNode.get(parameter).asText();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Boolean isSuccess(String response) {
+        return STATUS_SUCCESS.equals(getParameterFromResponse(response, STATUS_PARAM));
     }
 }

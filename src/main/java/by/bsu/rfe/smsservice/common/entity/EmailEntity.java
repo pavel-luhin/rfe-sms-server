@@ -4,6 +4,7 @@ import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -12,12 +13,13 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "email_template")
-public class EmailEntity extends AbstractPersistable<Integer> {
+public class EmailEntity extends CreationDetails {
     private String subject;
+    @Lob
     private String content;
     @OneToOne
-    @JoinColumn(name = "sms_type")
-    private SmsTypeEntity smsType;
+    @JoinColumn(name = "sms_template")
+    private SmsTemplateEntity smsTemplate;
 
     public String getSubject() {
         return subject;
@@ -35,11 +37,11 @@ public class EmailEntity extends AbstractPersistable<Integer> {
         this.content = content;
     }
 
-    public SmsTypeEntity getSmsType() {
-        return smsType;
+    public SmsTemplateEntity getSmsTemplate() {
+        return smsTemplate;
     }
 
-    public void setSmsType(SmsTypeEntity smsType) {
-        this.smsType = smsType;
+    public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
+        this.smsTemplate = smsTemplate;
     }
 }

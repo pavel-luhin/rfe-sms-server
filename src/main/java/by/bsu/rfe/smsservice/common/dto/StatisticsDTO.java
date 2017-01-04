@@ -9,13 +9,14 @@ import java.util.Date;
  */
 public class StatisticsDTO {
     private Boolean error;
-    private String username;
-    private String number;
+    private String senderName;
+    private String recipient;
     private String text;
     private String response;
     private String smsType;
     private RecipientType recipientType;
     private Date sentDate;
+    private String initiatedBy;
 
     public Boolean getError() {
         return error;
@@ -25,20 +26,20 @@ public class StatisticsDTO {
         this.error = error;
     }
 
-    public String getUsername() {
-        return username;
+    public String getSenderName() {
+        return senderName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setSenderName(String senderName) {
+        this.senderName = senderName;
     }
 
-    public String getNumber() {
-        return number;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getText() {
@@ -79,5 +80,13 @@ public class StatisticsDTO {
 
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
     }
 }

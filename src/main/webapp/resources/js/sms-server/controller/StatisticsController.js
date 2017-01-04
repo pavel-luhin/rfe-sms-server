@@ -6,21 +6,22 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
             },
             asc: {
                 elementClass: "fa fa-sort-asc",
-                    sortString: 'asc'
+                sortString: 'asc'
             },
             desc: {
                 elementClass: "fa fa-sort-desc",
-                    sortString: 'desc'
+                sortString: 'desc'
             }
         };
 
         var sortOrder = {
             error: sortConstants.notSorted,
-                smsType: sortConstants.notSorted,
-                username: sortConstants.notSorted,
-                number: sortConstants.notSorted,
-                recipientType: sortConstants.notSorted,
-                sentDate: sortConstants.desc
+            smsType: sortConstants.notSorted,
+            senderName: sortConstants.notSorted,
+            number: sortConstants.notSorted,
+            recipientType: sortConstants.notSorted,
+            sentDate: sortConstants.desc,
+            initiatedBy: sortConstants.notSorted
         };
 
         var sortField = 'sentDate';
@@ -56,21 +57,21 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
         var pageSize = {
             ten: {
                 display: "10",
-                    value: 10,
-                    active: true
+                value: 10,
+                active: true
             },
             fifteen: {
                 display: "15",
-                    value: 15,
-                    active: false
+                value: 15,
+                active: false
             },
             fifty: {
                 display: "50",
-                    value: 50,
-                    active: false
+                value: 50,
+                active: false
             }
         };
-        
+
         var currentPage = 1;
         var currentPageSize = pageSize.ten;
         var pages = [];
@@ -91,7 +92,7 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
 
         var changePage = function (targetPage) {
             skip = (targetPage - 1) * currentPageSize.value;
-            
+
             currentPage = targetPage;
             recalculatePages();
         };
@@ -101,33 +102,29 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
             currentPageSize = targetPageSize;
             currentPageSize.active = true;
         };
-        
+
         $scope.pageSize = pageSize;
         $scope.pages = pages;
-        
+
         $scope.getPage = function (targetPage) {
             changePage(targetPage);
             $scope.loadStatistics();
         };
-        
+
         $scope.changePageSize = function (targetPageSize) {
-            console.log(targetPageSize);
             changePageSize(targetPageSize);
             $scope.loadStatistics();
         };
 
         $scope.statistics = [];
-        
+
         $scope.loadStatistics = function () {
-            $http.get(RestURLFactory.GET_FULL_STATISTICS + 
+            $http.get(RestURLFactory.GET_FULL_STATISTICS +
                 '/page?skip=' + skip + '&offset=' + currentPageSize.value + '&sortField=' + sortField + '&sortDirection=' + sortDirection)
                 .success(function (data) {
-                    $scope.statistics = data;
-                });
-            $http.get(RestURLFactory.GET_FULL_STATISTICS +
-                    '/count')
-                .success(function (data) {
-                    count = Math.ceil(data / currentPageSize.value);
+                    $scope.statistics = data.items;
+
+                    count = Math.ceil(data.count / currentPageSize.value);
                     recalculatePages();
                 });
         };

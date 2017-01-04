@@ -8,12 +8,35 @@
         <class-a>by.bsu.rfe.smsservice.common.entity.StatisticsEntity</class-a>
         <class-b>by.bsu.rfe.smsservice.common.dto.StatisticsDTO</class-b>
         <field>
-            <a>credentials.sender</a>
-            <b>username</b>
+            <a>sender</a>
+            <b>senderName</b>
         </field>
+    </mapping>
+
+    <mapping type="one-way">
+        <class-a>by.bsu.rfe.smsservice.common.entity.EmailEntity</class-a>
+        <class-b>by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO</class-b>
         <field>
-            <a>smsType.smsType</a>
+            <a>smsTemplate.smsType</a>
             <b>smsType</b>
+        </field>
+    </mapping>
+
+    <mapping type="one-way">
+        <class-a>by.bsu.rfe.smsservice.common.entity.ExternalApplicationEntity</class-a>
+        <class-b>by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO</class-b>
+        <field>
+            <a>defaultCredentials.sender</a>
+            <b>credentialsSenderName</b>
+        </field>
+    </mapping>
+
+    <mapping>
+        <class-a>by.bsu.rfe.smsservice.common.entity.PersonEntity</class-a>
+        <class-b>by.bsu.rfe.smsservice.common.dto.PersonDTO</class-b>
+        <field>
+            <a>id</a>
+            <b>id</b>
         </field>
     </mapping>
 </mappings>

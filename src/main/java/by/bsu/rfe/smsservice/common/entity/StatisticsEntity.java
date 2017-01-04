@@ -13,20 +13,19 @@ import java.util.Date;
 @Table(name = "statistics")
 public class StatisticsEntity extends AbstractPersistable<Integer> {
     private Boolean error;
-    @OneToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "cred_fk"))
-    private CredentialsEntity credentials;
-    private String number;
+    private String sender;
+    private String recipient;
     private String text;
+    @Lob
     private String response;
-    @OneToOne
-    @JoinColumn(name = "sms_type")
-    private SmsTypeEntity smsType;
     @Enumerated(EnumType.STRING)
     @Column(name = "recipient_type")
     private RecipientType recipientType;
     @Column(name = "sent_date")
     private Date sentDate;
+    private String smsType;
+    @Column(name = "initiated_by")
+    private String initiatedBy;
 
     public Boolean getError() {
         return error;
@@ -36,20 +35,12 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
         this.error = error;
     }
 
-    public CredentialsEntity getCredentials() {
-        return credentials;
+    public String getRecipient() {
+        return recipient;
     }
 
-    public void setCredentials(CredentialsEntity credentials) {
-        this.credentials = credentials;
-    }
-
-    public String getNumber() {
-        return number;
-    }
-
-    public void setNumber(String number) {
-        this.number = number;
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 
     public String getText() {
@@ -68,14 +59,6 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
         this.response = response;
     }
 
-    public SmsTypeEntity getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(SmsTypeEntity smsType) {
-        this.smsType = smsType;
-    }
-
     public RecipientType getRecipientType() {
         return recipientType;
     }
@@ -90,5 +73,29 @@ public class StatisticsEntity extends AbstractPersistable<Integer> {
 
     public void setSentDate(Date sentDate) {
         this.sentDate = sentDate;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
+
+    public String getSmsType() {
+        return smsType;
+    }
+
+    public void setSmsType(String smsType) {
+        this.smsType = smsType;
+    }
+
+    public String getInitiatedBy() {
+        return initiatedBy;
+    }
+
+    public void setInitiatedBy(String initiatedBy) {
+        this.initiatedBy = initiatedBy;
     }
 }

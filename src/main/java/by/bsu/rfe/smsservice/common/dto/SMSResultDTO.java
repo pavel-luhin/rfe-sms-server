@@ -4,13 +4,40 @@ package by.bsu.rfe.smsservice.common.dto;
  * Created by pluhin on 6/1/16.
  */
 public class SMSResultDTO {
-    private Boolean success;
+    private int count;
+    private int errorCount;
 
-    public Boolean getSuccess() {
-        return success;
+    private String lastError;
+
+    public int getCount() {
+        return count;
     }
 
-    public void setSuccess(Boolean success) {
-        this.success = success;
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getErrorCount() {
+        return errorCount;
+    }
+
+    public void setErrorCount(int errorCount) {
+        this.errorCount = errorCount;
+    }
+
+    public String getLastError() {
+        return lastError;
+    }
+
+    public void setLastError(String lastError) {
+        this.lastError = lastError;
+    }
+
+    public void incrementTotalCount() {
+        this.count++;
+    }
+
+    public void incrementErrorCount() {
+        this.errorCount++;
     }
 }

@@ -1,4 +1,17 @@
-var application = angular.module('sms-server', ['ngRoute', 'ngCookies', 'ngProgress', 'ngStorage']);
+var application = angular.module('sms-server',
+                                 ['ngRoute',
+                                  'ngCookies',
+                                  'ngProgress',
+                                  'ngStorage',
+                                  'ngTagsInput',
+                                  'ui.bootstrap',
+                                  'ui.bootstrap.tpls',
+                                  'ui.bootstrap.tooltip',
+                                  'ngSanitize',
+                                  'ui.select',
+                                  'angular-md5',
+                                  'toaster'
+                                 ]);
 
 application.config(['$httpProvider',
     function ($httpProvider) {
@@ -36,16 +49,46 @@ application.config(['$routeProvider',
                 controller: 'AuthenticationController'
             })
             .when('/recipients', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'recipients.html',
-                controller: 'RecipientsController'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'recipients.html'
             })
             .when('/recipients/add', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewRecipient.html',
-                controller: 'RecipientsController'
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewRecipient.html'
             })
             .when('/recipients/add-group', {
                 templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
-                controller: 'RecipientsController'
+                controller: 'AddOrEditGroupController'
+            })
+            .when('/recipients/edit-group/:groupId', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
+                controller: 'AddOrEditGroupController'
+            })
+            .when('/setup', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup.html',
+                controller: 'SetupController'
+            })
+            .when('/setup/templates', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/templates.html',
+                controller: 'TemplateController'
+            })
+            .when('/setup/credentials', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/credentials.html',
+                controller: 'CredentialsController'
+            })
+            .when('/setup/users', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/users.html',
+                controller: 'UsersController'
+            })
+            .when('/setup/applications', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/applications.html',
+                controller: 'ApplicationsController'
+            })
+            .when('/setup/emailTemplates', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/emailTemplates.html',
+                controller: 'EmailTemplateController'
+            })
+            .when('/test', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'test.html',
+                controller: 'TestController'
             })
             .otherwise({
                 redirectTo: '/statistics'
@@ -54,7 +97,7 @@ application.config(['$routeProvider',
 ]);
 
 application.factory('myHttpInterceptor',
-    function($q, $location) {
+    function($q, $location, toaster) {
         return {
             'requestError': function (rejection) {
                 if (canRecover(rejection)) {
@@ -64,9 +107,22 @@ application.factory('myHttpInterceptor',
             },
 
             'responseError': function (rejection) {
+
                 if (rejection.status === 401) {
                     $location.path('/login');
                 }
+
+                if (rejection.status === 500) {
+                    var body = rejection.data;
+                    var messageObject = JSON.parse(body);
+                    toaster.pop({
+                        type: 'error',
+                        title: 'Error',
+                        body: messageObject.message,
+                        timeout: 0
+                    });
+                }
+
                 return $q.reject(rejection);
             }
         };

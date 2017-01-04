@@ -8,6 +8,7 @@ public enum WebSMSParam {
     APIKEY("apikey"),
     RECIPIENTS("recipients"),
     MESSAGE("message"),
+    MESSAGES("messages"),
     SENDER("sender"),
     TEST("test");
 

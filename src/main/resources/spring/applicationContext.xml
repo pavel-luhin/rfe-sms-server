@@ -6,12 +6,12 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
        <context:property-placeholder/>
        <context:component-scan base-package="by.bsu.rfe.smsservice.service.impl"/>
-       <context:component-scan base-package="by.bsu.rfe.smsservice.builder.impl"/>
+       <context:component-scan base-package="by.bsu.rfe.smsservice.builder"/>
        <jpa:repositories base-package="by.bsu.rfe.smsservice.repository"/>
 
        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
               <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-              <property name="url" value="jdbc:mysql://localhost:3306/sms_server" />
+              <property name="url" value="${database.url}" />
               <property name="username" value="${database.username}"/>
               <property name="password" value="${database.password}"/>
               <property name="connectionProperties" value="useUnicode=true;characterEncoding=utf8;autoReconnect=true"/>
@@ -42,4 +42,5 @@
               </constructor-arg>
        </bean>
        <bean class="com.fasterxml.jackson.databind.ObjectMapper"/>
+       <bean class="by.bsu.rfe.smsservice.common.SpringContextHolder"/>
 </beans>

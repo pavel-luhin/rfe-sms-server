@@ -1,10 +1,32 @@
 <div class="col-md-offset-2 col-md-8">
-    <form ng-submit="sendSMS(sms)">
-        <span ng-show="error" class="login-error">{{error}}</span>
-        <input type="text" class="input-field" placeholder="Search by recipients and groups" ng-model="sms.recipient">
-        <textarea placeholder="Message content" class="sms-content-textarea" ng-change="countSymbols()" ng-model="sms.content"></textarea>
-        <p ng-show="smsCount > 1" class="sms-content-status">{{smsCount}} sms&nbsp;</p>
-        <p class="sms-content-status">{{symbolsLeft}} symbols left</p>
-        <input type="submit" class="input-submit" value="Send SMS">
-    </form>
+    <h3>Select sender name:</h3>
+    <select
+            style="margin-bottom: 30px"
+            class="sender-names"
+            ng-model="requestSenderName"
+            ng-options="senderName for senderName in senderNames">
+    </select>
+    <div>
+        <tags-input display-property="name" placeholder="Search by recipients and groups" ng-model="sms.recipient">
+            <auto-complete source="loadRecipients($query)" load-on-focus="true"
+                           template="autocomplete-template"></auto-complete>
+        </tags-input>
+    </div>
+    <div class="sms-tabs">
+        <uib-tabset active="0">
+            <uib-tab index="0" heading="Send Custom SMS" select="showTab(1)">
+                <div ng-if="activeTab === 1" ng-include="'/resources/templates/send-sms/custom.html'"></div>
+            </uib-tab>
+            <uib-tab index="1" heading="Send Bulk SMS" select="showTab(2)">
+                <div ng-if="activeTab === 2" ng-include="'/resources/templates/send-sms/bulk.html'"></div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
 </div>
+
+<script type="text/ng-template" id="autocomplete-template">
+    <div class="center-block">
+        <span>{{data.name}}</span>
+        <span>({{data.recipientType}})</span>
+    </div>
+</script>
