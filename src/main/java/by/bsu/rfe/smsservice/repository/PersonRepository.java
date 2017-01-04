@@ -22,7 +22,7 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Integer> {
     @Query("FROM PersonEntity pe JOIN FETCH pe.groups g WHERE :groupId IN g.id")
     List<PersonEntity> getPersonsWithGroup(@Param("groupId") Integer groupId);
 
-    @Query("FROM PersonEntity pe INNER JOIN pe.groups gr WITH gr.id != :groupId")
+    @Query("FROM PersonEntity pe WHERE NOT EXISTS (SELECT grp FROM pe.groups grp WHERE grp.id = :groupId)")
     List<PersonEntity> getPersonsWithoutGroup(@Param("groupId") Integer groupId);
 
     @Query("SELECT pe FROM PersonEntity pe WHERE pe.firstName LIKE %?1% OR pe.lastName LIKE %?1% OR pe.phoneNumber LIKE %?1%")
