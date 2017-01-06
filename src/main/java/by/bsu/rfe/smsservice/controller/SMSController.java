@@ -1,16 +1,15 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
+import by.bsu.rfe.smsservice.service.SmsQueueService;
 import org.omg.CORBA.portable.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +37,9 @@ public class SMSController {
 
     @Autowired
     private SmsTemplateService smsTemplateService;
+
+    @Autowired
+    private SmsQueueService smsQueueService;
 
     @ResponseBody
     @RequestMapping(value = "/sms/*", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -67,5 +69,17 @@ public class SMSController {
     @RequestMapping(value = "/sms/template", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<SmsTemplateEntity> getSMSTemplate() {
         return smsTemplateService.getAllSmsTemplates();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/sms/queue", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<SmsQueueEntity> getAllSmsFromQueue() {
+        return smsQueueService.getAllSmsFromQueue();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/sms/queue", method = RequestMethod.DELETE)
+    public void removeSmsFromQueue(@RequestParam("id") Integer id) {
+        smsQueueService.removeFromQueue(id);
     }
 }

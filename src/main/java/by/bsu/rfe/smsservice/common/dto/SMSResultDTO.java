@@ -9,6 +9,8 @@ public class SMSResultDTO {
 
     private String lastError;
 
+    private boolean inQueue;
+
     public int getCount() {
         return count;
     }
@@ -39,5 +41,13 @@ public class SMSResultDTO {
 
     public void incrementErrorCount() {
         this.errorCount++;
+    }
+
+    public boolean isInQueue() {
+        return inQueue;
+    }
+
+    public void setInQueue(boolean inQueue) {
+        this.inQueue = inQueue;
     }
 }

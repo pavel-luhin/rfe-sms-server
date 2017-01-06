@@ -35,6 +35,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
 
         $scope.sendSMS = function (smsObject) {
             $scope.loading = true;
+            console.log(smsObject);
             if (isSMSValid(smsObject)) {
                 $scope.error = undefined;
             }
@@ -55,18 +56,25 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
 
             $http.post(RestURLFactory.SEND_CUSTOM_SMS, sms)
                 .then(function (data) {
-                    if (data.data.errorCount == 0) {
-                        toaster.pop({
-                            type: 'success',
-                            title: 'Success',
-                            body: 'SMS sent successfully',
-                            timeout: 0
-                        });
-                    } else {
+                    if (data.data.errorCount != 0) {
                         toaster.pop({
                             type: 'error',
                             title: 'SMS was not sent',
                             body: data.data.lastError,
+                            timeout: 0
+                        });
+                    } else if (data.data.inQueue == true) {
+                        toaster.pop({
+                            type: 'warning',
+                            title: 'Warning',
+                            body: 'Mute mode is enabled. Sms placed in queue',
+                            timeout: 0
+                        });
+                    } else {
+                        toaster.pop({
+                            type: 'success',
+                            title: 'Success',
+                            body: 'SMS sent successfully',
                             timeout: 0
                         });
                     }

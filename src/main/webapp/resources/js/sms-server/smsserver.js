@@ -86,6 +86,14 @@ application.config(['$routeProvider',
                 templateUrl: BASE_TEMPLATE_LOCATION + 'setup/emailTemplates.html',
                 controller: 'EmailTemplateController'
             })
+            .when('/setup/properties', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/properties.html',
+                controller: 'SmsServerPropertiesController'
+            })
+            .when('/sms-queue', {
+                templateUrl: BASE_TEMPLATE_LOCATION + 'smsQueue.html',
+                controller: 'SmsQueueController'
+            })
             .when('/test', {
                 templateUrl: BASE_TEMPLATE_LOCATION + 'test.html',
                 controller: 'TestController'
