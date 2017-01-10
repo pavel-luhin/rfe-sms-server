@@ -8,9 +8,8 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
-import by.bsu.rfe.smsservice.common.dto.GroupDTO;
-import by.bsu.rfe.smsservice.common.dto.PersonDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +25,7 @@ import java.util.regex.Pattern;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
+import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
@@ -61,16 +61,7 @@ public class SendSMSRequestBuilder {
         Request request = buildBaseRequest(requestSenderName);
 
         request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
-
-        if (recipient.getValue() == RecipientType.NUMBER) {
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
-        } else if (recipient.getValue() == RecipientType.GROUP) {
-            GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
-        } else {
-            PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
-        }
+        addRecipients(request, recipient);
 
         String message = createMessage(smsContent, parameters, smsContent);
 
@@ -85,6 +76,20 @@ public class SendSMSRequestBuilder {
         request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
         String messagesArray = createArrayOfMessages(messages);
         request.addParameter(new BasicNameValuePair(MESSAGES.getRequestParam(), messagesArray));
+        return request;
+    }
+
+    public Request buildRequestForSmsFromQueue(SmsQueueEntity smsQueueEntity) {
+        Request request = new Request();
+
+        request.addParameter(new BasicNameValuePair(USER.getRequestParam(), smsQueueEntity.getCredentials().getUsername()));
+        request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), smsQueueEntity.getCredentials().getApiKey()));
+        request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), smsQueueEntity.getCredentials().getSender()));
+        request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), smsQueueEntity.getMessage()));
+        request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
+        request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
+
+        addRecipients(request, new MutablePair<>(smsQueueEntity.getRecipient(), smsQueueEntity.getRecipientType()));
         return request;
     }
 
@@ -158,5 +163,17 @@ public class SendSMSRequestBuilder {
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         stringBuilder.append("]");
         return stringBuilder.toString();
+    }
+
+    private void addRecipients(Request request, Map.Entry<String, RecipientType> recipient) {
+        if (recipient.getValue() == RecipientType.NUMBER) {
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
+        } else if (recipient.getValue() == RecipientType.GROUP) {
+            GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
+        } else {
+            PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
+        }
     }
 }

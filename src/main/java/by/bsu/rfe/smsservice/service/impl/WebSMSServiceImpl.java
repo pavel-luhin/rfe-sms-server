@@ -34,6 +34,7 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import by.bsu.rfe.smsservice.builder.BalanceRequestBuilder;
@@ -44,7 +45,6 @@ import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
-import by.bsu.rfe.smsservice.common.enums.SmsServerProperty;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.sms.SmsDTO;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
@@ -103,7 +103,6 @@ public class WebSMSServiceImpl implements WebSMSService {
             setTotalSmsDTO(oneSMSResult, smsResultDTO);
         }
 
-
         return smsResultDTO;
     }
 
@@ -119,7 +118,6 @@ public class WebSMSServiceImpl implements WebSMSService {
         Boolean oneMoreTime = true;
 
         while (oneMoreTime) {
-            StatisticsEntity statisticsEntity = new StatisticsEntity();
             oneMoreTime = false;
             Map<String, String> messages = null;
             if (totalMessages.size() <= MAX_BULK_SIZE) {
@@ -148,10 +146,27 @@ public class WebSMSServiceImpl implements WebSMSService {
 
             sendSMSAndSaveStatistics(request, credentialsEntity,
                     "//Bulk sending statistics currently doesn't support displaying recipient-specific parameters//. Sent sms count" + messages.size(),
-                    new MutablePair<>("BULK", NUMBER), smsTemplate, totalSMSResult);
+                    new MutablePair<>("BULK", NUMBER), smsTemplate, totalSMSResult, SecurityUtil.getCurrentUsername(), false);
         }
 
         return totalSMSResult;
+    }
+
+    @Override
+    public SMSResultDTO sendSmsFromQueue(List<SmsQueueEntity> smsQueueEntities) {
+        SMSResultDTO totalSmsResult = new SMSResultDTO();
+        for (SmsQueueEntity smsQueueEntity : smsQueueEntities) {
+            Request request = smsRequestBuilder.buildRequestForSmsFromQueue(smsQueueEntity);
+            LOG.info("Prepared sms with parameters {}", request.getParameters());
+
+            SMSResultDTO smsResultDTO = sendSMSAndSaveStatistics(request, smsQueueEntity.getCredentials(), smsQueueEntity.getMessage(),
+                    new MutablePair<>(smsQueueEntity.getRecipient(), smsQueueEntity.getRecipientType()), smsQueueEntity.getSmsType(),
+                    new SMSResultDTO(), smsQueueEntity.getCreatedBy(), true);
+
+            setTotalSmsDTO(smsResultDTO, totalSmsResult);
+        }
+
+        return totalSmsResult;
     }
 
     @Override
@@ -197,7 +212,7 @@ public class WebSMSServiceImpl implements WebSMSService {
             }
         }
 
-        sendSMSAndSaveStatistics(request, credentialsEntity, text, recipient, smsTemplate, smsResultDTO);
+        sendSMSAndSaveStatistics(request, credentialsEntity, text, recipient, smsTemplate, smsResultDTO, SecurityUtil.getCurrentUsername(), false);
 
         if (duplicateEmail && !isMuted()) {
             emailService.processSendingEmail(recipient, smsParameters, smsTemplate.getSmsType());
@@ -208,8 +223,8 @@ public class WebSMSServiceImpl implements WebSMSService {
 
     private SMSResultDTO sendSMSAndSaveStatistics(Request request, CredentialsEntity credentialsEntity, String text,
                                                   Map.Entry<String, RecipientType> recipient, SmsTemplateEntity smsTemplate,
-                                                  SMSResultDTO smsResultDTO) {
-        if (isMuted()) {
+                                                  SMSResultDTO smsResultDTO, String initiatedBy, Boolean skipQueue) {
+        if (isMuted() && !skipQueue) {
             SmsQueueEntity smsQueueEntity = new SmsQueueEntity();
             smsQueueEntity.setCredentials(credentialsEntity);
             smsQueueEntity.setMessage(text);
@@ -235,7 +250,7 @@ public class WebSMSServiceImpl implements WebSMSService {
             statisticsEntity.setSentDate(new Date());
             statisticsEntity.setResponse(content);
             statisticsEntity.setRecipient(recipient.getKey());
-            statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+            statisticsEntity.setInitiatedBy(initiatedBy);
 
             if (isSuccess(content)) {
                 LOG.info("SMS sent successfully");
