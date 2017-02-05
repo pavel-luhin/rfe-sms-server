@@ -8,6 +8,7 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
+import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +47,9 @@ public class SendSMSRequestBuilder {
 
     @Autowired
     private CredentialsService credentialsService;
+
+    @Autowired
+    private List<MobileNumberValidator> mobileNumberValidators;
 
     @Value("${sms.test}")
     private Integer test;
@@ -167,7 +172,13 @@ public class SendSMSRequestBuilder {
 
     private void addRecipients(Request request, Map.Entry<String, RecipientType> recipient) {
         if (recipient.getValue() == RecipientType.NUMBER) {
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), recipient.getKey()));
+            String mobileNumber = recipient.getKey();
+
+            for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
+                mobileNumber = mobileNumberValidator.validate(mobileNumber);
+            }
+
+            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), mobileNumber));
         } else if (recipient.getValue() == RecipientType.GROUP) {
             GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
             request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));

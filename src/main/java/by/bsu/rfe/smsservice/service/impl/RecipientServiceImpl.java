@@ -13,6 +13,7 @@ import by.bsu.rfe.smsservice.repository.PersonRepository;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 
+import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class RecipientServiceImpl implements RecipientService {
     private GroupRepository groupRepository;
     @Autowired
     private Mapper mapper;
+    @Autowired
+    private List<MobileNumberValidator> mobileNumberValidators;
 
     @Override
     public void addGroup(GroupDTO groupDTO) {
@@ -60,6 +63,15 @@ public class RecipientServiceImpl implements RecipientService {
 
     @Override
     public void addPersons(List<PersonEntity> personEntities) {
+
+        for (PersonEntity personEntity : personEntities) {
+            for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
+                if (!mobileNumberValidator.isValid(personEntity.getPhoneNumber())) {
+                    throw new IllegalArgumentException(mobileNumberValidator.errorString());
+                }
+            }
+        }
+
         personRepository.save(personEntities);
     }
 

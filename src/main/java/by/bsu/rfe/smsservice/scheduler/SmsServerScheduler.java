@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
  * Created by pluhin on 1/6/17.
  */
 @Component
-@Order(value = Ordered.LOWEST_PRECEDENCE)
 public class SmsServerScheduler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SmsServerScheduler.class);
