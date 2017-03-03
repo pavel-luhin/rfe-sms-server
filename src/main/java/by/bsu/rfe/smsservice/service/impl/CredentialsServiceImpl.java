@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import by.bsu.rfe.smsservice.builder.BalanceRequestBuilder;
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
@@ -74,6 +73,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 
     @Override
     public void saveCredentials(CredentialsEntity credentialsEntity) {
+        webSMSService.getBalance(credentialsEntity.getUsername(), credentialsEntity.getApiKey());
         credentialsRepository.saveAndFlush(credentialsEntity);
         credentialsCache.reloadCache();
     }

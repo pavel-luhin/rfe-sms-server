@@ -69,6 +69,7 @@ public class WebSMSServiceImpl implements WebSMSService {
     private static final String STATUS_PARAM = "status";
     private static final String STATUS_SUCCESS = "success";
     private static final String BALANCE_PARAM = "balance";
+    private static final String MESSAGE_PARAM = "message";
 
     private static final Integer MAX_BULK_SIZE = 500;
 
@@ -175,6 +176,9 @@ public class WebSMSServiceImpl implements WebSMSService {
         try {
             HttpResponse response = execute(request);
             String content = getContent(response);
+            if (!isSuccess(content)) {
+                throw new IllegalArgumentException(getParameterFromResponse(content, MESSAGE_PARAM));
+            }
             return Double.valueOf(getParameterFromResponse(content, BALANCE_PARAM));
         } catch (IOException e) {
             LOG.error("Something went wrong while retrieving balance for {}", username);
