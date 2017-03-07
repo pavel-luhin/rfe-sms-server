@@ -19,6 +19,6 @@ public enum SmsServerProperty {
     }
 
     public enum SmsServerPropertyGroup {
-        MUTE_MODE;
+        MUTE_MODE, UNASSIGNED;
     }
 }
