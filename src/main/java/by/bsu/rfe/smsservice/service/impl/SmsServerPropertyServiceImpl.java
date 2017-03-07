@@ -34,11 +34,11 @@ public class SmsServerPropertyServiceImpl implements SmsServerPropertyService {
         Map<String, Map<String, String>> propertiesMap = new HashMap<>();
 
         for (SmsServerPropertyEntity propertyEntity : properties) {
-            if (!propertiesMap.containsKey(propertyEntity.getPropertyGroup().name())) {
-                propertiesMap.put(propertyEntity.getPropertyGroup().name(), new HashMap<>());
+            if (!propertiesMap.containsKey(propertyEntity.getPropertyGroup().getDisplayValue())) {
+                propertiesMap.put(propertyEntity.getPropertyGroup().getDisplayValue(), new HashMap<>());
             }
 
-            propertiesMap.get(propertyEntity.getPropertyGroup().name()).put(propertyEntity.getPropertyKey().name(), propertyEntity.getValue());
+            propertiesMap.get(propertyEntity.getPropertyGroup().getDisplayValue()).put(propertyEntity.getPropertyKey().getDisplayValue(), propertyEntity.getValue());
         }
 
         return propertiesMap;
@@ -52,8 +52,8 @@ public class SmsServerPropertyServiceImpl implements SmsServerPropertyService {
             for (Map.Entry<String, String> property : propertyGroup.getValue().entrySet()) {
                 propertyEntities.add(
                         new SmsServerPropertyEntity(
-                                SmsServerProperty.valueOf(property.getKey()),
-                                SmsServerProperty.SmsServerPropertyGroup.valueOf(propertyGroup.getKey()),
+                                SmsServerProperty.getByDisplayName(property.getKey()),
+                                SmsServerProperty.SmsServerPropertyGroup.getByDisplayName(propertyGroup.getKey()),
                                 property.getValue()));
             }
         }
