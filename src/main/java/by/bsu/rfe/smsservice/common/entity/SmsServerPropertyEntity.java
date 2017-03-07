@@ -16,11 +16,21 @@ public class SmsServerPropertyEntity {
     @Enumerated(EnumType.STRING)
     private SmsServerProperty propertyKey;
 
+    @Column(name = "property_group")
+    @Enumerated(EnumType.STRING)
+    private SmsServerProperty.SmsServerPropertyGroup propertyGroup;
+
     @Column(name = "value")
     private String value;
 
     public SmsServerPropertyEntity(SmsServerProperty propertyKey, String value) {
         this.propertyKey = propertyKey;
+        this.value = value;
+    }
+
+    public SmsServerPropertyEntity(SmsServerProperty propertyKey, SmsServerProperty.SmsServerPropertyGroup propertyGroup, String value) {
+        this.propertyKey = propertyKey;
+        this.propertyGroup = propertyGroup;
         this.value = value;
     }
 
@@ -33,6 +43,14 @@ public class SmsServerPropertyEntity {
 
     public void setPropertyKey(SmsServerProperty propertyKey) {
         this.propertyKey = propertyKey;
+    }
+
+    public SmsServerProperty.SmsServerPropertyGroup getPropertyGroup() {
+        return propertyGroup;
+    }
+
+    public void setPropertyGroup(SmsServerProperty.SmsServerPropertyGroup propertyGroup) {
+        this.propertyGroup = propertyGroup;
     }
 
     public String getValue() {

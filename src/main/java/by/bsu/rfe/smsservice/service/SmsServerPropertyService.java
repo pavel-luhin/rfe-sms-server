@@ -11,6 +11,6 @@ import java.util.Map;
  */
 public interface SmsServerPropertyService {
     String findPropertyValue(SmsServerProperty smsServerProperty);
-    List<SmsServerPropertyEntity> getAllProperties();
-    void saveAllProperties(List<SmsServerPropertyEntity> properties);
+    Map<String, Map<String, String>> getAllProperties();
+    void saveAllProperties(Map<String, Map<String, String>> properties);
 }

@@ -165,13 +165,13 @@ public class SetupController {
 
     @ResponseBody
     @RequestMapping(value = "/properties", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SmsServerPropertyEntity> getSmsServerProperties() {
+    public Map<String, Map<String, String>> getSmsServerProperties() {
         return smsServerPropertyService.getAllProperties();
     }
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/properties", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveSmsServerProperties(@RequestBody List<SmsServerPropertyEntity> properties) {
+    public void saveSmsServerProperties(@RequestBody Map<String, Map<String, String>> properties) {
         smsServerPropertyService.saveAllProperties(properties);
     }
 }

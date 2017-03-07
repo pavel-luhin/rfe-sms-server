@@ -28,13 +28,37 @@ public class SmsServerPropertyServiceImpl implements SmsServerPropertyService {
     }
 
     @Override
-    public List<SmsServerPropertyEntity> getAllProperties() {
-        return smsServerPropertyRepository.findAll();
+    public Map<String, Map<String, String>> getAllProperties() {
+        List<SmsServerPropertyEntity> properties = smsServerPropertyRepository.findAll();
+
+        Map<String, Map<String, String>> propertiesMap = new HashMap<>();
+
+        for (SmsServerPropertyEntity propertyEntity : properties) {
+            if (!propertiesMap.containsKey(propertyEntity.getPropertyGroup().name())) {
+                propertiesMap.put(propertyEntity.getPropertyGroup().name(), new HashMap<>());
+            }
+
+            propertiesMap.get(propertyEntity.getPropertyGroup().name()).put(propertyEntity.getPropertyKey().name(), propertyEntity.getValue());
+        }
+
+        return propertiesMap;
     }
 
     @Override
-    public void saveAllProperties(List<SmsServerPropertyEntity> properties) {
-        smsServerPropertyRepository.save(properties);
+    public void saveAllProperties(Map<String, Map<String, String>> properties) {
+        List<SmsServerPropertyEntity> propertyEntities = new ArrayList<>();
+
+        for (Map.Entry<String, Map<String, String>> propertyGroup : properties.entrySet()) {
+            for (Map.Entry<String, String> property : propertyGroup.getValue().entrySet()) {
+                propertyEntities.add(
+                        new SmsServerPropertyEntity(
+                                SmsServerProperty.valueOf(property.getKey()),
+                                SmsServerProperty.SmsServerPropertyGroup.valueOf(propertyGroup.getKey()),
+                                property.getValue()));
+            }
+        }
+
+        smsServerPropertyRepository.save(propertyEntities);
     }
 
     private String returnPropertyValue(SmsServerPropertyEntity smsServerPropertyEntity) {
