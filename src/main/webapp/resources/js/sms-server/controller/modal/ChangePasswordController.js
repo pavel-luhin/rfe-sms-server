@@ -29,9 +29,20 @@ angular.module('sms-server').controller('ChangePasswordController',
                 $http.post(RestURLFactory.CHANGE_PASSWORD, passObj)
                     .success(function (data) {
                         $uibModalInstance.dismiss();
+                        toaster.pop({
+                            type: 'success',
+                            title: 'Success',
+                            body: 'Password changed!',
+                            timeout: 0
+                        });
                     })
                     .error(function (data) {
-                        $scope.error = "Old password is invalid";
+                        toaster.pop({
+                            type: 'error',
+                            title: 'Error',
+                            body: 'Old password is invalid',
+                            timeout: 0
+                        });
                     });
             };
 
