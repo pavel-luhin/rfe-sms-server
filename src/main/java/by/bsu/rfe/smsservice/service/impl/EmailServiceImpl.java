@@ -1,7 +1,11 @@
 package by.bsu.rfe.smsservice.service.impl;
 
 import static by.bsu.rfe.smsservice.builder.SendSMSRequestBuilder.createMessage;
+import static by.bsu.rfe.smsservice.common.enums.SmsServerProperty.*;
+import static by.bsu.rfe.smsservice.common.enums.SmsServerProperty.SmsServerPropertyGroup.EMAIL;
 
+import by.bsu.rfe.smsservice.common.enums.SmsServerProperty;
+import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -42,24 +46,14 @@ import by.bsu.rfe.smsservice.util.DozerUtil;
  */
 @Service
 public class EmailServiceImpl implements EmailService {
-    @Value("${email.username}")
-    private String emailUsername;
-    @Value("${email.password}")
-    private String emailPassword;
-    @Value("${email.host}")
-    private String emailHost;
-    @Value("${email.port}")
-    private String emailPort;
-    @Value("${email.authentication.enable}")
-    private Boolean emailEnableAuthentication;
-    @Value("${email.starttls.enable}")
-    private String emailStartTLSEnable;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailServiceImpl.class);
 
     private static final String REGISTER_USER_SMS_TYPE = "RegisterUserSMS";
     private static final String EMAIL_PARAMETERS_KEY = "email_address";
 
+    @Autowired
+    private SmsServerPropertyService smsServerPropertyService;
     @Autowired
     private EmailRepository emailRepository;
     @Autowired
@@ -97,22 +91,30 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendEmail(String address, String subject, String body) {
+        if (!Boolean.valueOf(smsServerPropertyService.findPropertyValue(EMAIL_ENABLED))) {
+            return;
+        }
+
+        Map<String, String> emailProperties = smsServerPropertyService.findGroupProperties(EMAIL);
+
         Properties properties = new Properties();
-        properties.put("mail.smtp.auth", emailEnableAuthentication);
-        properties.put("mail.smtp.starttls.enable", emailStartTLSEnable);
-        properties.put("mail.smtp.host", emailHost);
-        properties.put("mail.smtp.port", emailPort);
+        properties.put("mail.smtp.auth", emailProperties.get(AUTHENTICATION_ENABLED.getDisplayValue()));
+        properties.put("mail.smtp.starttls.enable", emailProperties.get(TLS_ENABLED.getDisplayValue()));
+        properties.put("mail.smtp.host", emailProperties.get(SMTP_HOST.getDisplayValue()));
+        properties.put("mail.smtp.port", emailProperties.get(SMTP_PORT.getDisplayValue()));
 
         Session session = Session.getInstance(properties,
                 new javax.mail.Authenticator() {
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(emailUsername, emailPassword);
+                        return new PasswordAuthentication(
+                                emailProperties.get(USERNAME.getDisplayValue()),
+                                emailProperties.get(PASSWORD.getDisplayValue()));
                     }
                 });
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(emailUsername));
+            message.setFrom(new InternetAddress(emailProperties.get(USERNAME.getDisplayValue())));
             message.setRecipients(Message.RecipientType.TO,
                     InternetAddress.parse(address));
             message.setSubject(subject);

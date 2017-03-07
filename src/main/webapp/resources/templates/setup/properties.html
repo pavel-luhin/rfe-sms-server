@@ -12,13 +12,13 @@
         <thead>
             <tr>
                 <th>Key</th>
-                <th>Value</th>
+                <th class="text-center">Value</th>
             </tr>
         </thead>
         <tbody ng-repeat="(key, value) in properties track by $index">
             <tr>
                 <td>{{key}}</td>
-                <td><input class="input-field small-input-field text-center" type="text" ng-model="properties[key]" ng-value="properties[key]"></td>
+                <td class="text-center"><input class="input-field small-input-field text-center" type="text" ng-model="properties[key]" ng-value="properties[key]"></td>
             </tr>
         </tbody>
     </table>

@@ -8,10 +8,7 @@ import by.bsu.rfe.smsservice.repository.SmsServerPropertyRepository;
 import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by pluhin on 1/4/17.
@@ -31,17 +28,12 @@ public class SmsServerPropertyServiceImpl implements SmsServerPropertyService {
     public Map<String, Map<String, String>> getAllProperties() {
         List<SmsServerPropertyEntity> properties = smsServerPropertyRepository.findAll();
 
-        Map<String, Map<String, String>> propertiesMap = new HashMap<>();
+        return propertyListToMap(properties);
+    }
 
-        for (SmsServerPropertyEntity propertyEntity : properties) {
-            if (!propertiesMap.containsKey(propertyEntity.getPropertyGroup().getDisplayValue())) {
-                propertiesMap.put(propertyEntity.getPropertyGroup().getDisplayValue(), new HashMap<>());
-            }
-
-            propertiesMap.get(propertyEntity.getPropertyGroup().getDisplayValue()).put(propertyEntity.getPropertyKey().getDisplayValue(), propertyEntity.getValue());
-        }
-
-        return propertiesMap;
+    @Override
+    public Map<String, String> findGroupProperties(SmsServerProperty.SmsServerPropertyGroup propertyGroup) {
+        return propertyListToMap(smsServerPropertyRepository.findPropertiesByGroup(propertyGroup)).get(propertyGroup.getDisplayValue());
     }
 
     @Override
@@ -63,5 +55,19 @@ public class SmsServerPropertyServiceImpl implements SmsServerPropertyService {
 
     private String returnPropertyValue(SmsServerPropertyEntity smsServerPropertyEntity) {
         return smsServerPropertyEntity.getValue();
+    }
+
+    private Map<String, Map<String, String>> propertyListToMap(List<SmsServerPropertyEntity> properties) {
+        Map<String, Map<String, String>> propertiesMap = new HashMap<>();
+
+        for (SmsServerPropertyEntity propertyEntity : properties) {
+            if (!propertiesMap.containsKey(propertyEntity.getPropertyGroup().getDisplayValue())) {
+                propertiesMap.put(propertyEntity.getPropertyGroup().getDisplayValue(), new LinkedHashMap<>());
+            }
+
+            propertiesMap.get(propertyEntity.getPropertyGroup().getDisplayValue()).put(propertyEntity.getPropertyKey().getDisplayValue(), propertyEntity.getValue());
+        }
+
+        return propertiesMap;
     }
 }
