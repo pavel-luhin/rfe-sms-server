@@ -145,8 +145,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public Set<String> getSenderNames() {
         if (!credentialsCache.isCacheEnabled()) {
-            //TODO fix this
-            return Collections.emptySet();
+            return credentialsService.getUserCredentials(SecurityUtil.getCurrentUsername())
+                    .stream()
+                    .map(CredentialsDTO::getSender)
+                    .collect(Collectors.toSet());
         }
         return credentialsCache.getSenderNamesForCurrentUser();
     }

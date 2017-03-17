@@ -35,8 +35,23 @@
             </tr>
         </tbody>
     </table>
-    <ul class="pagination" ng-repeat="page in pages">
-        <li class="clickable" ng-class="{active: page.active}"><a ng-click="getPage(page.pageNumber)">{{page.pageNumber}}</a></li>
+
+    <ul class="pagination">
+        <li class="page-item clickable" ng-show="pageCount > 3 && currentPage != 1">
+            <a class="page-link" aria-label="First" ng-click="getPage(1)">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+        <li ng-class="{active: showPages[0].active}" class="page-item clickable"><a class="page-link" ng-click="getPage(showPages[0].pageNumber)">{{showPages[0].pageNumber}}</a> </li>
+        <li ng-show="pageCount > 1" ng-class="{active: showPages[1].active}" class="page-item clickable"><a class="page-link" ng-click="getPage(showPages[1].pageNumber)">{{showPages[1].pageNumber}}</a> </li>
+        <li ng-show="pageCount > 2" ng-class="{active: showPages[2].active}" class="page-item clickable"><a class="page-link" ng-click="getPage(showPages[2].pageNumber)">{{showPages[2].pageNumber}}</a> </li>
+        <li class="page-item" ng-show="pageCount > 3 && currentPage != pageCount">
+            <a class="page-link clickable" aria-label="Last" ng-click="getPage(pageCount)">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
     </ul>
 
     <ul class="pull-right pagination">

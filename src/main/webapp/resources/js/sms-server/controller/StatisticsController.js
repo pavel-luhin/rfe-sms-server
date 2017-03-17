@@ -74,19 +74,38 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
 
         var currentPage = 1;
         var currentPageSize = pageSize.ten;
-        var pages = [];
+        var showPages = [];
         var skip = 0;
         var count = 0;
 
         var recalculatePages = function () {
-            pages = [];
-            for (var i = 0; i < count; i++) {
-                var page = {
-                    pageNumber: i + 1,
-                    active: currentPage - 1 === i
-                };
-                pages.push(page);
-                $scope.pages = pages;
+            pushPages();
+            $scope.showPages = showPages;
+            $scope.pageCount = count;
+            $scope.currentPage = currentPage;
+        };
+
+        var pushPages = function() {
+            showPages = [];
+            if (currentPage === 1) {
+                showPages.push(createPage(currentPage, true));
+                showPages.push(createPage(currentPage + 1, false));
+                showPages.push(createPage(currentPage + 2, false));
+            } else if (currentPage === count) {
+                showPages.push(createPage(currentPage - 2, false));
+                showPages.push(createPage(currentPage - 1, false));
+                showPages.push(createPage(currentPage, true));
+            } else {
+                showPages.push(createPage(currentPage - 1, false));
+                showPages.push(createPage(currentPage, true));
+                showPages.push(createPage(currentPage + 1, false));
+            }
+        };
+
+        var createPage = function (pageNum, active) {
+            return {
+                pageNumber: pageNum,
+                active: active
             }
         };
 
@@ -94,7 +113,6 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
             skip = (targetPage - 1) * currentPageSize.value;
 
             currentPage = targetPage;
-            recalculatePages();
         };
 
         var changePageSize = function (targetPageSize) {
@@ -104,7 +122,6 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
         };
 
         $scope.pageSize = pageSize;
-        $scope.pages = pages;
 
         $scope.getPage = function (targetPage) {
             changePage(targetPage);
