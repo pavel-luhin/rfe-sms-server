@@ -45,9 +45,6 @@ CREATE TABLE IF NOT EXISTS `sms_template` (
 );
 
 INSERT INTO `sms_template` (sms_type, uri_path, created_by, created_date) VALUES ('CustomSMS', '/rest/sms/custom', 'SYSTEM', NOW());
-INSERT INTO `sms_template` (sms_type, template, uri_path, created_by, created_date) VALUES
-  ('InterviewSMS', '${STUDENT_FIRST_NAME}, ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_DATE} по адресу ${INTERVIEW_TIME}',
-   '/rest/sms/interview', 'SYSTEM', NOW());
 
 CREATE TABLE IF NOT EXISTS `email_template` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -60,9 +57,6 @@ CREATE TABLE IF NOT EXISTS `email_template` (
   KEY `template_fk` (`sms_template`),
   CONSTRAINT `template_fk` FOREIGN KEY (`sms_template`) REFERENCES `sms_template` (`id`) ON DELETE CASCADE
 );
-
-INSERT INTO `email_template` (subject, content, created_by, created_date, sms_template) VALUES ('Вас пригласили на собеседование',
-                                                                                                             'Здравствуйте, ${STUDENT_FIRST_NAME} ${STUDENT_LAST_NAME},<br>Компания ${COMPANY_NAME} приглашает Вас на собеседование ${INTERVIEW_DATE} по адресу ${COMPANY_ADDRESS}', 'SYSTEM', NOW(), LAST_INSERT_ID());
 
 INSERT INTO `email_template` (subject, content, created_by, created_date) VALUES ('Your account on SMS-Server was registered',
                                                                                                'Hello ${USERNAME},<br><br>Your account on SMS-Server was successfully registered.<br>
