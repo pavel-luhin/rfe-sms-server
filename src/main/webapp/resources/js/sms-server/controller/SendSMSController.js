@@ -95,8 +95,6 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
             $scope.loading = true;
             var file = $scope.myFile;
 
-            console.log(file);
-
             var sameForAll = $scope.sameForAll;
             if (sameForAll === undefined) {
                 sameForAll = false;
@@ -105,6 +103,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
             var fd = new FormData();
             fd.append('file', file);
             fd.append('sameContentForAll', sameForAll);
+            fd.append('requestSenderName', $scope.requestSenderName);
 
             $http.post(RestURLFactory.SEND_BULK_SMS, fd, {
                 transformRequest: angular.identity,
