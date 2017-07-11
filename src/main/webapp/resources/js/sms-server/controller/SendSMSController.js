@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('SendSMSController', ['$scope', '$http', 'RestURLFactory', 'toaster',
-    function ($scope, $http, RestURLFactory, toaster) {
+angular.module('sms-server').controller('SendSMSController', ['$scope', '$http', 'RestURLFactory', 'toaster', '$location',
+    function ($scope, $http, RestURLFactory, toaster, $location) {
         var defaultSymbolsLeft = 160;
         $scope.symbolsLeft = defaultSymbolsLeft;
         $scope.smsCount = 1;
@@ -63,6 +63,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                             body: data.data.lastError,
                             timeout: 0
                         });
+                        $location.path('/statistics').search({openFirst: true});
                     } else if (data.data.inQueue == true) {
                         toaster.pop({
                             type: 'warning',
@@ -77,6 +78,7 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                             body: 'SMS sent successfully',
                             timeout: 0
                         });
+                        $location.path('/statistics').search({openFirst: true});
                     }
 
                     $scope.messages = [];
@@ -110,6 +112,13 @@ angular.module('sms-server').controller('SendSMSController', ['$scope', '$http',
                 headers: {'Content-Type': undefined}
             }).then(function (data) {
                 $scope.loading = false;
+                toaster.pop({
+                    type: 'success',
+                    title: 'Success',
+                    body: 'SMS sent successfully',
+                    timeout: 0
+                });
+                $location.path('/statistics').search({openFirst: true});
             });
         };
 

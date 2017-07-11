@@ -1,5 +1,5 @@
-angular.module('sms-server').controller('StatisticsController', ['$scope', '$http', 'RestURLFactory',
-    function ($scope, $http, RestURLFactory) {
+angular.module('sms-server').controller('StatisticsController', ['$scope', '$http', 'RestURLFactory', '$routeParams',
+    function ($scope, $http, RestURLFactory, $routeParams) {
         var sortConstants = {
             notSorted: {
                 elementClass: "fa fa-sort"
@@ -13,6 +13,8 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
                 sortString: 'desc'
             }
         };
+
+        var openFirst = $routeParams.openFirst;
 
         var sortOrder = {
             error: sortConstants.notSorted,
@@ -143,6 +145,10 @@ angular.module('sms-server').controller('StatisticsController', ['$scope', '$htt
 
                     count = Math.ceil(data.count / currentPageSize.value);
                     recalculatePages();
+
+                    if ($scope.statistics && openFirst) {
+                        $scope.statistics[0].expanded = true;
+                    }
                 });
         };
     }
