@@ -67,27 +67,27 @@ application.config(['$routeProvider',
                 controller: 'SetupController'
             })
             .when('/setup/templates', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/templates.html',
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-templates.tmpl.html',
                 controller: 'TemplateController'
             })
             .when('/setup/credentials', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/credentials.html',
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-credentials.tmpl.html',
                 controller: 'CredentialsController'
             })
             .when('/setup/users', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/users.html',
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-users.tmpl.html',
                 controller: 'UsersController'
             })
             .when('/setup/applications', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/applications.html',
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-applications.tmpl.html',
                 controller: 'ApplicationsController'
             })
             .when('/setup/emailTemplates', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/emailTemplates.html',
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-emailTemplates.tmpl.html',
                 controller: 'EmailTemplateController'
             })
             .when('/setup/properties', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/properties.html',
+                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-properties.tmpl.html',
                 controller: 'SmsServerPropertiesController'
             })
             .when('/sms-queue', {
