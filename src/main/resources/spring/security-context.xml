@@ -2,31 +2,32 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
                            http://www.springframework.org/schema/security
-                           http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+                           http://www.springframework.org/schema/security/spring-security-4.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-        <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
-            <property name="eraseCredentialsAfterAuthentication" value="false"/>
-            <constructor-arg>
-                <list>
-                    <ref bean="userAuthenticationProvider" />
-                    <ref bean="applicationAuhenticationProvider"/>
-                </list>
-            </constructor-arg>
-        </bean>
+    <context:component-scan base-package="by.bsu.rfe.smsservice.security.helper.*"/>
 
-       <bean id="applicationAuhenticationProvider" class="by.bsu.rfe.smsservice.security.provider.ApplicationAuthenticationProvider"/>
-       <bean id="userAuthenticationProvider" class="by.bsu.rfe.smsservice.security.provider.UserAuthenticationProvider"/>
-       <bean id="authenticationFilter" class="by.bsu.rfe.smsservice.security.filter.AuthenticationTokenFilter"/>
-       <bean id="unauthorizedEntryPoint" class="by.bsu.rfe.smsservice.security.UnauthorizedEntryPoint"/>
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <property name="eraseCredentialsAfterAuthentication" value="false"/>
+        <constructor-arg>
+            <list>
+                <ref bean="userAuthenticationProvider"/>
+            </list>
+        </constructor-arg>
+    </bean>
 
-       <security:http auto-config="false" authentication-manager-ref="authenticationManager"
-                      use-expressions="true" entry-point-ref="unauthorizedEntryPoint">
-              <security:custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER"/>
-              <security:intercept-url pattern="/rest/user/authenticate" access="permitAll()"/>
-              <security:intercept-url pattern="/**" access="isAuthenticated()"/>
-              <security:csrf disabled="true"/>
-       </security:http>
+    <bean id="userAuthenticationProvider" class="by.bsu.rfe.smsservice.security.provider.UserAuthenticationProvider"/>
+    <bean id="authenticationFilter" class="by.bsu.rfe.smsservice.security.filter.AuthenticationTokenFilter"/>
+    <bean id="unauthorizedEntryPoint" class="by.bsu.rfe.smsservice.security.UnauthorizedEntryPoint"/>
+
+    <security:http auto-config="false" authentication-manager-ref="authenticationManager"
+                   use-expressions="true" entry-point-ref="unauthorizedEntryPoint">
+        <security:custom-filter ref="authenticationFilter" position="FORM_LOGIN_FILTER"/>
+        <security:intercept-url pattern="/rest/user/authenticate" access="permitAll()"/>
+        <security:intercept-url pattern="/**" access="isAuthenticated()"/>
+        <security:csrf disabled="true"/>
+    </security:http>
 </beans>
