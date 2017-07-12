@@ -7,69 +7,67 @@
 
     routes.$inject = ['$routeProvider'];
     function routes($routeProvider) {
-        var BASE_TEMPLATE_LOCATION = 'resources/templates/';
+        var SMS_SERVER_DIR = 'resources/sms-server/';
+        var TEMPLATE_POSTFIX = '.tmpl.html';
         $routeProvider
             .when('/statistics', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'statistics.html',
-                controller: 'StatisticsController'
+                templateUrl: SMS_SERVER_DIR + 'statistics/statistics' + TEMPLATE_POSTFIX,
+                controller: 'statisticsCtrl'
             })
             .when('/send-sms', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'sendSMS.html',
-                controller: 'SendSMSController'
+                templateUrl: SMS_SERVER_DIR + 'send-sms/send-sms' + TEMPLATE_POSTFIX,
+                controller: 'sendSmsCtrl'
             })
             .when('/login', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'login.html',
-                controller: 'AuthenticationController'
+                templateUrl: SMS_SERVER_DIR + 'login/login' + TEMPLATE_POSTFIX,
+                controller: 'loginCtrl'
             })
             .when('/recipients', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'recipients.html'
+                templateUrl: SMS_SERVER_DIR + 'recipients/recipients' + TEMPLATE_POSTFIX
             })
             .when('/recipients/add', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewRecipient.html'
+                templateUrl: SMS_SERVER_DIR + 'recipients/persons/add-persons/add-person' + TEMPLATE_POSTFIX,
+                controller: 'addPersonsCtrl'
             })
             .when('/recipients/add-group', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
-                controller: 'AddOrEditGroupController'
+                templateUrl: SMS_SERVER_DIR + 'recipients/groups/add-group/add-group' + TEMPLATE_POSTFIX,
+                controller: 'addGroupCtrl'
             })
             .when('/recipients/edit-group/:groupId', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'addNewGroup.html',
-                controller: 'AddOrEditGroupController'
+                templateUrl: SMS_SERVER_DIR + 'recipients/groups/add-group/add-group' + TEMPLATE_POSTFIX,
+                controller: 'addGroupCtrl'
             })
             .when('/setup', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup.html',
-                controller: 'SetupController'
+                templateUrl: SMS_SERVER_DIR + 'setup/setup' + TEMPLATE_POSTFIX,
+                controller: 'setupCtrl'
             })
             .when('/setup/templates', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-templates.tmpl.html',
-                controller: 'TemplateController'
+                templateUrl: SMS_SERVER_DIR + 'setup/templates/setup-templates' + TEMPLATE_POSTFIX,
+                controller: 'templateCtrl'
             })
             .when('/setup/credentials', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-credentials.tmpl.html',
-                controller: 'CredentialsController'
+                templateUrl: SMS_SERVER_DIR + 'setup/credentials/setup-credentials' + TEMPLATE_POSTFIX,
+                controller: 'credentialsCtrl'
             })
             .when('/setup/users', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-users.tmpl.html',
-                controller: 'UsersController'
+                templateUrl: SMS_SERVER_DIR + 'setup/users/setup-users' + TEMPLATE_POSTFIX,
+                controller: 'usersCtrl'
             })
             .when('/setup/applications', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-applications.tmpl.html',
-                controller: 'ApplicationsController'
+                templateUrl: SMS_SERVER_DIR + 'setup/applications/setup-applications' + TEMPLATE_POSTFIX,
+                controller: 'applicationsCtrl'
             })
             .when('/setup/emailTemplates', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-emailTemplates.tmpl.html',
-                controller: 'EmailTemplateController'
+                templateUrl: SMS_SERVER_DIR + 'setup/emailTemplates/setup-emailTemplates' + TEMPLATE_POSTFIX,
+                controller: 'emailTemplatesCtrl'
             })
             .when('/setup/properties', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'setup/setup-properties.tmpl.html',
-                controller: 'SmsServerPropertiesController'
+                templateUrl: SMS_SERVER_DIR + 'setup/properties/setup-properties' + TEMPLATE_POSTFIX,
+                controller: 'propertiesCtrl'
             })
             .when('/sms-queue', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'smsQueue.html',
-                controller: 'SmsQueueController'
-            })
-            .when('/test', {
-                templateUrl: BASE_TEMPLATE_LOCATION + 'test.html',
-                controller: 'TestController'
+                templateUrl: SMS_SERVER_DIR + 'sms-queue/sms-queue' + TEMPLATE_POSTFIX,
+                controller: 'smsQueueCtrl'
             })
             .otherwise({
                 redirectTo: '/statistics'

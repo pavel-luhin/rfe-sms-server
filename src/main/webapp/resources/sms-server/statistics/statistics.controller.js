@@ -6,7 +6,6 @@
         .controller('statisticsCtrl', statisticsCtrl);
 
     statisticsCtrl.$inject = ['$scope', '$routeParams', 'statisticsService'];
-
     function statisticsCtrl($scope, $routeParams, statisticsService) {
         var sortConstants = {
             notSorted: {
@@ -157,5 +156,7 @@
                 }
             });
         };
+
+        $scope.loadStatistics();
     }
 })();
