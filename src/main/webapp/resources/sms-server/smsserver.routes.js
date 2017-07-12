@@ -1,39 +1,12 @@
-var application = angular.module('sms-server',
-                                 ['ngRoute',
-                                  'ngCookies',
-                                  'ngProgress',
-                                  'ngStorage',
-                                  'ngTagsInput',
-                                  'ui.bootstrap',
-                                  'ui.bootstrap.tpls',
-                                  'ui.bootstrap.tooltip',
-                                  'ngSanitize',
-                                  'ui.select',
-                                  'angular-md5',
-                                  'toaster'
-                                 ]);
+(function () {
+    'use strict';
 
-application.config(['$httpProvider',
-    function ($httpProvider) {
-        $httpProvider.interceptors.push('myHttpInterceptor');
-    }
-]);
+    angular
+        .module('sms-server')
+        .config(routes);
 
-application.run(
-    ['$cookies',
-        function ($cookies) {
-            if (!$cookies.get('auth_token')) {
-                if (localStorage.getItem('authentication')) {
-                    var auth = JSON.parse(localStorage.getItem('authentication'));
-                    $cookies.put('auth_token', auth.token);
-                }
-            }
-        }
-    ]
-);
-
-application.config(['$routeProvider',
-    function ($routeProvider) {
+    routes.$inject = ['$routeProvider'];
+    function routes($routeProvider) {
         var BASE_TEMPLATE_LOCATION = 'resources/templates/';
         $routeProvider
             .when('/statistics', {
@@ -102,37 +75,4 @@ application.config(['$routeProvider',
                 redirectTo: '/statistics'
             });
     }
-]);
-
-application.factory('myHttpInterceptor',
-    function($q, $location, toaster) {
-        return {
-            'requestError': function (rejection) {
-                if (canRecover(rejection)) {
-                    return responseOrNewPromise;
-                }
-                return $q.reject(rejection);
-            },
-
-            'responseError': function (rejection) {
-
-                if (rejection.status === 401) {
-                    $location.path('/login');
-                }
-
-                if (rejection.status === 500) {
-                    var body = rejection.data;
-                    var messageObject = JSON.parse(body);
-                    toaster.pop({
-                        type: 'error',
-                        title: 'Error',
-                        body: messageObject.message,
-                        timeout: 0
-                    });
-                }
-
-                return $q.reject(rejection);
-            }
-        };
-    }
-);
+})();
