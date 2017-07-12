@@ -43,27 +43,27 @@
             })
             .when('/setup/templates', {
                 templateUrl: SMS_SERVER_DIR + 'setup/templates/setup-templates' + TEMPLATE_POSTFIX,
-                controller: 'templateCtrl'
+                controller: 'setupTemplateCtrl'
             })
             .when('/setup/credentials', {
                 templateUrl: SMS_SERVER_DIR + 'setup/credentials/setup-credentials' + TEMPLATE_POSTFIX,
-                controller: 'credentialsCtrl'
+                controller: 'setupCredentialsCtrl'
             })
             .when('/setup/users', {
                 templateUrl: SMS_SERVER_DIR + 'setup/users/setup-users' + TEMPLATE_POSTFIX,
-                controller: 'usersCtrl'
+                controller: 'setupUsersCtrl'
             })
             .when('/setup/applications', {
                 templateUrl: SMS_SERVER_DIR + 'setup/applications/setup-applications' + TEMPLATE_POSTFIX,
-                controller: 'applicationsCtrl'
+                controller: 'setupApplicationsCtrl'
             })
             .when('/setup/emailTemplates', {
                 templateUrl: SMS_SERVER_DIR + 'setup/emailTemplates/setup-emailTemplates' + TEMPLATE_POSTFIX,
-                controller: 'emailTemplatesCtrl'
+                controller: 'setupEmailTemplatesCtrl'
             })
             .when('/setup/properties', {
                 templateUrl: SMS_SERVER_DIR + 'setup/properties/setup-properties' + TEMPLATE_POSTFIX,
-                controller: 'propertiesCtrl'
+                controller: 'setupPropertiesCtrl'
             })
             .when('/sms-queue', {
                 templateUrl: SMS_SERVER_DIR + 'sms-queue/sms-queue' + TEMPLATE_POSTFIX,

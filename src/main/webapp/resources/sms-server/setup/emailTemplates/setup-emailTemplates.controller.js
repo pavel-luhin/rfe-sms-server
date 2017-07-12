@@ -3,7 +3,7 @@
 
     angular
         .module('sms-server')
-        .factory('setupEmailTemplatesCtrl', setupEmailTemplatesCtrl);
+        .controller('setupEmailTemplatesCtrl', setupEmailTemplatesCtrl);
 
     setupEmailTemplatesCtrl.$inject = [];
     function setupEmailTemplatesCtrl() {

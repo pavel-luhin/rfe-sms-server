@@ -146,9 +146,9 @@
 
         $scope.loadStatistics = function () {
             statisticsService.loadStatistics(skip, currentPageSize, sortField, sortDirection).then(function (response) {
-                $scope.statistics = data.items;
+                $scope.statistics = response.data.items;
 
-                count = Math.ceil(data.count / currentPageSize.value);
+                count = Math.ceil(response.data.count / currentPageSize.value);
                 recalculatePages();
 
                 if ($scope.statistics && openFirst) {
