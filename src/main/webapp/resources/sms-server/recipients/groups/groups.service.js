@@ -11,7 +11,8 @@
             getGroup: getGroup,
             getPersonsWithoutGroup: getPersonsWithoutGroup,
             addGroup: addGroup,
-            getAllGroups: getAllGroups
+            getAllGroups: getAllGroups,
+            removeGroup: removeGroup
         };
 
         function getGroup(groupId) {
@@ -30,6 +31,10 @@
             return $http.get(RestURLFactory.GROUP +
                 '?skip=' + skip + '&offset=' + currentPageSize.value + '&sortField=' + sortField + '&sortDirection=' + sortDirection
             );
+        }
+
+        function removeGroup(id) {
+            return $http.delete(RestURLFactory.GROUP + '?groupId=' + id)
         }
     }
 })();

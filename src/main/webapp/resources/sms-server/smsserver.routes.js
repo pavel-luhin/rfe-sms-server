@@ -26,7 +26,7 @@
                 templateUrl: SMS_SERVER_DIR + 'recipients/recipients' + TEMPLATE_POSTFIX
             })
             .when('/recipients/add', {
-                templateUrl: SMS_SERVER_DIR + 'recipients/persons/add-persons/add-person' + TEMPLATE_POSTFIX,
+                templateUrl: SMS_SERVER_DIR + 'recipients/persons/add-persons/add-persons' + TEMPLATE_POSTFIX,
                 controller: 'addPersonsCtrl'
             })
             .when('/recipients/add-group', {
