@@ -3,9 +3,8 @@
         <li><a href="#/statistics">Statistics</a></li>
         <li><a href="#/send-sms">Send SMS</a></li>
         <li><a href="#/recipients">Recipients</a></li>
-        <li><span
+        <li ng-if="versionLoaded"><span
                 class="version glyphicon glyphicon-question-sign white"
-                ng-if="versionLoaded"
                 uib-tooltip-html="'
                 <b>Commit user name</b>: {{version.commitUserName}}<br>
                 <b>Build date</b>: {{version.buildTime | date: 'medium'}}<br>
