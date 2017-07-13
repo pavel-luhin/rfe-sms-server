@@ -31,7 +31,7 @@
 	<link rel="icon" type="image/png" href="resources/favicon-16x16.png" sizes="16x16" />
 </head>
 <body ng-controller="applicationCtrl">
-	<div ng-show="authenticated" ng-include="'resources/templates/common/navbar.html'"></div>
+	<div ng-show="authenticated" ng-include="'resources/sms-server/common/navbar.tmpl.html'"></div>
 	<div class="col-md-12">
 		<toaster-container toaster-options="{'position-class': 'toast-top-full-width'}"></toaster-container>
 		<ng-view/>
@@ -51,6 +51,10 @@
 	<script type="text/javascript" src="resources/sms-server/statistics/statistics.controller.js"></script>
 	<script type="text/javascript" src="resources/sms-server/send-sms/send-sms.service.js"></script>
 	<script type="text/javascript" src="resources/sms-server/send-sms/send-sms.controller.js"></script>
+	<script type="text/javascript" src="resources/sms-server/recipients/groups/groups.service.js"></script>
+	<script type="text/javascript" src="resources/sms-server/recipients/groups/groups.controller.js"></script>
+	<script type="text/javascript" src="resources/sms-server/recipients/persons/persons.service.js"></script>
+	<script type="text/javascript" src="resources/sms-server/recipients/persons/persons.controller.js"></script>
 	<script type="text/javascript" src="resources/sms-server/setup/setup.service.js"></script>
 	<script type="text/javascript" src="resources/sms-server/setup/setup.controller.js"></script>
 	<script type="text/javascript" src="resources/sms-server/setup/applications/setup-applications.service.js"></script>

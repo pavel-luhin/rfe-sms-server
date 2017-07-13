@@ -5,8 +5,8 @@
         .module('sms-server')
         .controller('personsCtrl', personsCtrl);
 
-    personsCtrl.$inject = ['$scope', '$location', 'ConfirmModalService', '$routeParams', 'personsService'];
-    function personsCtrl($scope, $location, ConfirmModalService, $routeParams, personsService) {
+    personsCtrl.$inject = ['$scope', '$location', 'confirmService', '$routeParams', 'personsService'];
+    function personsCtrl($scope, $location, confirmService, $routeParams, personsService) {
         var sortConstants = {
             notSorted: {
                 elementClass: "fa fa-sort"
@@ -159,7 +159,7 @@
         };
 
         $scope.removePerson = function (id) {
-            ConfirmModalService.showModal({}, confirmDeleteModalOptions).then(function (result) {
+            confirmService.showModal({}, confirmDeleteModalOptions).then(function (result) {
                 personsService.removePerson(id).then(function () {
                     $scope.getAllPersons();
                 });

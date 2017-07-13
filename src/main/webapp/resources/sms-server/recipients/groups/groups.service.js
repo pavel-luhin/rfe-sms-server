@@ -10,7 +10,8 @@
         return {
             getGroup: getGroup,
             getPersonsWithoutGroup: getPersonsWithoutGroup,
-            addGroup: addGroup
+            addGroup: addGroup,
+            getAllGroups: getAllGroups
         };
 
         function getGroup(groupId) {
@@ -23,6 +24,12 @@
 
         function addGroup(group) {
             return  $http.post(RestURLFactory.GROUP, group);
+        }
+
+        function getAllGroups(skip, currentPageSize, sortField, sortDirection) {
+            return $http.get(RestURLFactory.GROUP +
+                '?skip=' + skip + '&offset=' + currentPageSize.value + '&sortField=' + sortField + '&sortDirection=' + sortDirection
+            );
         }
     }
 })();

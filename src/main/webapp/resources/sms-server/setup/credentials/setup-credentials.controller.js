@@ -20,7 +20,7 @@
                 animation: true,
                 ariaLabelledBy: 'modal-title',
                 ariaDescribedBy: 'modal-body',
-                templateUrl: 'resources/sms-server/modal/add-credentials/',
+                templateUrl: 'resources/sms-server/modal/add-credentials/add-credentials.tmpl.html',
                 controller: 'addCredentialsCtrl',
                 size: 'lg'
             }).closed.then(function () {
@@ -49,8 +49,8 @@
                 animation: true,
                 ariaLabelledBy: 'modal-title',
                 ariaDescribedBy: 'modal-body',
-                templateUrl: 'resources/templates/modal/shareCredentials-modal.html',
-                controller: 'ShareCredentialsModalController',
+                templateUrl: 'resources/sms-server/modal/share-credentials/share-credentials.tmpl.html',
+                controller: 'shareCredentialsCtrl',
                 size: 'lg'
             }).closed.then(function () {
                 getUserCredentials();
