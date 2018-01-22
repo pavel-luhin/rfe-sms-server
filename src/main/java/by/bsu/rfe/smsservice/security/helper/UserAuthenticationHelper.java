@@ -2,6 +2,8 @@ package by.bsu.rfe.smsservice.security.helper;
 
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
 import by.bsu.rfe.smsservice.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 @Component
 public class UserAuthenticationHelper implements AuthenticationHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserAuthenticationHelper.class);
+
     @Autowired
     private UserService userService;
 
@@ -26,6 +30,7 @@ public class UserAuthenticationHelper implements AuthenticationHelper {
             return null;
         }
 
+        LOGGER.debug("Authenticating user with token {}", token);
         return new UsernamePasswordAuthenticationToken(
                 userEntity.getUsername(),
                 userEntity.getPassword(),
