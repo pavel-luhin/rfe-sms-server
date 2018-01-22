@@ -1,0 +1,7 @@
+<form ng-submit="sendSMS(sms)">
+        <textarea placeholder="Message content" class="sms-content-textarea" ng-change="countSymbols()"
+                  ng-model="sms.content"></textarea>
+    <p ng-show="smsCount > 1" class="sms-content-status">{{smsCount}} sms&nbsp;</p>
+    <p class="sms-content-status">{{symbolsLeft}} symbols left</p>
+    <input type="submit" class="input-submit" value="Send SMS">
+</form>

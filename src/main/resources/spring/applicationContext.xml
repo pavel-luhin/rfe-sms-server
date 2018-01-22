@@ -7,6 +7,7 @@
        <context:property-placeholder/>
        <context:component-scan base-package="by.bsu.rfe.smsservice.service.impl"/>
        <context:component-scan base-package="by.bsu.rfe.smsservice.builder"/>
+       <context:component-scan base-package="by.bsu.rfe.smsservice.validator.*"/>
        <jpa:repositories base-package="by.bsu.rfe.smsservice.repository"/>
 
        <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">

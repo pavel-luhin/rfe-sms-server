@@ -9,6 +9,7 @@
             classpath*:spring/applicationContext.xml,
             classpath*:spring/security-context.xml,
             classpath*:spring/cache.xml,
+            classpath*:spring/scheduler.xml
         </param-value>
     </context-param>
     <filter>

@@ -1,5 +1,8 @@
 package by.bsu.rfe.smsservice.controller;
 
+import by.bsu.rfe.smsservice.common.entity.SmsServerPropertyEntity;
+import by.bsu.rfe.smsservice.common.enums.SmsServerProperty;
+import by.bsu.rfe.smsservice.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.List;
+import java.util.Map;
 
 import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
@@ -23,11 +27,6 @@ import by.bsu.rfe.smsservice.common.dto.UserDTO;
 import by.bsu.rfe.smsservice.common.dto.VersionDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
-import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.EmailService;
-import by.bsu.rfe.smsservice.service.ExternalApplicationService;
-import by.bsu.rfe.smsservice.service.SmsTemplateService;
-import by.bsu.rfe.smsservice.service.UserService;
 
 /**
  * Created by pluhin on 9/3/16.
@@ -46,6 +45,8 @@ public class SetupController {
     private ExternalApplicationService externalApplicationService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private SmsServerPropertyService smsServerPropertyService;
 
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = "/credentials", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -160,5 +161,17 @@ public class SetupController {
     @RequestMapping(value = "/version", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public VersionDTO getApplicationVersion() {
         return VersionDTO.loadFromProperties("version.properties");
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/properties", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Map<String, String>> getSmsServerProperties() {
+        return smsServerPropertyService.getAllProperties();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/properties", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void saveSmsServerProperties(@RequestBody Map<String, Map<String, String>> properties) {
+        smsServerPropertyService.saveAllProperties(properties);
     }
 }
