@@ -221,10 +221,17 @@
                 <configuration>
                     <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
                     <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/version.properties</generateGitPropertiesFilename>
+                    <generateGitPropertiesFilename>../../${project.build.outputDirectory}/version.properties</generateGitPropertiesFilename>
                     <gitDescribe>
                         <abbrev>6</abbrev>
                     </gitDescribe>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
         </plugins>
