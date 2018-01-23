@@ -8,6 +8,8 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
+import by.bsu.rfe.smsservice.builder.parameters.ParametersCollector;
+import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -40,151 +42,164 @@ import by.bsu.rfe.smsservice.service.RecipientService;
 @Component("sendSMS")
 public class SendSMSRequestBuilder {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SendSMSRequestBuilder.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SendSMSRequestBuilder.class);
 
-    @Autowired
-    private RecipientService recipientService;
+  @Autowired
+  private RecipientService recipientService;
 
-    @Autowired
-    private CredentialsService credentialsService;
+  @Autowired
+  private CredentialsService credentialsService;
 
-    @Autowired
-    private List<MobileNumberValidator> mobileNumberValidators;
+  @Autowired
+  private List<MobileNumberValidator> mobileNumberValidators;
 
-    @Value("${sms.test}")
-    private Integer test;
+  @Autowired
+  private ParametersCollectorResolver parametersCollectorResolver;
 
-    public Request buildRequest(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters, String smsContent, String requestSenderName) {
-        if (parameters == null) {
-            parameters = new HashMap<>();
-        }
+  @Value("${sms.test}")
+  private Integer test;
 
-        if (recipient.getValue() != RecipientType.NUMBER) {
-            collectAdditionalParameters(recipient, parameters);
-        }
-
-        Request request = buildBaseRequest(requestSenderName);
-
-        request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
-        addRecipients(request, recipient);
-
-        String message = createMessage(smsContent, parameters, smsContent);
-
-        request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), message));
-
-        return request;
+  public Request buildRequest(Map.Entry<String, RecipientType> recipient,
+      Map<String, String> parameters, String smsContent, String requestSenderName) {
+    if (parameters == null) {
+      parameters = new HashMap<>();
     }
 
-    public Request buildBulkRequest(Map<String, String> messages, String requestSenderName) {
-        Request request = buildBaseRequest(requestSenderName);
+    collectAdditionalParameters(recipient, parameters);
 
-        request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
-        String messagesArray = createArrayOfMessages(messages);
-        request.addParameter(new BasicNameValuePair(MESSAGES.getRequestParam(), messagesArray));
-        return request;
+    Request request = buildBaseRequest(requestSenderName);
+
+    request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
+    addRecipients(request, recipient);
+
+    String message = createMessage(smsContent, parameters, smsContent);
+
+    request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), message));
+
+    return request;
+  }
+
+  public Request buildBulkRequest(Map<String, String> messages, String requestSenderName) {
+    Request request = buildBaseRequest(requestSenderName);
+
+    request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
+    String messagesArray = createArrayOfMessages(messages);
+    request.addParameter(new BasicNameValuePair(MESSAGES.getRequestParam(), messagesArray));
+    return request;
+  }
+
+  public Request buildRequestForSmsFromQueue(SmsQueueEntity smsQueueEntity) {
+    Request request = new Request();
+
+    request.addParameter(new BasicNameValuePair(USER.getRequestParam(),
+        smsQueueEntity.getCredentials().getUsername()));
+    request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(),
+        smsQueueEntity.getCredentials().getApiKey()));
+    request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(),
+        smsQueueEntity.getCredentials().getSender()));
+    request.addParameter(
+        new BasicNameValuePair(MESSAGE.getRequestParam(), smsQueueEntity.getMessage()));
+    request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
+    request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
+
+    addRecipients(request,
+        new MutablePair<>(smsQueueEntity.getRecipient(), smsQueueEntity.getRecipientType()));
+    return request;
+  }
+
+  private Request buildBaseRequest(String requestSenderName) {
+    Request request = new Request();
+
+    CredentialsEntity credentials;
+    if (StringUtils.isEmpty(requestSenderName)) {
+      credentials = credentialsService.getDefaultCredentialsForCurrentUser();
+    } else {
+      credentials = credentialsService.getCredentialsForSenderName(requestSenderName);
     }
 
-    public Request buildRequestForSmsFromQueue(SmsQueueEntity smsQueueEntity) {
-        Request request = new Request();
-
-        request.addParameter(new BasicNameValuePair(USER.getRequestParam(), smsQueueEntity.getCredentials().getUsername()));
-        request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), smsQueueEntity.getCredentials().getApiKey()));
-        request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), smsQueueEntity.getCredentials().getSender()));
-        request.addParameter(new BasicNameValuePair(MESSAGE.getRequestParam(), smsQueueEntity.getMessage()));
-        request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
-        request.setApiEndpoint(WebSMSRest.SEND_MESSAGE.getApiEndpoint());
-
-        addRecipients(request, new MutablePair<>(smsQueueEntity.getRecipient(), smsQueueEntity.getRecipientType()));
-        return request;
+    if (credentials == null) {
+      throw new NullPointerException("User doesn't allowed to send sms.");
     }
 
-    private Request buildBaseRequest(String requestSenderName) {
-        Request request = new Request();
+    request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
+    request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), credentials.getApiKey()));
+    request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), credentials.getSender()));
+    request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
 
-        CredentialsEntity credentials;
-        if (StringUtils.isEmpty(requestSenderName)) {
-            credentials = credentialsService.getDefaultCredentialsForCurrentUser();
-        } else {
-            credentials = credentialsService.getCredentialsForSenderName(requestSenderName);
-        }
+    return request;
+  }
 
-        if (credentials == null) {
-            throw new NullPointerException("User doesn't allowed to send sms.");
-        }
+  private String getAllRecipientsFromGroup(GroupEntity groupEntity) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (PersonEntity person : groupEntity.getPersons()) {
+      stringBuilder.append(person.getPhoneNumber());
+      stringBuilder.append(",");
+    }
+    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+    return stringBuilder.toString();
+  }
 
-        request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
-        request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), credentials.getApiKey()));
-        request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), credentials.getSender()));
-        request.addParameter(new BasicNameValuePair(TEST.getRequestParam(), test.toString()));
+  private void collectAdditionalParameters(Map.Entry<String, RecipientType> recipient,
+      Map<String, String> parameters) {
+    parametersCollectorResolver.resolve(recipient.getValue())
+        .collectParameters(recipient, parameters);
+  }
 
-        return request;
+  public static String createMessage(String template, Map<String, String> messageParameters,
+      String originalMessage) {
+    String regex = "\\$\\{([^}]+)\\}";
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(template);
+    String result = template;
+    while (matcher.find()) {
+      String token = matcher.group();
+      String replacementValue = null;
+      if (messageParameters.containsKey(token)) {
+        replacementValue = messageParameters.get(token);
+      } else {
+        LOGGER.error("Not enough parameters. Could not create message.");
+        LOGGER.error("Original message: {}", originalMessage);
+        LOGGER.error("Parameters: {}", messageParameters);
+        throw new IllegalArgumentException("Not enough parameters. Could not create message.");
+      }
+
+      result = result.replaceFirst(Pattern.quote(token), replacementValue);
     }
 
-    private String getAllRecipientsFromGroup(GroupEntity groupEntity) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (PersonEntity person : groupEntity.getPersons()) {
-            stringBuilder.append(person.getPhoneNumber());
-            stringBuilder.append(",");
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        return stringBuilder.toString();
+    return result;
+  }
+
+  private String createArrayOfMessages(Map<String, String> messages) {
+    StringBuilder stringBuilder = new StringBuilder();
+    stringBuilder.append("[");
+
+    for (Map.Entry<String, String> message : messages.entrySet()) {
+      stringBuilder.append("{\"recipient\":\"").append(message.getKey()).append("\",");
+      stringBuilder.append("\"message\":\"").append(message.getValue()).append("\"},");
     }
 
-    private void collectAdditionalParameters(Map.Entry<String, RecipientType> recipient, Map<String, String> parameters) {
+    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+    stringBuilder.append("]");
+    return stringBuilder.toString();
+  }
+
+  private void addRecipients(Request request, Map.Entry<String, RecipientType> recipient) {
+    if (recipient.getValue() == RecipientType.NUMBER) {
+      String mobileNumber = recipient.getKey();
+
+      for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
+        mobileNumber = mobileNumberValidator.validate(mobileNumber);
+      }
+
+      request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), mobileNumber));
+    } else if (recipient.getValue() == RecipientType.GROUP) {
+      GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
+      request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(),
+          getAllRecipientsFromGroup(groupEntity)));
+    } else {
+      PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
+      request.addParameter(
+          new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
     }
-
-    public static String createMessage(String template, Map<String, String> messageParameters, String originalMessage) {
-        String regex = "\\$\\{([^}]+)\\}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(template);
-        String result = template;
-        while (matcher.find()) {
-            String token = matcher.group();
-            String replacementValue = null;
-            if (messageParameters.containsKey(token)) {
-                replacementValue = messageParameters.get(token);
-            } else {
-                LOGGER.error("Not enough parameters. Could not create message.");
-                LOGGER.error("Original message: {}", originalMessage);
-                LOGGER.error("Parameters: {}", messageParameters);
-                throw new IllegalArgumentException("Not enough parameters. Could not create message.");
-            }
-
-            result = result.replaceFirst(Pattern.quote(token), replacementValue);
-        }
-
-        return result;
-    }
-
-    private String createArrayOfMessages(Map<String, String> messages) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("[");
-
-        for (Map.Entry<String, String> message : messages.entrySet()) {
-            stringBuilder.append("{\"recipient\":\"").append(message.getKey()).append("\",");
-            stringBuilder.append("\"message\":\"").append(message.getValue()).append("\"},");
-        }
-
-        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        stringBuilder.append("]");
-        return stringBuilder.toString();
-    }
-
-    private void addRecipients(Request request, Map.Entry<String, RecipientType> recipient) {
-        if (recipient.getValue() == RecipientType.NUMBER) {
-            String mobileNumber = recipient.getKey();
-
-            for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
-                mobileNumber = mobileNumberValidator.validate(mobileNumber);
-            }
-
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), mobileNumber));
-        } else if (recipient.getValue() == RecipientType.GROUP) {
-            GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), getAllRecipientsFromGroup(groupEntity)));
-        } else {
-            PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
-            request.addParameter(new BasicNameValuePair(RECIPIENTS.getRequestParam(), personEntity.getPhoneNumber()));
-        }
-    }
+  }
 }
