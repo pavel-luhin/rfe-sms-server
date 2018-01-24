@@ -13,7 +13,8 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan({
     "by.bsu.rfe.smsservice.service.impl",
     "by.bsu.rfe.smsservice.builder",
-    "by.bsu.rfe.smsservice.validator"
+    "by.bsu.rfe.smsservice.validator",
+    "by.bsu.rfe.smsservice.builder.parameters"
 })
 public class ApplicationConfiguration {
 
