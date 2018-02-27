@@ -43,4 +43,6 @@ public interface RecipientService {
   List<PersonDTO> getPersonsWithoutGroup(Integer groupId);
 
   PageResponseDTO<GroupDTO> getGroups(PageRequestDTO pageRequestDTO, String query);
+
+  GroupEntity createGroupFromFile(List<String> numbersFromFile);
 }

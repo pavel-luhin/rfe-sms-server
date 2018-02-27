@@ -171,6 +171,14 @@ public class RecipientServiceImpl implements RecipientService {
         entities.getTotalElements());
   }
 
+  @Override
+  public GroupEntity createGroupFromFile(List<String> numbersFromFile) {
+    GroupEntity groupEntity = new GroupEntity();
+    groupEntity.setName("GROUP_" + System.currentTimeMillis());
+
+    return groupEntity;
+  }
+
   private List<RecipientDTO> mapRecipientListsToRecipientDTOs(List<PersonEntity> personEntities,
       List<GroupEntity> groupEntities) {
     List<RecipientDTO> recipients = new ArrayList<>(personEntities.size() + groupEntities.size());
