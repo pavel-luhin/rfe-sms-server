@@ -83,7 +83,7 @@ public class SetupController {
     return ok(smsTemplateService.getSmsTemplates());
   }
 
-  @PostMapping("/smsTemplate")
+  @PostMapping(value = "/smsTemplate", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SmsTemplateEntity> addSmsTemplates(
       @RequestBody SmsTemplateEntity smsTemplateEntity) {
     return ok(smsTemplateService.addSMSTemplate(smsTemplateEntity));
