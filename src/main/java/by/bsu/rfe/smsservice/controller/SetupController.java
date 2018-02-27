@@ -1,22 +1,7 @@
 package by.bsu.rfe.smsservice.controller;
 
-import by.bsu.rfe.smsservice.common.entity.SmsServerPropertyEntity;
-import by.bsu.rfe.smsservice.common.enums.SmsServerProperty;
-import by.bsu.rfe.smsservice.service.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.List;
-import java.util.Map;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
 
 import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
 import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
@@ -27,151 +12,173 @@ import by.bsu.rfe.smsservice.common.dto.UserDTO;
 import by.bsu.rfe.smsservice.common.dto.VersionDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
+import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.ExternalApplicationService;
+import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
+import by.bsu.rfe.smsservice.service.SmsTemplateService;
+import by.bsu.rfe.smsservice.service.UserService;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Created by pluhin on 9/3/16.
  */
 @Controller
-@RequestMapping("/setup")
+@RequestMapping(value = "/setup", produces = APPLICATION_JSON_UTF8_VALUE)
 public class SetupController {
 
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private CredentialsService credentialsService;
-    @Autowired
-    private SmsTemplateService smsTemplateService;
-    @Autowired
-    private ExternalApplicationService externalApplicationService;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private SmsServerPropertyService smsServerPropertyService;
+  private UserService userService;
+  private CredentialsService credentialsService;
+  private SmsTemplateService smsTemplateService;
+  private ExternalApplicationService externalApplicationService;
+  private EmailService emailService;
+  private SmsServerPropertyService smsServerPropertyService;
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/credentials", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addNewCredentials(@RequestBody CredentialsDTO credentialsDTO) {
-        userService.addNewCredentials(credentialsDTO);
-    }
+  @Autowired
+  public SetupController(UserService userService,
+      CredentialsService credentialsService,
+      SmsTemplateService smsTemplateService,
+      ExternalApplicationService externalApplicationService,
+      EmailService emailService,
+      SmsServerPropertyService smsServerPropertyService) {
+    this.userService = userService;
+    this.credentialsService = credentialsService;
+    this.smsTemplateService = smsTemplateService;
+    this.externalApplicationService = externalApplicationService;
+    this.emailService = emailService;
+    this.smsServerPropertyService = smsServerPropertyService;
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/credentials", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CredentialsDTO> getUserCredentials() {
-        String username = SecurityUtil.getCurrentUsername();
-        return credentialsService.getUserCredentials(username);
-    }
+  @PostMapping(value = "/credentials", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity addNewCredentials(@RequestBody CredentialsDTO credentialsDTO) {
+    userService.addNewCredentials(credentialsDTO);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/credentials/{id}", method = RequestMethod.DELETE)
-    public void removeCredentials(@PathVariable Integer id) {
-        credentialsService.removeCredentials(id);
-    }
+  @GetMapping("/credentials")
+  public ResponseEntity<List<CredentialsDTO>> getUserCredentials() {
+    String username = SecurityUtil.getCurrentUsername();
+    return ok(credentialsService.getUserCredentials(username));
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/smsTemplate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<SmsTemplateEntity> getSmsTemplates() {
-        return smsTemplateService.getSmsTemplates();
-    }
+  @DeleteMapping("/credentials/{id}")
+  public ResponseEntity removeCredentials(@PathVariable Integer id) {
+    credentialsService.removeCredentials(id);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/smsTemplate", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public SmsTemplateEntity addSmsTemplates(@RequestBody SmsTemplateEntity smsTemplateEntity) {
-        return smsTemplateService.addSMSTemplate(smsTemplateEntity);
-    }
+  @GetMapping("/smsTemplate")
+  public ResponseEntity<List<SmsTemplateEntity>> getSmsTemplates() {
+    return ok(smsTemplateService.getSmsTemplates());
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/smsTemplate/{id}", method = RequestMethod.DELETE)
-    public void removeSMSTemplate(@PathVariable Integer id) {
-        smsTemplateService.removeSMSTemplate(id);
-    }
+  @PostMapping("/smsTemplate")
+  public ResponseEntity<SmsTemplateEntity> addSmsTemplates(
+      @RequestBody SmsTemplateEntity smsTemplateEntity) {
+    return ok(smsTemplateService.addSMSTemplate(smsTemplateEntity));
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/user", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDTO> getAllUsers(@RequestParam(required = false) Integer credentialsId) {
-        return userService.getAllUsers(credentialsId);
-    }
+  @DeleteMapping("/smsTemplate/{id}")
+  public ResponseEntity removeSMSTemplate(@PathVariable Integer id) {
+    smsTemplateService.removeSMSTemplate(id);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createUser(@RequestBody UserDTO userDTO) {
-        userService.createUser(userDTO.getUsername());
-    }
+  @GetMapping("/user")
+  public ResponseEntity<List<UserDTO>> getAllUsers(
+      @RequestParam(required = false) Integer credentialsId) {
+    return ok(userService.getAllUsers(credentialsId));
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/user/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteUser(@PathVariable Integer id) {
-        userService.removeUser(id);
-    }
+  @PostMapping(value = "/user", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity createUser(@RequestBody UserDTO userDTO) {
+    userService.createUser(userDTO.getUsername());
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/application", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ExternalApplicationDTO> getAllApplications() {
-        return externalApplicationService.getAllExternalApplications();
-    }
+  @DeleteMapping("/user/{id}")
+  public ResponseEntity deleteUser(@PathVariable Integer id) {
+    userService.removeUser(id);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/application", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createApplication(@RequestBody ExternalApplicationDTO applicationDTO) {
-        externalApplicationService.createExternalApplication(applicationDTO);
-    }
+  @GetMapping("/application")
+  public ResponseEntity<List<ExternalApplicationDTO>> getAllApplications() {
+    return ok(externalApplicationService.getAllExternalApplications());
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/application/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteApplication(@PathVariable Integer id) {
-        externalApplicationService.removeExternalApplication(id);
-    }
+  @PostMapping(value = "/application", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity createApplication(@RequestBody ExternalApplicationDTO applicationDTO) {
+    externalApplicationService.createExternalApplication(applicationDTO);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/emailTemplate", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<EmailTemplateDTO> getAllEmailTemplates() {
-        return emailService.getAllEmailTemplates();
-    }
+  @DeleteMapping("/application/{id}")
+  public ResponseEntity deleteApplication(@PathVariable Integer id) {
+    externalApplicationService.removeExternalApplication(id);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/emailTemplate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createEmailTemplate(@RequestBody EmailTemplateDTO emailTemplateDTO) {
-        emailService.saveEmailTemplate(emailTemplateDTO);
-    }
+  @GetMapping("/emailTemplate")
+  public ResponseEntity<List<EmailTemplateDTO>> getAllEmailTemplates() {
+    return ok(emailService.getAllEmailTemplates());
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/emailTemplate/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteEmailTemplate(@PathVariable Integer id) {
-        emailService.removeEmailTemplate(id);
-    }
+  @PostMapping(value = "/emailTemplate", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity createEmailTemplate(@RequestBody EmailTemplateDTO emailTemplateDTO) {
+    emailService.saveEmailTemplate(emailTemplateDTO);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/emailTemplate/smsTypes", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<String> getAvailableSmsTypesForEmailTemplate() {
-        return smsTemplateService.getAvailableSmsTypesForEmailTemplate();
-    }
+  @DeleteMapping("/emailTemplate/{id}")
+  public ResponseEntity deleteEmailTemplate(@PathVariable Integer id) {
+    emailService.removeEmailTemplate(id);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/shareCredentials", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void shareCredentialsBetweenUser(@RequestBody ShareCredentialsDTO shareCredentialsDTO) {
-        credentialsService.shareCredentials(shareCredentialsDTO);
-    }
+  @GetMapping("/emailTemplate/smsTypes")
+  public ResponseEntity<List<String>> getAvailableSmsTypesForEmailTemplate() {
+    return ok(smsTemplateService.getAvailableSmsTypesForEmailTemplate());
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/changePassword", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
-        userService.changePassword(passwordDTO);
-    }
+  @PostMapping(value = "/shareCredentials", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity shareCredentialsBetweenUser(
+      @RequestBody ShareCredentialsDTO shareCredentialsDTO) {
+    credentialsService.shareCredentials(shareCredentialsDTO);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/version", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public VersionDTO getApplicationVersion() {
-        return VersionDTO.loadFromProperties("version.properties");
-    }
+  @PostMapping(value = "/changePassword", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
+    userService.changePassword(passwordDTO);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/properties", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String>> getSmsServerProperties() {
-        return smsServerPropertyService.getAllProperties();
-    }
+  @GetMapping("/version")
+  public ResponseEntity<VersionDTO> getApplicationVersion() {
+    return ok(VersionDTO.loadFromProperties("version.properties"));
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/properties", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void saveSmsServerProperties(@RequestBody Map<String, Map<String, String>> properties) {
-        smsServerPropertyService.saveAllProperties(properties);
-    }
+  @GetMapping("/properties")
+  public ResponseEntity<Map<String, Map<String, String>>> getSmsServerProperties() {
+    return ok(smsServerPropertyService.getAllProperties());
+  }
+
+  @PostMapping(value = "/properties", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity saveSmsServerProperties(
+      @RequestBody Map<String, Map<String, String>> properties) {
+    smsServerPropertyService.saveAllProperties(properties);
+    return ok().build();
+  }
 }
