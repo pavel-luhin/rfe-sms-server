@@ -9,6 +9,6 @@ public class PageUtil {
 
   public static Pageable createPage(PageRequestDTO pageRequestDTO) {
     Sort sort = new Sort(new Sort.Order(Sort.Direction.fromString(pageRequestDTO.getSortDirection()), pageRequestDTO.getSortField()));
-    return new ChunkRequest(pageRequestDTO.getSize(), pageRequestDTO.getOffset(), sort);
+    return new ChunkRequest(pageRequestDTO.getSkip(), pageRequestDTO.getOffset(), sort);
   }
 }
