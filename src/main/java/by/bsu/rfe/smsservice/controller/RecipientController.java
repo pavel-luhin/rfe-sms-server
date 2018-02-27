@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 import by.bsu.rfe.smsservice.common.dto.GroupDTO;
@@ -40,7 +41,7 @@ public class RecipientController {
   @PostMapping(value = "/group", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createGroup(@RequestBody GroupDTO groupDTO) {
     recipientService.addGroup(groupDTO);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/group/{id}")
@@ -51,13 +52,13 @@ public class RecipientController {
   @DeleteMapping("/group")
   public ResponseEntity removeGroup(@RequestParam Integer groupId) {
     recipientService.removeGroup(groupId);
-    return ok().build();
+    return noContent().build();
   }
 
   @PostMapping(value = "/persons", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity addPersons(@RequestBody List<PersonEntity> persons) {
     recipientService.addPersons(persons);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/persons")
@@ -85,7 +86,7 @@ public class RecipientController {
   @DeleteMapping("/persons")
   public ResponseEntity removePerson(@RequestParam Integer personId) {
     recipientService.removePerson(personId);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/group")
@@ -99,7 +100,7 @@ public class RecipientController {
   public ResponseEntity addRecipientToGroup(@PathVariable Integer recipientId,
       @PathVariable Integer groupId) {
     recipientService.assignPersonToGroup(recipientId, groupId);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/all")

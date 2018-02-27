@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
@@ -63,7 +64,7 @@ public class SetupController {
   @PostMapping(value = "/credentials", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity addNewCredentials(@RequestBody CredentialsDTO credentialsDTO) {
     userService.addNewCredentials(credentialsDTO);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/credentials")
@@ -75,7 +76,7 @@ public class SetupController {
   @DeleteMapping("/credentials/{id}")
   public ResponseEntity removeCredentials(@PathVariable Integer id) {
     credentialsService.removeCredentials(id);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/smsTemplate")
@@ -92,7 +93,7 @@ public class SetupController {
   @DeleteMapping("/smsTemplate/{id}")
   public ResponseEntity removeSMSTemplate(@PathVariable Integer id) {
     smsTemplateService.removeSMSTemplate(id);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/user")
@@ -104,13 +105,13 @@ public class SetupController {
   @PostMapping(value = "/user", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createUser(@RequestBody UserDTO userDTO) {
     userService.createUser(userDTO.getUsername());
-    return ok().build();
+    return noContent().build();
   }
 
   @DeleteMapping("/user/{id}")
   public ResponseEntity deleteUser(@PathVariable Integer id) {
     userService.removeUser(id);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/application")
@@ -121,13 +122,13 @@ public class SetupController {
   @PostMapping(value = "/application", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createApplication(@RequestBody ExternalApplicationDTO applicationDTO) {
     externalApplicationService.createExternalApplication(applicationDTO);
-    return ok().build();
+    return noContent().build();
   }
 
   @DeleteMapping("/application/{id}")
   public ResponseEntity deleteApplication(@PathVariable Integer id) {
     externalApplicationService.removeExternalApplication(id);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/emailTemplate")
@@ -138,13 +139,13 @@ public class SetupController {
   @PostMapping(value = "/emailTemplate", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createEmailTemplate(@RequestBody EmailTemplateDTO emailTemplateDTO) {
     emailService.saveEmailTemplate(emailTemplateDTO);
-    return ok().build();
+    return noContent().build();
   }
 
   @DeleteMapping("/emailTemplate/{id}")
   public ResponseEntity deleteEmailTemplate(@PathVariable Integer id) {
     emailService.removeEmailTemplate(id);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/emailTemplate/smsTypes")
@@ -156,13 +157,13 @@ public class SetupController {
   public ResponseEntity shareCredentialsBetweenUser(
       @RequestBody ShareCredentialsDTO shareCredentialsDTO) {
     credentialsService.shareCredentials(shareCredentialsDTO);
-    return ok().build();
+    return noContent().build();
   }
 
   @PostMapping(value = "/changePassword", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity changePassword(@RequestBody ChangePasswordDTO passwordDTO) {
     userService.changePassword(passwordDTO);
-    return ok().build();
+    return noContent().build();
   }
 
   @GetMapping("/version")
@@ -179,6 +180,6 @@ public class SetupController {
   public ResponseEntity saveSmsServerProperties(
       @RequestBody Map<String, Map<String, String>> properties) {
     smsServerPropertyService.saveAllProperties(properties);
-    return ok().build();
+    return noContent().build();
   }
 }

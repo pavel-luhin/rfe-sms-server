@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
@@ -88,6 +89,6 @@ public class SMSController {
   @DeleteMapping("/sms/queue")
   public ResponseEntity removeSmsFromQueue(@RequestParam("id") Integer id) {
     smsQueueService.removeFromQueue(id);
-    return ok().build();
+    return noContent().build();
   }
 }
