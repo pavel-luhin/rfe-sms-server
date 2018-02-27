@@ -1,108 +1,110 @@
 package by.bsu.rfe.smsservice.controller;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
+
 import by.bsu.rfe.smsservice.common.dto.GroupDTO;
-import by.bsu.rfe.smsservice.common.dto.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.dto.PersonDTO;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
+import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.service.RecipientService;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Created by pluhin on 3/5/2016.
  */
-@Controller
-@RequestMapping(value = "/recipient")
+@RestController
+@RequestMapping(value = "/recipient", produces = APPLICATION_JSON_UTF8_VALUE)
 public class RecipientController {
 
-    @Autowired
-    private RecipientService recipientService;
+  private RecipientService recipientService;
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/group", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void createGroup(@RequestBody GroupDTO groupDTO) {
-        recipientService.addGroup(groupDTO);
-    }
+  @Autowired
+  public RecipientController(RecipientService recipientService) {
+    this.recipientService = recipientService;
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/group/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GroupDTO getGroup(@PathVariable("id") Integer id) {
-        return recipientService.getGroup(id);
-    }
+  @PostMapping(value = "/group", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity createGroup(@RequestBody GroupDTO groupDTO) {
+    recipientService.addGroup(groupDTO);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/group", method = RequestMethod.DELETE)
-    public void removeGroup(@RequestParam Integer groupId) {
-        recipientService.removeGroup(groupId);
-    }
+  @GetMapping("/group/{id}")
+  public ResponseEntity<GroupDTO> getGroup(@PathVariable("id") Integer id) {
+    return ok(recipientService.getGroup(id));
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/persons", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addPersons(@RequestBody List<PersonEntity> persons) {
-        recipientService.addPersons(persons);
-    }
+  @DeleteMapping("/group")
+  public ResponseEntity removeGroup(@RequestParam Integer groupId) {
+    recipientService.removeGroup(groupId);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/persons", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PageResponseDTO<PersonDTO> getPersons(@RequestParam int skip, @RequestParam int offset,
-                                      @RequestParam String sortField, @RequestParam String sortDirection,
-                                      @RequestParam(required = false) String query) {
-        return recipientService.getPersons(skip, offset, sortField, sortDirection, query);
-    }
+  @PostMapping(value = "/persons", consumes = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity addPersons(@RequestBody List<PersonEntity> persons) {
+    recipientService.addPersons(persons);
+    return ok().build();
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/persons/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PersonDTO> getAllPersons() {
-        return recipientService.getAllPersons();
-    }
+  @GetMapping("/persons")
+  public ResponseEntity<PageResponseDTO<PersonDTO>> getPersons(
+      @RequestParam PageRequestDTO requestDTO, @RequestParam String query) {
+    PageResponseDTO pageResponseDTO = recipientService.getPersons(requestDTO, query);
+    return ok(pageResponseDTO);
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/persons/withGroup/{groupId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PersonDTO> getPersonsWithGroup(@PathVariable Integer groupId) {
-        return recipientService.getPersonsWithGroup(groupId);
-    }
+  @GetMapping("/persons/all")
+  public ResponseEntity<List<PersonDTO>> getAllPersons() {
+    return ok(recipientService.getAllPersons());
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/persons/withoutGroup/{groupId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PersonDTO> getPersonsWithoutGroup(@PathVariable Integer groupId) {
-        return recipientService.getPersonsWithoutGroup(groupId);
-    }
+  @GetMapping("/persons/withGroup/{groupId}")
+  public ResponseEntity<List<PersonDTO>> getPersonsWithGroup(@PathVariable Integer groupId) {
+    return ok(recipientService.getPersonsWithGroup(groupId));
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/persons", method = RequestMethod.DELETE)
-    public void removePerson(@RequestParam Integer personId) {
-        recipientService.removePerson(personId);
-    }
+  @GetMapping("/persons/withoutGroup/{groupId}")
+  public ResponseEntity<List<PersonDTO>> getPersonsWithoutGroup(@PathVariable Integer groupId) {
+    return ok(recipientService.getPersonsWithoutGroup(groupId));
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/group", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PageResponseDTO<GroupDTO> getGroups(@RequestParam int skip, @RequestParam int offset,
-            @RequestParam String sortField, @RequestParam String sortDirection,
-            @RequestParam(required = false) String query) {
-        return recipientService.getGroups(skip, offset, sortField, sortDirection, query);
-    }
+  @DeleteMapping("/persons")
+  public ResponseEntity removePerson(@RequestParam Integer personId) {
+    recipientService.removePerson(personId);
+    return ok().build();
+  }
 
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = "/add/{recipientId}/toGroup/{groupId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addRecipientToGroup(@PathVariable Integer recipientId, @PathVariable Integer groupId) {
-        recipientService.assignPersonToGroup(recipientId, groupId);
-    }
+  @GetMapping("/group")
+  public ResponseEntity<PageResponseDTO<GroupDTO>> getGroups(
+      @RequestParam PageRequestDTO pageRequestDTO,
+      @RequestParam(required = false) String query) {
+    return ok(recipientService.getGroups(pageRequestDTO, query));
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RecipientDTO> getAllRecipients(@RequestParam(required = false) String query) {
-        return recipientService.getRecipientByQuery(query);
-    }
+  @PostMapping(value = "/add/{recipientId}/toGroup/{groupId}", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity addRecipientToGroup(@PathVariable Integer recipientId,
+      @PathVariable Integer groupId) {
+    recipientService.assignPersonToGroup(recipientId, groupId);
+    return ok().build();
+  }
+
+  @GetMapping("/all")
+  public ResponseEntity<List<RecipientDTO>> getAllRecipients(
+      @RequestParam(required = false) String query) {
+    return ok(recipientService.getRecipientByQuery(query));
+  }
 }

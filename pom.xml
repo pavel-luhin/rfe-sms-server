@@ -29,6 +29,7 @@
         <apache.collections.version>4.1</apache.collections.version>
         <apache.poi.version>3.14</apache.poi.version>
         <apache.fileupload.version>1.2.1</apache.fileupload.version>
+        <lombok.version>1.16.20</lombok.version>
     </properties>
 
     <dependencies>
@@ -183,6 +184,12 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>${apache.fileupload.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
         </dependency>
     </dependencies>
 
