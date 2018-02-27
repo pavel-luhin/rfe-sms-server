@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
@@ -45,10 +46,14 @@ public class DatabaseConfiguration {
   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
     LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 
+    HibernateJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+    adapter.setDatabasePlatform("org.hibernate.dialect.MySQL5Dialect");
+
     factory.setPersistenceUnitName("SMS-Server");
     factory.setDataSource(dataSource());
     factory.setPackagesToScan("by.bsu.rfe.smsservice.common.entity");
     factory.setPersistenceProvider(new HibernatePersistenceProvider());
+    factory.setJpaVendorAdapter(adapter);
 
     return factory;
   }

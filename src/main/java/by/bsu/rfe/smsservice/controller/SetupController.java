@@ -39,27 +39,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/setup", produces = APPLICATION_JSON_UTF8_VALUE)
 public class SetupController {
 
+  @Autowired
   private UserService userService;
-  private CredentialsService credentialsService;
-  private SmsTemplateService smsTemplateService;
-  private ExternalApplicationService externalApplicationService;
-  private EmailService emailService;
-  private SmsServerPropertyService smsServerPropertyService;
 
   @Autowired
-  public SetupController(UserService userService,
-      CredentialsService credentialsService,
-      SmsTemplateService smsTemplateService,
-      ExternalApplicationService externalApplicationService,
-      EmailService emailService,
-      SmsServerPropertyService smsServerPropertyService) {
-    this.userService = userService;
-    this.credentialsService = credentialsService;
-    this.smsTemplateService = smsTemplateService;
-    this.externalApplicationService = externalApplicationService;
-    this.emailService = emailService;
-    this.smsServerPropertyService = smsServerPropertyService;
-  }
+  private CredentialsService credentialsService;
+
+  @Autowired
+  private SmsTemplateService smsTemplateService;
+
+  @Autowired
+  private ExternalApplicationService externalApplicationService;
+
+  @Autowired
+  private EmailService emailService;
+
+  @Autowired
+  private SmsServerPropertyService smsServerPropertyService;
 
   @PostMapping(value = "/credentials", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity addNewCredentials(@RequestBody CredentialsDTO credentialsDTO) {

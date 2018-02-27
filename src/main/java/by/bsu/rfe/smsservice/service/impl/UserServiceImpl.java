@@ -43,26 +43,23 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
+  @Autowired
   private AuthenticationManager authenticationManager;
-  private UserRepository userRepository;
-  private Mapper mapper;
-  private CredentialsCache credentialsCache;
-  private CredentialsService credentialsService;
-  private EmailService emailService;
 
   @Autowired
-  public UserServiceImpl(
-      AuthenticationManager authenticationManager,
-      UserRepository userRepository, Mapper mapper,
-      CredentialsCache credentialsCache,
-      CredentialsService credentialsService, EmailService emailService) {
-    this.authenticationManager = authenticationManager;
-    this.userRepository = userRepository;
-    this.mapper = mapper;
-    this.credentialsCache = credentialsCache;
-    this.credentialsService = credentialsService;
-    this.emailService = emailService;
-  }
+  private UserRepository userRepository;
+
+  @Autowired
+  private Mapper mapper;
+
+  @Autowired
+  private CredentialsCache credentialsCache;
+
+  @Autowired
+  private CredentialsService credentialsService;
+
+  @Autowired
+  private EmailService emailService;
 
   private static final char[] SYMBOLS;
 

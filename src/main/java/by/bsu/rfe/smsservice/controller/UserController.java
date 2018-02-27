@@ -31,12 +31,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(value = "/user", produces = APPLICATION_JSON_UTF8_VALUE)
 public class UserController {
 
-  private UserService userService;
-
   @Autowired
-  public UserController(UserService userService) {
-    this.userService = userService;
-  }
+  private UserService userService;
 
   @PostMapping(value = "/authenticate", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<UserDTO> authenticate(@RequestBody AuthenticationDTO authenticationDTO) {
