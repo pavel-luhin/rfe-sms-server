@@ -35,18 +35,14 @@ public class SMSController {
 
   private static final String CUSTOM_SMS_URI = "/rest/sms/custom";
 
+  @Autowired
   private WebSMSService webSMSService;
-  private SmsTemplateService smsTemplateService;
-  private SmsQueueService smsQueueService;
 
   @Autowired
-  public SMSController(WebSMSService webSMSService,
-      SmsTemplateService smsTemplateService,
-      SmsQueueService smsQueueService) {
-    this.webSMSService = webSMSService;
-    this.smsTemplateService = smsTemplateService;
-    this.smsQueueService = smsQueueService;
-  }
+  private SmsTemplateService smsTemplateService;
+
+  @Autowired
+  private SmsQueueService smsQueueService;
 
   @PostMapping(value = "/sms/*", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SMSResultDTO> sendSms(@RequestBody SmsDTO smsDTO,

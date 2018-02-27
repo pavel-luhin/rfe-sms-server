@@ -21,15 +21,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class StatisticsServiceImpl implements StatisticsService {
 
+  @Autowired
   private StatisticsRepository statisticsRepository;
-  private Mapper mapper;
 
   @Autowired
-  public StatisticsServiceImpl(
-      StatisticsRepository statisticsRepository, Mapper mapper) {
-    this.statisticsRepository = statisticsRepository;
-    this.mapper = mapper;
-  }
+  private Mapper mapper;
 
   @Override
   public List<StatisticsDTO> getFullStatistics() {

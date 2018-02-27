@@ -31,12 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/recipient", produces = APPLICATION_JSON_UTF8_VALUE)
 public class RecipientController {
 
-  private RecipientService recipientService;
-
   @Autowired
-  public RecipientController(RecipientService recipientService) {
-    this.recipientService = recipientService;
-  }
+  private RecipientService recipientService;
 
   @PostMapping(value = "/group", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createGroup(@RequestBody GroupDTO groupDTO) {
