@@ -25,8 +25,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping(value = "/statistics", produces = APPLICATION_JSON_UTF8_VALUE)
 public class StatisticsController {
 
-  @Autowired
   private StatisticsService statisticsService;
+
+  @Autowired
+  public StatisticsController(StatisticsService statisticsService) {
+    this.statisticsService = statisticsService;
+  }
 
   @GetMapping
   public ResponseEntity<List<StatisticsDTO>> getFullStatistics() {
