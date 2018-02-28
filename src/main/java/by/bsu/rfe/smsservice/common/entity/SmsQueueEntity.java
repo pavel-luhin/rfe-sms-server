@@ -1,8 +1,10 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import javax.persistence.*;
-
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.Data;
 
 /**
@@ -22,4 +24,7 @@ public class SmsQueueEntity extends CreationDetails {
   @OneToOne
   @JoinColumn(name = "credentials_id")
   private CredentialsEntity credentials;
+
+  @Column(name = "duplicate_email")
+  private boolean duplicateEmail;
 }

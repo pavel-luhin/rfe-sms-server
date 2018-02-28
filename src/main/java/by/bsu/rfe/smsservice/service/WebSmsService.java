@@ -1,9 +1,12 @@
 package by.bsu.rfe.smsservice.service;
 
-import by.bsu.rfe.smsservice.common.WebSmsResponse;
 import by.bsu.rfe.smsservice.common.request.Request;
+import by.bsu.rfe.smsservice.common.response.BalanceResponse;
+import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
 
 public interface WebSmsService {
 
-  WebSmsResponse execute(Request request);
+  SendSmsResponse sendSms(Request request);
+
+  BalanceResponse getBalance(Request request);
 }

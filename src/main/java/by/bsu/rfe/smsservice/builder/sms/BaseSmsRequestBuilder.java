@@ -6,13 +6,12 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 import static java.util.stream.Collectors.toMap;
 
+import by.bsu.rfe.smsservice.builder.WebSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.common.dto.sms.BaseSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
-import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
@@ -29,14 +28,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
 
 @Slf4j
-public abstract class BaseSmsObjectBuilder<T extends BaseSmsRequestDTO> {
+public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
+    WebSmsRequestBuilder<T> {
 
   protected ParametersCollectorResolver parametersCollectorResolver;
   protected CredentialsService credentialsService;
   protected List<MobileNumberValidator> mobileNumberValidators;
   protected RecipientService recipientService;
 
-  public BaseSmsObjectBuilder(
+  public BaseSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
       List<MobileNumberValidator> mobileNumberValidators,
@@ -46,10 +46,6 @@ public abstract class BaseSmsObjectBuilder<T extends BaseSmsRequestDTO> {
     this.mobileNumberValidators = mobileNumberValidators;
     this.recipientService = recipientService;
   }
-
-  public abstract Request build(T t);
-
-  public abstract SmsQueueEntity buildQueue(T t);
 
   protected Request buildBaseRequest(T requestDTO) {
     Request request = new Request();

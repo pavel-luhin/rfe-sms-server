@@ -3,9 +3,9 @@ package by.bsu.rfe.smsservice.service;
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
-
 import java.util.List;
 
 /**
@@ -15,7 +15,7 @@ public interface SmsQueueService {
 
   void addToQueue(SmsQueueEntity smsQueueEntity);
 
-  List<SmsQueueEntity> getAllSmsFromQueue();
+  List<SmsQueueRequestDTO> getAllSmsFromQueue();
 
   void removeFromQueue(Integer id);
 

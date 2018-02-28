@@ -1,20 +1,21 @@
 package by.bsu.rfe.smsservice.service.impl;
 
 import static by.bsu.rfe.smsservice.common.dto.SMSResultDTO.success;
+import static by.bsu.rfe.smsservice.util.DozerUtil.mapList;
 
-import by.bsu.rfe.smsservice.builder.sms.SmsObjectBuilderHolder;
+import by.bsu.rfe.smsservice.builder.RequestBuilderHolder;
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
 import by.bsu.rfe.smsservice.repository.SmsQueueRepository;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
+import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by pluhin on 1/4/17.
@@ -26,7 +27,10 @@ public class SmsQueueServiceImpl implements SmsQueueService {
   private SmsQueueRepository smsQueueRepository;
 
   @Autowired
-  private SmsObjectBuilderHolder smsObjectBuilderHolder;
+  private RequestBuilderHolder requestBuilderHolder;
+
+  @Autowired
+  private Mapper mapper;
 
   @Override
   public void addToQueue(SmsQueueEntity smsQueueEntity) {
@@ -34,8 +38,10 @@ public class SmsQueueServiceImpl implements SmsQueueService {
   }
 
   @Override
-  public List<SmsQueueEntity> getAllSmsFromQueue() {
-    return smsQueueRepository.findAll();
+  public List<SmsQueueRequestDTO> getAllSmsFromQueue() {
+    List<SmsQueueEntity> entities = smsQueueRepository.findAll();
+
+    return mapList(mapper, entities, SmsQueueRequestDTO.class);
   }
 
   @Override
@@ -45,21 +51,21 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 
   @Override
   public SMSResultDTO putToQueue(CustomSmsRequestDTO requestDTO) {
-    SmsQueueEntity entity = smsObjectBuilderHolder.getCustomSmsRequestBuilder().buildQueue(requestDTO);
+    SmsQueueEntity entity = requestBuilderHolder.getCustomSmsRequestBuilder().buildQueue(requestDTO);
     smsQueueRepository.save(entity);
     return success(1);
   }
 
   @Override
   public SMSResultDTO putToQueue(BulkSmsRequestDTO requestDTO) {
-    SmsQueueEntity entity = smsObjectBuilderHolder.getBulkSmsRequestBuilder().buildQueue(requestDTO);
+    SmsQueueEntity entity = requestBuilderHolder.getBulkSmsRequestBuilder().buildQueue(requestDTO);
     smsQueueRepository.save(entity);
     return success(1);
   }
 
   @Override
   public SMSResultDTO putToQueue(TemplateSmsRequestDTO requestDTO) {
-    SmsQueueEntity entity = smsObjectBuilderHolder.getTemplateSmsRequestBuilder().buildQueue(requestDTO);
+    SmsQueueEntity entity = requestBuilderHolder.getTemplateSmsRequestBuilder().buildQueue(requestDTO);
     smsQueueRepository.save(entity);
     return success(1);
   }

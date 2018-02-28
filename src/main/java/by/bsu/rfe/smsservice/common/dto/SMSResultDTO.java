@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.common.dto;
 
+import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
 import lombok.Data;
 
 /**
@@ -8,13 +9,28 @@ import lombok.Data;
 @Data
 public class SMSResultDTO {
 
-    private int count;
-    private int errorCount;
-    private String lastError;
+  private boolean error;
+  private int count;
+  private String lastError;
+  private boolean inQueue;
 
-    public static SMSResultDTO success(int count) {
-        SMSResultDTO smsResultDTO = new SMSResultDTO();
-        smsResultDTO.setCount(count);
-        return smsResultDTO;
-    }
+  public static SMSResultDTO fromResponse(SendSmsResponse response) {
+    SMSResultDTO resultDTO = new SMSResultDTO();
+
+    resultDTO.setError(response.isError());
+    resultDTO.setLastError(response.getErrorMessage());
+    resultDTO.setCount(response.getMessages().size());
+
+    return resultDTO;
+  }
+
+  public static SMSResultDTO success(int count) {
+    SMSResultDTO smsResultDTO = new SMSResultDTO();
+    smsResultDTO.setCount(count);
+    return smsResultDTO;
+  }
+
+  public void incrementTotalCountBy(int count) {
+    this.count += count;
+  }
 }
