@@ -10,7 +10,7 @@ import lombok.Data;
 public class SMSResultDTO {
 
   private boolean error;
-  private int count;
+  private int count = 0;
   private String lastError;
   private boolean inQueue;
 
@@ -24,9 +24,10 @@ public class SMSResultDTO {
     return resultDTO;
   }
 
-  public static SMSResultDTO success(int count) {
+  public static SMSResultDTO successQueued(int count) {
     SMSResultDTO smsResultDTO = new SMSResultDTO();
     smsResultDTO.setCount(count);
+    smsResultDTO.setInQueue(true);
     return smsResultDTO;
   }
 

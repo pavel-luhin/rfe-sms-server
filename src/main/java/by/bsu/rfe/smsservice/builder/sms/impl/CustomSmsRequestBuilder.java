@@ -23,8 +23,7 @@ public class CustomSmsRequestBuilder extends BaseSmsRequestBuilder<CustomSmsRequ
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
       List<MobileNumberValidator> mobileNumberValidators,
-      RecipientService recipientService,
-      RecipientService recipientService1) {
+      RecipientService recipientService) {
     super(parametersCollectorResolver, credentialsService, mobileNumberValidators,
         recipientService);
   }

@@ -9,4 +9,5 @@ public abstract class BaseSmsRequestDTO {
 
   private boolean duplicateEmail;
   private String senderName;
+  private boolean skipQueue;
 }

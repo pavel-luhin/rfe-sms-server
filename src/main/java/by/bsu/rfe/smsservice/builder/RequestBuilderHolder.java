@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.builder;
 
+import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.sms.impl.BulkSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.sms.impl.CustomSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.sms.impl.QueueSmsRequestBuilder;
@@ -8,7 +9,6 @@ import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
-import by.bsu.rfe.smsservice.common.request.BalanceRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,23 +35,23 @@ public class RequestBuilderHolder {
     this.balanceRequestBuilder = balanceRequestBuilder;
   }
 
-  public WebSmsRequestBuilder<SmsQueueRequestDTO> getQueueSmsRequestBuilder() {
+  public BaseSmsRequestBuilder<SmsQueueRequestDTO> getQueueSmsRequestBuilder() {
     return queueSmsRequestBuilder;
   }
 
-  public WebSmsRequestBuilder<BulkSmsRequestDTO> getBulkSmsRequestBuilder() {
+  public BaseSmsRequestBuilder<BulkSmsRequestDTO> getBulkSmsRequestBuilder() {
     return bulkSmsRequestBuilder;
   }
 
-  public WebSmsRequestBuilder<CustomSmsRequestDTO> getCustomSmsRequestBuilder() {
+  public BaseSmsRequestBuilder<CustomSmsRequestDTO> getCustomSmsRequestBuilder() {
     return customSmsRequestBuilder;
   }
 
-  public WebSmsRequestBuilder<TemplateSmsRequestDTO> getTemplateSmsRequestBuilder() {
+  public BaseSmsRequestBuilder<TemplateSmsRequestDTO> getTemplateSmsRequestBuilder() {
     return templateSmsRequestBuilder;
   }
 
-  public WebSmsRequestBuilder<BalanceRequest> getBalanceRequestBuilder() {
+  public BalanceRequestBuilder getBalanceRequestBuilder() {
     return balanceRequestBuilder;
   }
 }
