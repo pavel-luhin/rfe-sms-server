@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.builder;
 
+import by.bsu.rfe.smsservice.builder.balance.BalanceRequestBuilder;
 import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.sms.impl.BulkSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.sms.impl.CustomSmsRequestBuilder;

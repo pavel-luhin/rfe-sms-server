@@ -1,9 +1,10 @@
-package by.bsu.rfe.smsservice.builder;
+package by.bsu.rfe.smsservice.builder.balance;
 
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSRest.BALANCE;
 
+import by.bsu.rfe.smsservice.builder.WebSmsRequestBuilder;
 import by.bsu.rfe.smsservice.common.request.BalanceRequest;
 import by.bsu.rfe.smsservice.common.request.Request;
 import org.apache.http.message.BasicNameValuePair;
