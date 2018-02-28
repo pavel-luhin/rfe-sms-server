@@ -44,5 +44,5 @@ public interface RecipientService {
 
   PageResponseDTO<GroupDTO> getGroups(PageRequestDTO pageRequestDTO, String query);
 
-  GroupEntity createGroupFromFile(List<String> numbersFromFile);
+  GroupEntity createGroupFromNumbers(List<String> numbers);
 }

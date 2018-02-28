@@ -9,11 +9,13 @@ import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.SmsQueueRepository;
 import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import java.util.ArrayList;
@@ -41,6 +43,9 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 
   @Autowired
   private SmsTemplateService smsTemplateService;
+
+  @Autowired
+  private RecipientService recipientService;
 
   @Autowired
   private Mapper mapper;
@@ -104,14 +109,15 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 
     messagesByRecipients.entrySet()
         .forEach(messageWithRecipients -> {
-          //TODO save numbers to bulk group
-          String recipients = String.join(",", messageWithRecipients.getValue());
+          GroupEntity group = recipientService
+              .createGroupFromNumbers(messageWithRecipients.getValue());
           String message = messageWithRecipients.getKey();
           SmsQueueEntity entity = new SmsQueueEntity();
           entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
-          entity.setCredentials(credentialsService.getCredentialsForSenderName(requestDTO.getSenderName()));
+          entity.setCredentials(
+              credentialsService.getCredentialsForSenderName(requestDTO.getSenderName()));
           entity.setMessage(message);
-          entity.setRecipient(recipients);
+          entity.setRecipient(group.getName());
           entity.setRecipientType(RecipientType.GROUP);
           smsQueueRepository.save(entity);
           smsResultDTO.incrementTotalCountBy(1);

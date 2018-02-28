@@ -172,10 +172,23 @@ public class RecipientServiceImpl implements RecipientService {
   }
 
   @Override
-  public GroupEntity createGroupFromFile(List<String> numbersFromFile) {
+  public GroupEntity createGroupFromNumbers(List<String> numbers) {
     GroupEntity groupEntity = new GroupEntity();
     groupEntity.setName("GROUP_" + System.currentTimeMillis());
+    groupEntity.setTemporary(true);
 
+    numbers.forEach(number -> {
+      PersonEntity personEntity = new PersonEntity();
+      personEntity.setFirstName("BULK_TMP");
+      personEntity.setLastName("BULK_TMP");
+      personEntity.setEmail(number + "@example.com");
+      personEntity.setPhoneNumber(number);
+      personEntity.setTemporary(true);
+      personRepository.saveAndFlush(personEntity);
+      groupEntity.getPersons().add(personEntity);
+    });
+
+    groupRepository.saveAndFlush(groupEntity);
     return groupEntity;
   }
 
