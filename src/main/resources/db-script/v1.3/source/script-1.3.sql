@@ -13,3 +13,6 @@ ALTER TABLE sms_queue ADD COLUMN parameters_json BLOB;
 ALTER TABLE sms_queue DROP FOREIGN KEY sms_type_fk;
 ALTER TABLE sms_queue DROP COLUMN sms_type_id ;
 ALTER TABLE sms_queue ADD COLUMN sms_type VARCHAR(255);
+
+ALTER TABLE person DROP INDEX phone_number;
+ALTER TABLE person DROP INDEX email;
