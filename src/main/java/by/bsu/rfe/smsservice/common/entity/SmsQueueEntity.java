@@ -37,4 +37,7 @@ public class SmsQueueEntity extends CreationDetails {
 
   @Column(name = "parameters_json")
   private String parametersJson;
+
+  @Column(name = "sms_type")
+  private String smsType;
 }

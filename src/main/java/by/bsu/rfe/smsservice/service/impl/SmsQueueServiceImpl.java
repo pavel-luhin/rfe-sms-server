@@ -18,6 +18,8 @@ import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +48,9 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 
   @Autowired
   private RecipientService recipientService;
+
+  @Autowired
+  private ObjectMapper objectMapper;
 
   @Autowired
   private Mapper mapper;
@@ -136,6 +141,13 @@ public class SmsQueueServiceImpl implements SmsQueueService {
     requestDTO.getRecipients().forEach((recipient, type) -> {
       SmsQueueEntity entity = new SmsQueueEntity();
       entity.setRecipientType(type);
+      Map<String, String> parameters = requestDTO.getParameters().get(recipient);
+      try {
+        entity.setParametersJson(objectMapper.writeValueAsString(parameters));
+      } catch (JsonProcessingException e) {
+        throw new RuntimeException(e);
+      }
+      entity.setSmsType(requestDTO.getTemplateName());
       entity.setRecipient(recipient);
       entity.setMessage(templateEntity.getTemplate());
       entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
