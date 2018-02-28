@@ -1,5 +1,7 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import static org.apache.http.client.methods.RequestBuilder.post;
+
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.response.BalanceResponse;
 import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
@@ -65,9 +67,9 @@ public class WebSmsServiceImpl implements WebSmsService {
     String apiEndpoint = request.getApiEndpoint();
     log.debug("Preparing websms request to {}", apiEndpoint);
 
-    RequestBuilder requestBuilder = RequestBuilder.create("POST");
-    requestBuilder.setUri(apiEndpoint);
-    requestBuilder.setEntity(new UrlEncodedFormEntity(request.getParameters(), Consts.UTF_8));
+    RequestBuilder requestBuilder =
+        post(apiEndpoint)
+        .setEntity(new UrlEncodedFormEntity(request.getParameters(), Consts.UTF_8));
 
     HttpUriRequest httpRequest = requestBuilder.build();
     HttpResponse response = null;

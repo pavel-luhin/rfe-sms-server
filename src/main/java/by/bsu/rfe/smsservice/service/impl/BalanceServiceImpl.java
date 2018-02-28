@@ -12,15 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class BalanceServiceImpl implements BalanceService {
 
+  @Autowired
   private WebSmsService webSmsService;
-  private RequestBuilderHolder requestBuilderHolder;
 
   @Autowired
-  public BalanceServiceImpl(WebSmsService webSmsService,
-      RequestBuilderHolder requestBuilderHolder) {
-    this.webSmsService = webSmsService;
-    this.requestBuilderHolder = requestBuilderHolder;
-  }
+  private RequestBuilderHolder requestBuilderHolder;
 
   @Override
   public Double retrieveBalance(String username, String apiKey) {

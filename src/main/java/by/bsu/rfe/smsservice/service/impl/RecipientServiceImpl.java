@@ -192,6 +192,16 @@ public class RecipientServiceImpl implements RecipientService {
     return groupEntity;
   }
 
+  @Override
+  public List<GroupEntity> findTemporaryGroups() {
+    return groupRepository.findTemporaryGroups();
+  }
+
+  @Override
+  public List<PersonEntity> findTemporaryPersons() {
+    return personRepository.findTemporaryPersons();
+  }
+
   private List<RecipientDTO> mapRecipientListsToRecipientDTOs(List<PersonEntity> personEntities,
       List<GroupEntity> groupEntities) {
     List<RecipientDTO> recipients = new ArrayList<>(personEntities.size() + groupEntities.size());

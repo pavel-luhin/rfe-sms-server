@@ -11,7 +11,6 @@ public class BulkSmsRequestDTO extends BaseSmsRequestDTO {
   private GroupEntity createdGroup;
   private String message;
 
-
   public BulkSmsRequestDTO() {
     this.setDuplicateEmail(false);
   }

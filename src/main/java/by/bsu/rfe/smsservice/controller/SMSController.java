@@ -16,6 +16,7 @@ import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,8 +51,8 @@ public class SMSController {
     return ok(sendSmsService.sendTemplate(requestDTO));
   }
 
-  @PostMapping(value = "/sms/send/bulk", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendBulkSms(@RequestBody BulkSmsRequestDTO requestDTO) {
+  @PostMapping(value = "/sms/send/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<SMSResultDTO> sendBulkSms(BulkSmsRequestDTO requestDTO) {
     return ok(sendSmsService.sendBulk(requestDTO));
   }
 

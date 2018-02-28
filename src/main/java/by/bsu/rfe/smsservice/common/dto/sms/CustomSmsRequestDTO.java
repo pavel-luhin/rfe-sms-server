@@ -2,11 +2,9 @@ package by.bsu.rfe.smsservice.common.dto.sms;
 
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class CustomSmsRequestDTO extends BaseSmsRequestDTO {
 
   private Map<String, RecipientType> recipients;

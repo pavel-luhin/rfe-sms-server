@@ -70,6 +70,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     statisticsEntity.setRecipient(requestDTO.getCreatedGroup().getName());
     statisticsEntity.setRecipientType(RecipientType.GROUP);
     statisticsEntity.setText(requestDTO.getMessage());
+    statisticsEntity.setSmsType("BULK");
     statisticsRepository.save(statisticsEntity);
   }
 
@@ -85,6 +86,7 @@ public class StatisticsServiceImpl implements StatisticsService {
       statisticsEntity.setRecipient(key);
       statisticsEntity.setRecipientType(value);
       statisticsEntity.setText(requestDTO.getContent());
+      statisticsEntity.setSmsType("CUSTOM");
       statisticsRepository.save(statisticsEntity);
     });
   }
@@ -104,6 +106,7 @@ public class StatisticsServiceImpl implements StatisticsService {
       statisticsEntity.setRecipient(key);
       statisticsEntity.setRecipientType(value);
       statisticsEntity.setText(smsTemplateEntity.getTemplate());
+      statisticsEntity.setSmsType(requestDTO.getTemplateName());
       statisticsRepository.save(statisticsEntity);
     });
   }

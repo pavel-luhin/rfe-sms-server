@@ -27,14 +27,19 @@ public class CredentialsServiceImpl implements CredentialsService {
 
   @Autowired
   private CredentialsRepository credentialsRepository;
+
   @Autowired
   private UserService userService;
+
   @Autowired
   private ExternalApplicationService externalApplicationService;
+
   @Autowired
   private CredentialsCache credentialsCache;
+
   @Autowired
   private Mapper mapper;
+
   @Autowired
   private BalanceService balanceService;
 
@@ -97,7 +102,8 @@ public class CredentialsServiceImpl implements CredentialsService {
     for (CredentialsDTO credentialsDTO : credentialsDTOs) {
 
       if (!balanceByUsername.containsKey(credentialsDTO.getUsername())) {
-        Double balance = balanceService.retrieveBalance(username, credentialsDTO.getApiKey());
+        Double balance = balanceService
+            .retrieveBalance(credentialsDTO.getUsername(), credentialsDTO.getApiKey());
         balanceByUsername.put(credentialsDTO.getUsername(), balance);
       }
 

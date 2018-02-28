@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.common.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +28,7 @@ public class GroupEntity extends CreationDetails {
       inverseJoinColumns = @JoinColumn(name = "person_id"),
       joinColumns = @JoinColumn(name = "group_id")
   )
-  private List<PersonEntity> persons;
+  private List<PersonEntity> persons = new ArrayList<>();
 
   @Column(name = "temporary")
   private boolean temporary;

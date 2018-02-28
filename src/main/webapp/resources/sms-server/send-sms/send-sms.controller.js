@@ -3,7 +3,8 @@
 
     angular
         .module('sms-server')
-        .controller('sendSmsCtrl', sendSmsCtrl);
+        .controller('sendSmsCtrl', sendSmsCtrl)
+        .directive('fileModel', fileModel);
 
     sendSmsCtrl.$inject = ['sendSmsService', '$scope', 'toaster', '$location'];
     function sendSmsCtrl(sendSmsService, $scope, toaster, $location) {
@@ -57,13 +58,13 @@
                 }
             }
 
-            sms.smsContent = smsObject.content;
+            sms.content = smsObject.content;
 
-            sms.requestSenderName = $scope.requestSenderName;
+            sms.senderName = $scope.requestSenderName;
 
             sendSmsService.sendSMS(sms)
                 .then(function (data) {
-                    if (data.data.errorCount != 0) {
+                    if (data.data.error) {
                         toaster.pop({
                             type: 'error',
                             title: 'SMS was not sent',
@@ -104,15 +105,11 @@
             $scope.loading = true;
             var file = $scope.myFile;
 
-            var sameForAll = $scope.sameForAll;
-            if (sameForAll === undefined) {
-                sameForAll = false;
-            }
+            console.log(file);
 
             var fd = new FormData();
             fd.append('file', file);
-            fd.append('sameContentForAll', sameForAll);
-            fd.append('requestSenderName', $scope.requestSenderName);
+            fd.append('senderName', $scope.requestSenderName);
 
             sendSmsService.sendBulkSMS(fd).then(function (data) {
                 $scope.loading = false;
@@ -173,5 +170,27 @@
                 })
         };
     }
+
+  fileModel.$inject = ['$parse'];
+  function fileModel($parse) {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        var model = $parse(attrs.fileModel);
+        var modelSetter = model.assign;
+
+        element.bind('change', function(){
+          scope.$apply(function(){
+            if (attrs.multiple) {
+              modelSetter(scope, element[0].files);
+            }
+            else {
+              modelSetter(scope, element[0].files[0]);
+            }
+          });
+        });
+      }
+    };
+  }
 
 })();

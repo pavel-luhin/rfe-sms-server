@@ -8,7 +8,7 @@
     addTemplateCtrl.$inject = ['addTemplateService', '$scope', '$uibModalInstance', 'toaster'];
     function addTemplateCtrl(addTemplateService, $scope, $uibModalInstance, toaster) {
         $scope.addTemplate = function (template) {
-            if (!template || !template.smsType || !template.uriPath) {
+            if (!template || !template.smsType) {
 
                 toaster.pop({
                     type: 'error',

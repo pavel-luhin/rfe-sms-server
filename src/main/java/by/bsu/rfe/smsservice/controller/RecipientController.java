@@ -58,8 +58,8 @@ public class RecipientController {
   }
 
   @GetMapping("/persons")
-  public ResponseEntity<PageResponseDTO<PersonDTO>> getPersons(
-      @RequestParam PageRequestDTO requestDTO, @RequestParam String query) {
+  public ResponseEntity<PageResponseDTO<PersonDTO>> getPersons(PageRequestDTO requestDTO,
+      @RequestParam String query) {
     PageResponseDTO pageResponseDTO = recipientService.getPersons(requestDTO, query);
     return ok(pageResponseDTO);
   }
@@ -86,8 +86,7 @@ public class RecipientController {
   }
 
   @GetMapping("/group")
-  public ResponseEntity<PageResponseDTO<GroupDTO>> getGroups(
-      @RequestParam PageRequestDTO pageRequestDTO,
+  public ResponseEntity<PageResponseDTO<GroupDTO>> getGroups(PageRequestDTO pageRequestDTO,
       @RequestParam(required = false) String query) {
     return ok(recipientService.getGroups(pageRequestDTO, query));
   }

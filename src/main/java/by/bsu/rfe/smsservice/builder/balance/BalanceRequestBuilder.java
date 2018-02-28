@@ -1,7 +1,7 @@
 package by.bsu.rfe.smsservice.builder.balance;
 
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
-import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSRest.BALANCE;
 
 import by.bsu.rfe.smsservice.builder.WebSmsRequestBuilder;
@@ -18,7 +18,7 @@ public class BalanceRequestBuilder extends WebSmsRequestBuilder<BalanceRequest> 
     Request request = new Request();
     request.setApiEndpoint(BALANCE.getApiEndpoint());
     request.addParameter(
-        new BasicNameValuePair(SENDER.getRequestParam(), balanceRequest.getUsername()));
+        new BasicNameValuePair(USER.getRequestParam(), balanceRequest.getUsername()));
     request
         .addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), balanceRequest.getApiKey()));
 

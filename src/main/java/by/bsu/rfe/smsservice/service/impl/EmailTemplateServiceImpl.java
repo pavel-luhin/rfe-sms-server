@@ -15,17 +15,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailTemplateServiceImpl implements EmailTemplateService {
 
+  @Autowired
   private EmailRepository emailRepository;
-  private SmsTemplateService smsTemplateService;
-  private Mapper mapper;
 
   @Autowired
-  public EmailTemplateServiceImpl(EmailRepository emailRepository,
-      SmsTemplateService smsTemplateService, Mapper mapper) {
-    this.emailRepository = emailRepository;
-    this.smsTemplateService = smsTemplateService;
-    this.mapper = mapper;
-  }
+  private SmsTemplateService smsTemplateService;
+
+  @Autowired
+  private Mapper mapper;
 
   @Override
   public List<EmailTemplateDTO> getAllEmailTemplates() {

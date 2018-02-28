@@ -1,23 +1,24 @@
 package by.bsu.rfe.smsservice.bulk;
 
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by pluhin on 7/13/16.
  */
 public class ExcelUtils {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ExcelUtils.class);
 
   public static Map<String, String> getMessagesFromSheet(Sheet sheet) {
     Iterator<Row> rowIterator = sheet.rowIterator();
@@ -52,9 +53,9 @@ public class ExcelUtils {
       HSSFWorkbook workbook = new HSSFWorkbook(inputStream);
       return workbook.getSheetAt(0);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
+      throw new RuntimeException(e);
     }
-    return null;
   }
 
   private static Integer getRecipientsPosition(Row row) {
@@ -67,6 +68,7 @@ public class ExcelUtils {
       }
       count++;
     }
+    LOGGER.error("No recipient column in list");
     throw new NullPointerException("No recipient column in list");
   }
 
@@ -80,6 +82,7 @@ public class ExcelUtils {
       }
       count++;
     }
+    LOGGER.error("No message column in list");
     throw new NullPointerException("No message column in list");
   }
 }

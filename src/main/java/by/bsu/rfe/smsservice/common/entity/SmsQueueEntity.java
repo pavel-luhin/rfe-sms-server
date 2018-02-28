@@ -41,6 +41,6 @@ public class SmsQueueEntity extends CreationDetails {
   @Column(name = "sms_type")
   private String smsType;
 
-  @Column
+  @Column(name = "initiated_by")
   private String initiatedBy;
 }
