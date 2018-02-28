@@ -38,7 +38,9 @@ public class WebSmsServiceImpl implements WebSmsService {
     HttpResponse response = execute(request);
     try {
       String content = getContent(response);
-      return objectMapper.readValue(content, SendSmsResponse.class);
+      SendSmsResponse sendSmsResponse = objectMapper.readValue(content, SendSmsResponse.class);
+      sendSmsResponse.setTextResponse(content);
+      return sendSmsResponse;
     } catch (IOException e) {
       log.error("Error while mapping send sms response to object");
       log.error(e.getMessage());
@@ -60,7 +62,7 @@ public class WebSmsServiceImpl implements WebSmsService {
   }
 
   private HttpResponse execute(Request request) {
-    String apiEndpoint = request.apiEndpoint();
+    String apiEndpoint = request.getApiEndpoint();
     log.debug("Preparing websms request to {}", apiEndpoint);
 
     RequestBuilder requestBuilder = RequestBuilder.create("POST");

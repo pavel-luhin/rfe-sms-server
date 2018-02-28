@@ -13,6 +13,7 @@ public class SmsQueueRequestDTO extends BaseSmsRequestDTO {
   private String content;
   private Map<String, String> parameters;
   private String smsType;
+  private String initiatedBy;
 
   public SmsQueueRequestDTO() {
     this.setSkipQueue(true);

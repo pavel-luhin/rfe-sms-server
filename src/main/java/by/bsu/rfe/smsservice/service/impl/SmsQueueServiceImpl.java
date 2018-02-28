@@ -14,6 +14,7 @@ import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.SmsQueueRepository;
+import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
@@ -78,6 +79,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
     smsResultDTO.setInQueue(true);
     requestDTO.getRecipients().forEach((recipient, type) -> {
       SmsQueueEntity entity = new SmsQueueEntity();
+      entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
       entity.setRecipientType(type);
       entity.setRecipient(recipient);
       entity.setMessage(requestDTO.getContent());
@@ -118,6 +120,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
               .createGroupFromNumbers(messageWithRecipients.getValue());
           String message = messageWithRecipients.getKey();
           SmsQueueEntity entity = new SmsQueueEntity();
+          entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
           entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
           entity.setCredentials(
               credentialsService.getCredentialsForSenderName(requestDTO.getSenderName()));
@@ -140,6 +143,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
     smsResultDTO.setInQueue(true);
     requestDTO.getRecipients().forEach((recipient, type) -> {
       SmsQueueEntity entity = new SmsQueueEntity();
+      entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
       entity.setRecipientType(type);
       Map<String, String> parameters = requestDTO.getParameters().get(recipient);
       try {

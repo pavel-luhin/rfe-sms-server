@@ -12,6 +12,7 @@ public class SendSmsResponse {
   private String errorMessage;
   private boolean error;
   private List<SmsResponse> messages = new ArrayList<>();
+  private String textResponse;
 
   @Data
   static class SmsResponse {

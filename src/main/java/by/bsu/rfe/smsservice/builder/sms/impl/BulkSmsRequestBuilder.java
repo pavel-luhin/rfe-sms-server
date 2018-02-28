@@ -3,17 +3,19 @@ package by.bsu.rfe.smsservice.builder.sms.impl;
 import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getMessagesFromSheet;
 import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getSheetFromFile;
 import static by.bsu.rfe.smsservice.common.enums.RecipientType.NUMBER;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGES;
 import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
-import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,26 +49,27 @@ public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestD
     Map<String, String> totalMessages = getMessagesFromSheet(sheet);
     log.debug("Found {} messages", totalMessages.size());
 
-    Map<String, String> processedMessages = new HashMap<>();
+    List<String> numbers = new ArrayList<>(totalMessages.keySet());
+    GroupEntity group = recipientService.createGroupFromNumbers(numbers);
+    String message = totalMessages.get(numbers.get(0));
+    smsRequestDTO.setCreatedGroup(group);
+    smsRequestDTO.setMessage(message);
 
-    totalMessages.entrySet()
-        .forEach(entry -> {
-          Map.Entry<String, RecipientType> recipientTypeEntry =
-              new ImmutablePair<>(entry.getKey(), NUMBER);
+    totalMessages
+        .entrySet()
+        .forEach(messageAndRecipient -> {
           Map<String, String> parameters = new HashMap<>();
-          parametersCollectorResolver.resolve(NUMBER)
-              .collectParameters(recipientTypeEntry, parameters);
+          Map.Entry<String, RecipientType> recipient = new ImmutablePair<>(
+              messageAndRecipient.getKey(), NUMBER);
+          parametersCollectorResolver.resolve(NUMBER).collectParameters(recipient, parameters);
 
-          for (MobileNumberValidator validator : mobileNumberValidators) {
-            String validNumber = validator.validate(entry.getKey());
-            String message = createMessage(entry.getValue(), parameters);
-            processedMessages.put(validNumber, message);
-          }
+          String createdMessage = createMessage(message, parameters);
+          totalMessages.put(messageAndRecipient.getKey(), createdMessage);
         });
 
-    String finalMessage = createArrayOfMessages(processedMessages);
-    request
-        .addParameter(new BasicNameValuePair(WebSMSParam.MESSAGES.getRequestParam(), finalMessage));
+    String finalMessages = createArrayOfMessages(totalMessages);
+
+    request.addParameter(new BasicNameValuePair(MESSAGES.getRequestParam(), finalMessages));
     return request;
   }
 }

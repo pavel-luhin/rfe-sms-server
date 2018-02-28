@@ -1,14 +1,16 @@
 package by.bsu.rfe.smsservice.common.dto.sms;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import by.bsu.rfe.smsservice.common.entity.GroupEntity;
+import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class BulkSmsRequestDTO extends BaseSmsRequestDTO {
 
   private MultipartFile file;
+  private GroupEntity createdGroup;
+  private String message;
+
 
   public BulkSmsRequestDTO() {
     this.setDuplicateEmail(false);

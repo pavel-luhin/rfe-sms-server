@@ -48,6 +48,7 @@ public class SendSmsServiceImpl implements SendSmsService {
     }
     Request request = requestBuilderHolder.getCustomSmsRequestBuilder().build(requestDTO);
     SendSmsResponse sendSmsResponse = webSmsService.sendSms(request);
+    statisticsService.saveStatistics(requestDTO, sendSmsResponse);
     return fromResponse(sendSmsResponse);
   }
 
@@ -58,6 +59,7 @@ public class SendSmsServiceImpl implements SendSmsService {
     }
     Request request = requestBuilderHolder.getTemplateSmsRequestBuilder().build(requestDTO);
     SendSmsResponse sendSmsResponse = webSmsService.sendSms(request);
+    statisticsService.saveStatistics(requestDTO, sendSmsResponse);
     if (requestDTO.isDuplicateEmail()) {
       sendEmailService.sendEmail(requestDTO);
     }
@@ -71,6 +73,7 @@ public class SendSmsServiceImpl implements SendSmsService {
     }
     Request request = requestBuilderHolder.getBulkSmsRequestBuilder().build(requestDTO);
     SendSmsResponse sendSmsResponse = webSmsService.sendSms(request);
+    statisticsService.saveStatistics(requestDTO, sendSmsResponse);
     if (requestDTO.isDuplicateEmail()) {
       sendEmailService.sendEmail(requestDTO);
     }
@@ -81,6 +84,7 @@ public class SendSmsServiceImpl implements SendSmsService {
   public SMSResultDTO sendSmsFromQueue(SmsQueueRequestDTO smsQueueRequestDTO) {
     Request request = requestBuilderHolder.getQueueSmsRequestBuilder().build(smsQueueRequestDTO);
     SendSmsResponse sendSmsResponse = webSmsService.sendSms(request);
+    statisticsService.saveStatistics(smsQueueRequestDTO, sendSmsResponse);
     if (smsQueueRequestDTO.isDuplicateEmail()) {
       sendEmailService.sendEmail(smsQueueRequestDTO);
     }
