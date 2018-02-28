@@ -34,7 +34,7 @@ public class SmsQueueSenderJob implements Job {
 
       List<SMSResultDTO> results = smsFromQueue
           .stream()
-          .map(sendSmsService::sendSms)
+          .map(sendSmsService::sendSmsFromQueue)
           .collect(toList());
 
       SMSResultDTO totalSmsResult = new SMSResultDTO();

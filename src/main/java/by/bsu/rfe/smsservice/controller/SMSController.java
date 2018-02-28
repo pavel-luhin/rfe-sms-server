@@ -7,8 +7,8 @@ import static org.springframework.http.ResponseEntity.ok;
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
-import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.service.SendSmsService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
@@ -25,9 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * Created by pluhin on 12/27/15.
- */
 @Slf4j
 @Controller
 @RequestMapping(produces = APPLICATION_JSON_UTF8_VALUE)
@@ -48,7 +45,8 @@ public class SMSController {
   }
 
   @PostMapping(value = "/sms/send/template", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendTemplateSms(@RequestBody TemplateSmsRequestDTO requestDTO) {
+  public ResponseEntity<SMSResultDTO> sendTemplateSms(
+      @RequestBody TemplateSmsRequestDTO requestDTO) {
     return ok(sendSmsService.sendTemplate(requestDTO));
   }
 
@@ -63,7 +61,7 @@ public class SMSController {
   }
 
   @GetMapping("/sms/queue")
-  public ResponseEntity<List<SmsQueueEntity>> getAllSmsFromQueue() {
+  public ResponseEntity<List<SmsQueueRequestDTO>> getAllSmsFromQueue() {
     return ok(smsQueueService.getAllSmsFromQueue());
   }
 

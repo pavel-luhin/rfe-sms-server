@@ -4,6 +4,7 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
+import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 import static java.util.stream.Collectors.toMap;
 
 import by.bsu.rfe.smsservice.builder.WebSmsRequestBuilder;
@@ -21,8 +22,6 @@ import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.message.BasicNameValuePair;
@@ -71,30 +70,6 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
     return request;
   }
 
-  protected String createMessage(String template, Map<String, String> messageParameters,
-      String originalMessage) {
-    String regex = "\\$\\{([^}]+)\\}";
-    Pattern pattern = Pattern.compile(regex);
-    Matcher matcher = pattern.matcher(template);
-    String result = template;
-    while (matcher.find()) {
-      String token = matcher.group();
-      String replacementValue = null;
-      if (messageParameters.containsKey(token)) {
-        replacementValue = messageParameters.get(token);
-      } else {
-        log.error("Not enough parameters. Could not create message.");
-        log.error("Original message: {}", originalMessage);
-        log.error("Parameters: {}", messageParameters);
-        throw new IllegalArgumentException("Not enough parameters. Could not create message.");
-      }
-
-      result = result.replaceFirst(Pattern.quote(token), replacementValue);
-    }
-
-    return result;
-  }
-
   protected String createArrayOfMessages(Map<String, String> messages) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append("[");
@@ -112,7 +87,7 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
   protected Map<String, String> processMessagesAndRecipients(Map<String, String> parameters,
       Map.Entry<String, RecipientType> recipient, String messageTemplate) {
     List<String> recipients = fetchNumbers(recipient);
-    String message = createMessage(messageTemplate, parameters, messageTemplate);
+    String message = createMessage(messageTemplate, parameters);
 
     return recipients
         .stream()

@@ -46,7 +46,8 @@ public class TemplateSmsRequestBuilder extends BaseSmsRequestBuilder<TemplateSms
     smsRequestDTO.getRecipients()
         .entrySet()
         .forEach(recipient -> {
-          Map<String, String> recipientParameters = new HashMap<>();
+          Map<String, String> recipientParameters = smsRequestDTO.getParameters()
+              .get(recipient.getKey());
 
           parametersCollectorResolver.resolve(recipient.getValue())
               .collectParameters(recipient, recipientParameters);

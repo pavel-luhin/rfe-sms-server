@@ -34,4 +34,7 @@ public class SmsQueueEntity extends CreationDetails {
 
   @Column(name = "duplicate_email")
   private boolean duplicateEmail;
+
+  @Column(name = "parameters_json")
+  private String parametersJson;
 }

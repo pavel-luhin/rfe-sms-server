@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.builder.sms.impl;
 
+import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 import static java.util.stream.Collectors.toMap;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
@@ -43,8 +44,7 @@ public class QueueSmsRequestBuilder extends BaseSmsRequestBuilder<SmsQueueReques
     parametersCollectorResolver.resolve(smsQueueRequestDTO.getRecipientType())
         .collectParameters(recipientTypeEntry, parameters);
 
-    String message = createMessage(smsQueueRequestDTO.getContent(), parameters,
-        smsQueueRequestDTO.getContent());
+    String message = createMessage(smsQueueRequestDTO.getContent(), parameters);
     List<String> numbers = fetchNumbers(recipientTypeEntry);
 
     Map<String, String> recipientsWithMessages = numbers

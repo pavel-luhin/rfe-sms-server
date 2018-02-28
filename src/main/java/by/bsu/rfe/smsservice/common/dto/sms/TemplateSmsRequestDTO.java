@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TemplateSmsRequestDTO extends BaseSmsRequestDTO {
 
+  private Map<String, Map<String, String>> parameters;
   private Map<String, RecipientType> recipients;
   private String templateName;
 }

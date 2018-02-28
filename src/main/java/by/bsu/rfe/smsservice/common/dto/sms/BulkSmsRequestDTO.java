@@ -9,4 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class BulkSmsRequestDTO extends BaseSmsRequestDTO {
 
   private MultipartFile file;
+
+  public BulkSmsRequestDTO() {
+    this.setDuplicateEmail(false);
+  }
 }

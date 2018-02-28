@@ -3,6 +3,7 @@ package by.bsu.rfe.smsservice.builder.sms.impl;
 import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getMessagesFromSheet;
 import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getSheetFromFile;
 import static by.bsu.rfe.smsservice.common.enums.RecipientType.NUMBER;
+import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
@@ -58,7 +59,7 @@ public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestD
 
           for (MobileNumberValidator validator : mobileNumberValidators) {
             String validNumber = validator.validate(entry.getKey());
-            String message = createMessage(entry.getValue(), parameters, entry.getValue());
+            String message = createMessage(entry.getValue(), parameters);
             processedMessages.put(validNumber, message);
           }
         });

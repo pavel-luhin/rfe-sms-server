@@ -11,4 +11,8 @@ public class CustomSmsRequestDTO extends BaseSmsRequestDTO {
 
   private Map<String, RecipientType> recipients;
   private String content;
+
+  public CustomSmsRequestDTO() {
+    this.setDuplicateEmail(false);
+  }
 }
