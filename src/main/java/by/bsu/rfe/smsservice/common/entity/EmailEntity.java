@@ -1,7 +1,5 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import org.springframework.data.jpa.domain.AbstractPersistable;
-
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -14,34 +12,35 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "email_template")
 public class EmailEntity extends CreationDetails {
-    private String subject;
-    @Lob
-    private String content;
-    @OneToOne
-    @JoinColumn(name = "sms_template")
-    private SmsTemplateEntity smsTemplate;
 
-    public String getSubject() {
-        return subject;
-    }
+  private String subject;
+  @Lob
+  private String content;
+  @OneToOne
+  @JoinColumn(name = "sms_template")
+  private SmsTemplateEntity smsTemplate;
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
+  public String getSubject() {
+    return subject;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public SmsTemplateEntity getSmsTemplate() {
-        return smsTemplate;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
-        this.smsTemplate = smsTemplate;
-    }
+  public SmsTemplateEntity getSmsTemplate() {
+    return smsTemplate;
+  }
+
+  public void setSmsTemplate(SmsTemplateEntity smsTemplate) {
+    this.smsTemplate = smsTemplate;
+  }
 }

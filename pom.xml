@@ -30,9 +30,18 @@
         <apache.poi.version>3.14</apache.poi.version>
         <apache.fileupload.version>1.2.1</apache.fileupload.version>
         <lombok.version>1.16.20</lombok.version>
+        <hibernate.validator.version>6.0.7.Final</hibernate.validator.version>
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.hibernate.validator/hibernate-validator -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>

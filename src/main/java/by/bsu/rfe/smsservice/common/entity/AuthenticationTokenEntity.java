@@ -13,22 +13,23 @@ import java.util.Date;
 @Entity
 @Table(name = "authentication_token")
 public class AuthenticationTokenEntity extends AbstractPersistable<Integer> {
-    private String token;
-    private Date expires;
 
-    public String getToken() {
-        return token;
-    }
+  private String token;
+  private Date expires;
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+  public String getToken() {
+    return token;
+  }
 
-    public Date getExpires() {
-        return expires;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 
-    public void setExpires(Date expires) {
-        this.expires = expires;
-    }
+  public Date getExpires() {
+    return expires;
+  }
+
+  public void setExpires(Date expires) {
+    this.expires = expires;
+  }
 }

@@ -9,14 +9,10 @@ import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Created by pluhin on 12/27/15.
@@ -34,8 +30,7 @@ public class StatisticsController {
   }
 
   @GetMapping("/page")
-  public ResponseEntity<PageResponseDTO> getStatisticsPage(
-      @RequestParam PageRequestDTO requestDTO) {
+  public ResponseEntity<PageResponseDTO> getStatisticsPage(PageRequestDTO requestDTO) {
     return ok(statisticsService.getStatisticsPage(requestDTO));
   }
 

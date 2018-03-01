@@ -1,36 +1,27 @@
 package by.bsu.rfe.smsservice.common.dto;
 
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * Created by pluhin on 7/11/16.
- */
+@Data
+@NoArgsConstructor
 public class RecipientDTO {
     private Integer id;
+
+    @NotNull
+    @Size(min = 1)
     private String name;
+
+    @NotNull
     private RecipientType recipientType;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public RecipientDTO(
+        @NotNull @Size(min = 1) String name,
+        @NotNull RecipientType recipientType) {
         this.name = name;
-    }
-
-    public RecipientType getRecipientType() {
-        return recipientType;
-    }
-
-    public void setRecipientType(RecipientType recipientType) {
         this.recipientType = recipientType;
     }
 }

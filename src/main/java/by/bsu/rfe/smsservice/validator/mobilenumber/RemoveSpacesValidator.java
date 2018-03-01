@@ -3,9 +3,6 @@ package by.bsu.rfe.smsservice.validator.mobilenumber;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-/**
- * Created by pluhin on 5.2.17.
- */
 @Component
 public class RemoveSpacesValidator implements MobileNumberValidator {
 

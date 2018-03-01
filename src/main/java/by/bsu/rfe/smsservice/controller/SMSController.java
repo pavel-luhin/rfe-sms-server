@@ -5,16 +5,19 @@ import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
 import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
-import by.bsu.rfe.smsservice.common.entity.SmsQueueEntity;
+import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
-import by.bsu.rfe.smsservice.common.sms.SmsDTO;
+import by.bsu.rfe.smsservice.service.SendSmsService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
-import by.bsu.rfe.smsservice.service.WebSMSService;
 import java.util.List;
-import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,20 +26,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Created by pluhin on 12/27/15.
- */
 @Slf4j
 @Controller
 @RequestMapping(produces = APPLICATION_JSON_UTF8_VALUE)
 public class SMSController {
 
-  private static final String CUSTOM_SMS_URI = "/rest/sms/custom";
-
   @Autowired
-  private WebSMSService webSMSService;
+  private SendSmsService sendSmsService;
 
   @Autowired
   private SmsTemplateService smsTemplateService;
@@ -44,32 +41,21 @@ public class SMSController {
   @Autowired
   private SmsQueueService smsQueueService;
 
-  @PostMapping(value = "/sms/*", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendSms(@RequestBody SmsDTO smsDTO,
-      HttpServletRequest request) {
-    smsDTO.setSmsTemplate(getTemplate(request.getRequestURI()));
-    return ok(webSMSService.sendSMS(smsDTO));
+  @PostMapping(value = "/sms/send/custom", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity<SMSResultDTO> sendCustomSms(
+      @RequestBody @Valid CustomSmsRequestDTO requestDTO) {
+    return ok(sendSmsService.sendCustom(requestDTO));
   }
 
-  private SmsTemplateEntity getTemplate(String requestUri) {
-    SmsTemplateEntity smsTemplate = smsTemplateService.getByRequestUri(requestUri);
-
-    if (smsTemplate != null) {
-      return smsTemplate;
-    } else {
-      log.error("Invalid send SMS URI path {}. Could not detect correct SMS type.", requestUri);
-      throw new IllegalArgumentException(
-          "Invalid send SMS URI path. Could not detect correct SMS type.");
-    }
+  @PostMapping(value = "/sms/send/template", consumes = APPLICATION_JSON_UTF8_VALUE)
+  public ResponseEntity<SMSResultDTO> sendTemplateSms(
+      @RequestBody @Valid TemplateSmsRequestDTO requestDTO) {
+    return ok(sendSmsService.sendTemplate(requestDTO));
   }
 
-  @PostMapping(value = "/bulkSMS", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> bulkSendSMS(@RequestParam MultipartFile file,
-      @RequestParam Boolean sameContentForAll,
-      @RequestParam(required = false) String requestSenderName) {
-    SMSResultDTO resultDTO = webSMSService
-        .bulkSendSMS(file, getTemplate(CUSTOM_SMS_URI), sameContentForAll, requestSenderName);
-    return ok(resultDTO);
+  @PostMapping(value = "/sms/send/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+  public ResponseEntity<SMSResultDTO> sendBulkSms(@Valid BulkSmsRequestDTO requestDTO) {
+    return ok(sendSmsService.sendBulk(requestDTO));
   }
 
   @GetMapping("/sms/template")
@@ -78,7 +64,7 @@ public class SMSController {
   }
 
   @GetMapping("/sms/queue")
-  public ResponseEntity<List<SmsQueueEntity>> getAllSmsFromQueue() {
+  public ResponseEntity<List<SmsQueueRequestDTO>> getAllSmsFromQueue() {
     return ok(smsQueueService.getAllSmsFromQueue());
   }
 

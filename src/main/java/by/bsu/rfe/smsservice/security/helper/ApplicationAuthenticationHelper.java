@@ -15,20 +15,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class ApplicationAuthenticationHelper implements AuthenticationHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationAuthenticationHelper.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ApplicationAuthenticationHelper.class);
 
-    @Autowired
-    private ExternalApplicationService applicationService;
+  @Autowired
+  private ExternalApplicationService applicationService;
 
-    @Override
-    public Authentication tryWith(String token) {
-        ExternalApplicationEntity application = applicationService.getByToken(token);
+  @Override
+  public Authentication tryWith(String token) {
+    ExternalApplicationEntity application = applicationService.getByToken(token);
 
-        if (application == null) {
-            return null;
-        }
-
-        LOGGER.debug("Authenticating application with token {}", token);
-        return new ApplicationAuthentication(application.getApplicationName(), application.getAuthenticationToken());
+    if (application == null) {
+      return null;
     }
+
+    LOGGER.debug("Authenticating application with token {}", token);
+    return new ApplicationAuthentication(application.getApplicationName(),
+        application.getAuthenticationToken());
+  }
 }

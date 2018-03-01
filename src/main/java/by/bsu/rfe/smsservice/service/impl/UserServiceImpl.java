@@ -11,7 +11,7 @@ import by.bsu.rfe.smsservice.common.entity.UserEntity;
 import by.bsu.rfe.smsservice.repository.UserRepository;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.SendEmailService;
 import by.bsu.rfe.smsservice.service.UserService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
   private CredentialsService credentialsService;
 
   @Autowired
-  private EmailService emailService;
+  private SendEmailService sendEmailService;
 
   private static final char[] SYMBOLS;
 
@@ -189,7 +189,7 @@ public class UserServiceImpl implements UserService {
     userEntity.setPassword(encryptPassword(password));
 
     userRepository.saveAndFlush(userEntity);
-    emailService.sendPostRegistrationEmail(username, password);
+    sendEmailService.sendRegistrationEmail(username, password);
   }
 
   @Override

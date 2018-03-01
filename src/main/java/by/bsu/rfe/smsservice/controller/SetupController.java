@@ -14,7 +14,7 @@ import by.bsu.rfe.smsservice.common.dto.VersionDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.EmailService;
+import by.bsu.rfe.smsservice.service.EmailTemplateService;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
@@ -52,7 +52,7 @@ public class SetupController {
   private ExternalApplicationService externalApplicationService;
 
   @Autowired
-  private EmailService emailService;
+  private EmailTemplateService emailTemplateService;
 
   @Autowired
   private SmsServerPropertyService smsServerPropertyService;
@@ -129,18 +129,18 @@ public class SetupController {
 
   @GetMapping("/emailTemplate")
   public ResponseEntity<List<EmailTemplateDTO>> getAllEmailTemplates() {
-    return ok(emailService.getAllEmailTemplates());
+    return ok(emailTemplateService.getAllEmailTemplates());
   }
 
   @PostMapping(value = "/emailTemplate", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createEmailTemplate(@RequestBody EmailTemplateDTO emailTemplateDTO) {
-    emailService.saveEmailTemplate(emailTemplateDTO);
+    emailTemplateService.saveEmailTemplate(emailTemplateDTO);
     return noContent().build();
   }
 
   @DeleteMapping("/emailTemplate/{id}")
   public ResponseEntity deleteEmailTemplate(@PathVariable Integer id) {
-    emailService.removeEmailTemplate(id);
+    emailTemplateService.removeEmailTemplate(id);
     return noContent().build();
   }
 

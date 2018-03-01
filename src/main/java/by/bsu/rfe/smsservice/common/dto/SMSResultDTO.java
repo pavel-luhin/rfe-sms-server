@@ -1,53 +1,37 @@
 package by.bsu.rfe.smsservice.common.dto;
 
+import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
+import lombok.Data;
+
 /**
  * Created by pluhin on 6/1/16.
  */
+@Data
 public class SMSResultDTO {
-    private int count;
-    private int errorCount;
 
-    private String lastError;
+  private boolean error;
+  private int count = 0;
+  private String lastError;
+  private boolean inQueue;
 
-    private boolean inQueue;
+  public static SMSResultDTO fromResponse(SendSmsResponse response) {
+    SMSResultDTO resultDTO = new SMSResultDTO();
 
-    public int getCount() {
-        return count;
-    }
+    resultDTO.setError(response.isError());
+    resultDTO.setLastError(response.getErrorMessage());
+    resultDTO.setCount(response.getMessages().size());
 
-    public void setCount(int count) {
-        this.count = count;
-    }
+    return resultDTO;
+  }
 
-    public int getErrorCount() {
-        return errorCount;
-    }
+  public static SMSResultDTO successQueued(int count) {
+    SMSResultDTO smsResultDTO = new SMSResultDTO();
+    smsResultDTO.setCount(count);
+    smsResultDTO.setInQueue(true);
+    return smsResultDTO;
+  }
 
-    public void setErrorCount(int errorCount) {
-        this.errorCount = errorCount;
-    }
-
-    public String getLastError() {
-        return lastError;
-    }
-
-    public void setLastError(String lastError) {
-        this.lastError = lastError;
-    }
-
-    public void incrementTotalCount() {
-        this.count++;
-    }
-
-    public void incrementErrorCount() {
-        this.errorCount++;
-    }
-
-    public boolean isInQueue() {
-        return inQueue;
-    }
-
-    public void setInQueue(boolean inQueue) {
-        this.inQueue = inQueue;
-    }
+  public void incrementTotalCountBy(int count) {
+    this.count += count;
+  }
 }

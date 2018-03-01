@@ -1,10 +1,8 @@
 package by.bsu.rfe.smsservice.common.dto.page;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class PageRequestDTO {
 
   private int offset;

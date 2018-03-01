@@ -2,8 +2,8 @@ angular.module('sms-server').factory('RestURLFactory',
     function () {
         var BASE_REST_PREFIX = '/rest';
         return {
-            SEND_CUSTOM_SMS: BASE_REST_PREFIX + '/sms/custom',
-            SEND_BULK_SMS: BASE_REST_PREFIX + '/bulkSMS',
+            SEND_CUSTOM_SMS: BASE_REST_PREFIX + '/sms/send/custom',
+            SEND_BULK_SMS: BASE_REST_PREFIX + '/sms/send/bulk',
             GET_FULL_STATISTICS: BASE_REST_PREFIX + '/statistics',
             PERSONS: BASE_REST_PREFIX + '/recipient/persons',
             ALL_PERSONS: BASE_REST_PREFIX + '/recipient/persons/all',

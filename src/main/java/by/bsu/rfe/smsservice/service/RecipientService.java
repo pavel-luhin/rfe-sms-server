@@ -43,4 +43,10 @@ public interface RecipientService {
   List<PersonDTO> getPersonsWithoutGroup(Integer groupId);
 
   PageResponseDTO<GroupDTO> getGroups(PageRequestDTO pageRequestDTO, String query);
+
+  GroupEntity createGroupFromNumbers(List<String> numbers);
+
+  List<GroupEntity> findTemporaryGroups();
+
+  List<PersonEntity> findTemporaryPersons();
 }

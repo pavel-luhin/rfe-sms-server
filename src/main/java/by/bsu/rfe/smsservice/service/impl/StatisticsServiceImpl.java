@@ -1,13 +1,27 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import static by.bsu.rfe.smsservice.common.Constants.BULK_SMS_TYPE;
+import static by.bsu.rfe.smsservice.common.Constants.CUSTOM_SMS_TYPE;
+import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
+
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.entity.StatisticsEntity;
+import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
 import by.bsu.rfe.smsservice.repository.StatisticsRepository;
+import by.bsu.rfe.smsservice.security.util.SecurityUtil;
+import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
 import by.bsu.rfe.smsservice.util.PageUtil;
+import java.util.Date;
 import java.util.List;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +37,9 @@ public class StatisticsServiceImpl implements StatisticsService {
 
   @Autowired
   private StatisticsRepository statisticsRepository;
+
+  @Autowired
+  private SmsTemplateService smsTemplateService;
 
   @Autowired
   private Mapper mapper;
@@ -47,7 +64,71 @@ public class StatisticsServiceImpl implements StatisticsService {
   }
 
   @Override
-  public void saveStatistics(StatisticsEntity statisticsEntity) {
-    statisticsRepository.saveAndFlush(statisticsEntity);
+  public void saveStatistics(BulkSmsRequestDTO requestDTO, SendSmsResponse response) {
+    StatisticsEntity statisticsEntity = new StatisticsEntity();
+    statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+    statisticsEntity.setSentDate(new Date());
+    statisticsEntity.setError(response.isError());
+    statisticsEntity.setResponse(response.getTextResponse());
+    statisticsEntity.setSender(requestDTO.getSenderName());
+    statisticsEntity.setRecipient(requestDTO.getCreatedGroup().getName());
+    statisticsEntity.setRecipientType(RecipientType.GROUP);
+    statisticsEntity.setText(requestDTO.getMessage());
+    statisticsEntity.setSmsType(BULK_SMS_TYPE);
+    statisticsRepository.save(statisticsEntity);
+  }
+
+  @Override
+  public void saveStatistics(CustomSmsRequestDTO requestDTO, SendSmsResponse response) {
+    requestDTO.getRecipients().forEach(recipient -> {
+      StatisticsEntity statisticsEntity = new StatisticsEntity();
+      statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+      statisticsEntity.setSentDate(new Date());
+      statisticsEntity.setError(response.isError());
+      statisticsEntity.setResponse(response.getTextResponse());
+      statisticsEntity.setSender(requestDTO.getSenderName());
+      statisticsEntity.setRecipient(recipient.getName());
+      statisticsEntity.setRecipientType(recipient.getRecipientType());
+      statisticsEntity.setText(requestDTO.getContent());
+      statisticsEntity.setSmsType(CUSTOM_SMS_TYPE);
+      statisticsRepository.save(statisticsEntity);
+    });
+  }
+
+  @Override
+  public void saveStatistics(TemplateSmsRequestDTO requestDTO, SendSmsResponse response) {
+    SmsTemplateEntity smsTemplateEntity = smsTemplateService
+        .findSMSTemplate(requestDTO.getTemplateName());
+    String templateMessage = smsTemplateEntity.getTemplate();
+
+    requestDTO.getRecipients().forEach(recipient -> {
+      StatisticsEntity statisticsEntity = new StatisticsEntity();
+      statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+      statisticsEntity.setSentDate(new Date());
+      statisticsEntity.setError(response.isError());
+      statisticsEntity.setResponse(response.getTextResponse());
+      statisticsEntity.setSender(requestDTO.getSenderName());
+      statisticsEntity.setRecipient(recipient.getName());
+      statisticsEntity.setRecipientType(recipient.getRecipientType());
+      statisticsEntity.setText(
+          createMessage(templateMessage, requestDTO.getParameters().get(recipient.getName())));
+      statisticsEntity.setSmsType(requestDTO.getTemplateName());
+      statisticsRepository.save(statisticsEntity);
+    });
+  }
+
+  @Override
+  public void saveStatistics(SmsQueueRequestDTO requestDTO, SendSmsResponse response) {
+    StatisticsEntity statisticsEntity = new StatisticsEntity();
+    statisticsEntity.setInitiatedBy(requestDTO.getInitiatedBy());
+    statisticsEntity.setSentDate(new Date());
+    statisticsEntity.setError(response.isError());
+    statisticsEntity.setResponse(response.getTextResponse());
+    statisticsEntity.setSender(requestDTO.getSenderName());
+    statisticsEntity.setRecipient(requestDTO.getRecipient());
+    statisticsEntity.setRecipientType(requestDTO.getRecipientType());
+    statisticsEntity.setText(createMessage(requestDTO.getContent(), requestDTO.getParameters()));
+    statisticsEntity.setSmsType(requestDTO.getSmsType());
+    statisticsRepository.save(statisticsEntity);
   }
 }
