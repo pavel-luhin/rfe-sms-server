@@ -1,7 +1,7 @@
 package by.bsu.rfe.smsservice.common.enums;
 
 public enum SmsParams {
-  SERVER_URL("${SERVER_URL}"),
+  SERVER_URL("${SERVER.URL}"),
   EMAIL("${EMAIL}"),
   USERNAME("${USERNAME}"),
   PASSWORD("${PASSWORD}"),
