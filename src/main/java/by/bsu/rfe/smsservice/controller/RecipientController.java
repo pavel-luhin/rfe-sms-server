@@ -59,7 +59,7 @@ public class RecipientController {
 
   @GetMapping("/persons")
   public ResponseEntity<PageResponseDTO<PersonDTO>> getPersons(PageRequestDTO requestDTO,
-      @RequestParam String query) {
+      @RequestParam(required = false) String query) {
     return ok(recipientService.getPersons(requestDTO, query));
   }
 

@@ -8,7 +8,6 @@ import static by.bsu.rfe.smsservice.common.enums.SmsParams.PHONE_NUMBER;
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollector;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ public class PersonParametersCollector extends ParametersCollector {
   @Override
   protected void collectSpecificParameters(RecipientDTO recipient,
       Map<String, String> parameters) {
-    PersonEntity person = recipientService.getPerson(recipient.getName().split(" "));
+    PersonEntity person = recipientService.getPerson(recipient.getName().split("-"));
 
     parameters.put(FIRST_NAME.getKey(), person.getFirstName());
     parameters.put(LAST_NAME.getKey(), person.getLastName());

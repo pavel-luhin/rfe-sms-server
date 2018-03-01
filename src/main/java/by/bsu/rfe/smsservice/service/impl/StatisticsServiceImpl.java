@@ -1,5 +1,7 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import static by.bsu.rfe.smsservice.common.Constants.BULK_SMS_TYPE;
+import static by.bsu.rfe.smsservice.common.Constants.CUSTOM_SMS_TYPE;
 import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
@@ -18,7 +20,6 @@ import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
-import by.bsu.rfe.smsservice.util.MessageUtil;
 import by.bsu.rfe.smsservice.util.PageUtil;
 import java.util.Date;
 import java.util.List;
@@ -73,7 +74,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     statisticsEntity.setRecipient(requestDTO.getCreatedGroup().getName());
     statisticsEntity.setRecipientType(RecipientType.GROUP);
     statisticsEntity.setText(requestDTO.getMessage());
-    statisticsEntity.setSmsType("BULK");
+    statisticsEntity.setSmsType(BULK_SMS_TYPE);
     statisticsRepository.save(statisticsEntity);
   }
 
@@ -89,7 +90,7 @@ public class StatisticsServiceImpl implements StatisticsService {
       statisticsEntity.setRecipient(recipient.getName());
       statisticsEntity.setRecipientType(recipient.getRecipientType());
       statisticsEntity.setText(requestDTO.getContent());
-      statisticsEntity.setSmsType("CUSTOM");
+      statisticsEntity.setSmsType(CUSTOM_SMS_TYPE);
       statisticsRepository.save(statisticsEntity);
     });
   }

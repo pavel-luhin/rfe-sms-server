@@ -1,5 +1,8 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import static by.bsu.rfe.smsservice.common.Constants.EXAMPLE_EMAIL_POSTFIX;
+import static by.bsu.rfe.smsservice.common.Constants.GENERATED_GROUP_NAME_PREFIX;
+import static by.bsu.rfe.smsservice.common.Constants.GENERATED_NAME;
 import static by.bsu.rfe.smsservice.util.PageUtil.createPage;
 
 import by.bsu.rfe.smsservice.common.dto.GroupDTO;
@@ -174,14 +177,14 @@ public class RecipientServiceImpl implements RecipientService {
   @Override
   public GroupEntity createGroupFromNumbers(List<String> numbers) {
     GroupEntity groupEntity = new GroupEntity();
-    groupEntity.setName("GROUP_" + System.currentTimeMillis());
+    groupEntity.setName(GENERATED_GROUP_NAME_PREFIX + System.currentTimeMillis());
     groupEntity.setTemporary(true);
 
     numbers.forEach(number -> {
       PersonEntity personEntity = new PersonEntity();
-      personEntity.setFirstName("BULK_TMP");
-      personEntity.setLastName("BULK_TMP");
-      personEntity.setEmail(number + "@example.com");
+      personEntity.setFirstName(GENERATED_NAME);
+      personEntity.setLastName(GENERATED_NAME);
+      personEntity.setEmail(number + EXAMPLE_EMAIL_POSTFIX);
       personEntity.setPhoneNumber(number);
       personEntity.setTemporary(true);
       personRepository.saveAndFlush(personEntity);

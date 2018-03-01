@@ -43,18 +43,26 @@
 
         $scope.sendSMS = function (smsObject) {
             $scope.loading = true;
-            console.log(smsObject);
             if (isSMSValid(smsObject)) {
                 $scope.error = undefined;
             }
 
-            var sms = createBaseSMS();
+          console.log(smsObject);
+          var sms = createBaseSMS();
 
             for (var obj in smsObject.recipient) {
                 if (smsObject.recipient[obj].recipientType === undefined) {
-                    sms.recipients[smsObject.recipient[obj].name] = 'NUMBER';
+                    var receiver = {
+                        name: smsObject.recipient[obj].name,
+                        recipientType: 'NUMBER'
+                    };
+                    sms.recipients.push(receiver);
                 } else {
-                    sms.recipients[smsObject.recipient[obj].name] = smsObject.recipient[obj].recipientType;
+                  var receiver = {
+                    name: smsObject.recipient[obj].name,
+                    recipientType: smsObject.recipient[obj].recipientType
+                  };
+                  sms.recipients.push(receiver);
                 }
             }
 
@@ -155,7 +163,7 @@
 
         function createBaseSMS() {
             var sms = {};
-            sms.recipients = {};
+            sms.recipients = [];
             sms.smsParameters = {};
             sms.duplicateEmail = false;
             sms.smsContent = "";
