@@ -8,6 +8,7 @@ import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
@@ -59,8 +60,7 @@ public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestD
         .entrySet()
         .forEach(messageAndRecipient -> {
           Map<String, String> parameters = new HashMap<>();
-          Map.Entry<String, RecipientType> recipient = new ImmutablePair<>(
-              messageAndRecipient.getKey(), NUMBER);
+          RecipientDTO recipient = new RecipientDTO(messageAndRecipient.getKey(), NUMBER);
           parametersCollectorResolver.resolve(NUMBER).collectParameters(recipient, parameters);
 
           String createdMessage = createMessage(message, parameters);

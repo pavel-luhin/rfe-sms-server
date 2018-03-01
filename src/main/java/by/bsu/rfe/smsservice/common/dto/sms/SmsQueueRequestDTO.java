@@ -15,7 +15,8 @@ public class SmsQueueRequestDTO extends BaseSmsRequestDTO {
   private String smsType;
   private String initiatedBy;
 
-  public SmsQueueRequestDTO() {
-    this.setSkipQueue(true);
+  @Override
+  public boolean isSkipQueue() {
+    return true;
   }
 }

@@ -1,5 +1,7 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
+
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
@@ -16,6 +18,7 @@ import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
+import by.bsu.rfe.smsservice.util.MessageUtil;
 import by.bsu.rfe.smsservice.util.PageUtil;
 import java.util.Date;
 import java.util.List;
@@ -76,15 +79,15 @@ public class StatisticsServiceImpl implements StatisticsService {
 
   @Override
   public void saveStatistics(CustomSmsRequestDTO requestDTO, SendSmsResponse response) {
-    requestDTO.getRecipients().forEach((key, value) -> {
+    requestDTO.getRecipients().forEach(recipient -> {
       StatisticsEntity statisticsEntity = new StatisticsEntity();
       statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
       statisticsEntity.setSentDate(new Date());
       statisticsEntity.setError(response.isError());
       statisticsEntity.setResponse(response.getTextResponse());
       statisticsEntity.setSender(requestDTO.getSenderName());
-      statisticsEntity.setRecipient(key);
-      statisticsEntity.setRecipientType(value);
+      statisticsEntity.setRecipient(recipient.getName());
+      statisticsEntity.setRecipientType(recipient.getRecipientType());
       statisticsEntity.setText(requestDTO.getContent());
       statisticsEntity.setSmsType("CUSTOM");
       statisticsRepository.save(statisticsEntity);
@@ -95,17 +98,19 @@ public class StatisticsServiceImpl implements StatisticsService {
   public void saveStatistics(TemplateSmsRequestDTO requestDTO, SendSmsResponse response) {
     SmsTemplateEntity smsTemplateEntity = smsTemplateService
         .findSMSTemplate(requestDTO.getTemplateName());
+    String templateMessage = smsTemplateEntity.getTemplate();
 
-    requestDTO.getRecipients().forEach((key, value) -> {
+    requestDTO.getRecipients().forEach(recipient -> {
       StatisticsEntity statisticsEntity = new StatisticsEntity();
       statisticsEntity.setInitiatedBy(SecurityUtil.getCurrentUsername());
       statisticsEntity.setSentDate(new Date());
       statisticsEntity.setError(response.isError());
       statisticsEntity.setResponse(response.getTextResponse());
       statisticsEntity.setSender(requestDTO.getSenderName());
-      statisticsEntity.setRecipient(key);
-      statisticsEntity.setRecipientType(value);
-      statisticsEntity.setText(smsTemplateEntity.getTemplate());
+      statisticsEntity.setRecipient(recipient.getName());
+      statisticsEntity.setRecipientType(recipient.getRecipientType());
+      statisticsEntity.setText(
+          createMessage(templateMessage, requestDTO.getParameters().get(recipient.getName())));
       statisticsEntity.setSmsType(requestDTO.getTemplateName());
       statisticsRepository.save(statisticsEntity);
     });
@@ -121,7 +126,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     statisticsEntity.setSender(requestDTO.getSenderName());
     statisticsEntity.setRecipient(requestDTO.getRecipient());
     statisticsEntity.setRecipientType(requestDTO.getRecipientType());
-    statisticsEntity.setText(requestDTO.getContent());
+    statisticsEntity.setText(createMessage(requestDTO.getContent(), requestDTO.getParameters()));
+    statisticsEntity.setSmsType(requestDTO.getSmsType());
     statisticsRepository.save(statisticsEntity);
   }
 }

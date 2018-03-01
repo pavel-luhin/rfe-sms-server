@@ -64,8 +64,9 @@ public class WebSmsServiceImpl implements WebSmsService {
   }
 
   private HttpResponse execute(Request request) {
+    log.info("Executing {}", request);
     String apiEndpoint = request.getApiEndpoint();
-    log.debug("Preparing websms request to {}", apiEndpoint);
+    log.info("Preparing websms request to {}", apiEndpoint);
 
     RequestBuilder requestBuilder =
         post(apiEndpoint)
@@ -82,7 +83,7 @@ public class WebSmsServiceImpl implements WebSmsService {
       throw new RuntimeException(e);
     }
 
-    log.debug("Web sms request executed successfully");
+    log.info("Web sms request executed successfully with result {}", response);
     return response;
   }
 

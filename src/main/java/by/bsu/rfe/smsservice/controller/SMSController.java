@@ -14,6 +14,7 @@ import by.bsu.rfe.smsservice.service.SendSmsService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import java.util.List;
+import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -41,18 +42,19 @@ public class SMSController {
   private SmsQueueService smsQueueService;
 
   @PostMapping(value = "/sms/send/custom", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendCustomSms(@RequestBody CustomSmsRequestDTO requestDTO) {
+  public ResponseEntity<SMSResultDTO> sendCustomSms(
+      @RequestBody @Valid CustomSmsRequestDTO requestDTO) {
     return ok(sendSmsService.sendCustom(requestDTO));
   }
 
   @PostMapping(value = "/sms/send/template", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SMSResultDTO> sendTemplateSms(
-      @RequestBody TemplateSmsRequestDTO requestDTO) {
+      @RequestBody @Valid TemplateSmsRequestDTO requestDTO) {
     return ok(sendSmsService.sendTemplate(requestDTO));
   }
 
   @PostMapping(value = "/sms/send/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<SMSResultDTO> sendBulkSms(BulkSmsRequestDTO requestDTO) {
+  public ResponseEntity<SMSResultDTO> sendBulkSms(@Valid BulkSmsRequestDTO requestDTO) {
     return ok(sendSmsService.sendBulk(requestDTO));
   }
 

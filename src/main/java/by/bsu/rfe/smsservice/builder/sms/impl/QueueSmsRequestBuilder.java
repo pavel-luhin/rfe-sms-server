@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toMap;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
@@ -52,7 +53,7 @@ public class QueueSmsRequestBuilder extends BaseSmsRequestBuilder<SmsQueueReques
         new BasicNameValuePair(TEST.getRequestParam(), System.getProperty("sms.test")));
     request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
 
-    Map.Entry<String, RecipientType> recipientTypeEntry = new ImmutablePair<>(
+    RecipientDTO recipientTypeEntry = new RecipientDTO(
         smsQueueRequestDTO.getRecipient(), smsQueueRequestDTO.getRecipientType());
 
     Map<String, String> parameters = new HashMap<>();

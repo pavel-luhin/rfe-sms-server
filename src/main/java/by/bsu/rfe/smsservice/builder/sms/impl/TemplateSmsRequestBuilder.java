@@ -13,6 +13,7 @@ import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,12 +45,11 @@ public class TemplateSmsRequestBuilder extends BaseSmsRequestBuilder<TemplateSms
     Map<String, String> recipientsByMessages = new HashMap<>();
 
     smsRequestDTO.getRecipients()
-        .entrySet()
         .forEach(recipient -> {
-          Map<String, String> recipientParameters = smsRequestDTO.getParameters()
-              .get(recipient.getKey());
+          Map<String, String> recipientParameters = Optional.ofNullable(smsRequestDTO.getParameters()
+              .get(recipient.getName())).orElseGet(HashMap::new);
 
-          parametersCollectorResolver.resolve(recipient.getValue())
+          parametersCollectorResolver.resolve(recipient.getRecipientType())
               .collectParameters(recipient, recipientParameters);
           recipientsByMessages.putAll(processMessagesAndRecipients(recipientParameters,
               recipient, message));

@@ -77,11 +77,11 @@ public class SmsQueueServiceImpl implements SmsQueueService {
   public SMSResultDTO putToQueue(CustomSmsRequestDTO requestDTO) {
     SMSResultDTO smsResultDTO = new SMSResultDTO();
     smsResultDTO.setInQueue(true);
-    requestDTO.getRecipients().forEach((recipient, type) -> {
+    requestDTO.getRecipients().forEach(recipient -> {
       SmsQueueEntity entity = new SmsQueueEntity();
       entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
-      entity.setRecipientType(type);
-      entity.setRecipient(recipient);
+      entity.setRecipientType(recipient.getRecipientType());
+      entity.setRecipient(recipient.getName());
       entity.setMessage(requestDTO.getContent());
       entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
       entity.setCredentials(
@@ -141,10 +141,10 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 
     SMSResultDTO smsResultDTO = new SMSResultDTO();
     smsResultDTO.setInQueue(true);
-    requestDTO.getRecipients().forEach((recipient, type) -> {
+    requestDTO.getRecipients().forEach(recipient -> {
       SmsQueueEntity entity = new SmsQueueEntity();
       entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
-      entity.setRecipientType(type);
+      entity.setRecipientType(recipient.getRecipientType());
       Map<String, String> parameters = requestDTO.getParameters().get(recipient);
       try {
         entity.setParametersJson(objectMapper.writeValueAsString(parameters));
@@ -152,7 +152,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
         throw new RuntimeException(e);
       }
       entity.setSmsType(requestDTO.getTemplateName());
-      entity.setRecipient(recipient);
+      entity.setRecipient(recipient.getName());
       entity.setMessage(templateEntity.getTemplate());
       entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
       entity.setCredentials(

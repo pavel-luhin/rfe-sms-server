@@ -12,6 +12,7 @@ import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
@@ -68,9 +69,9 @@ public class SendEmailServiceImpl implements SendEmailService {
     EmailTemplateDTO emailTemplateDTO = emailTemplateService
         .getEmailTemplate(requestDTO.getTemplateName());
 
-    requestDTO.getRecipients().entrySet().forEach(recipient -> {
-      Map<String, String> parameters = requestDTO.getParameters().get(recipient.getKey());
-      parametersCollectorResolver.resolve(recipient.getValue())
+    requestDTO.getRecipients().forEach(recipient -> {
+      Map<String, String> parameters = requestDTO.getParameters().get(recipient.getName());
+      parametersCollectorResolver.resolve(recipient.getRecipientType())
           .collectParameters(recipient, parameters);
 
       String addresses = fetchRecipients(recipient, parameters);
@@ -82,7 +83,7 @@ public class SendEmailServiceImpl implements SendEmailService {
   @Async
   @Override
   public void sendEmail(SmsQueueRequestDTO requestDTO) {
-    Map.Entry<String, RecipientType> recipient = new ImmutablePair<>(requestDTO.getRecipient(),
+    RecipientDTO recipient = new RecipientDTO(requestDTO.getRecipient(),
         requestDTO.getRecipientType());
 
     parametersCollectorResolver.resolve(requestDTO.getRecipientType())
@@ -104,7 +105,7 @@ public class SendEmailServiceImpl implements SendEmailService {
   @Async
   @Override
   public void sendRegistrationEmail(String username, String password) {
-    Map.Entry<String, RecipientType> recipientTypeEntry = new ImmutablePair<>(username,
+    RecipientDTO recipientTypeEntry = new RecipientDTO(username,
         RecipientType.NUMBER);
 
     Map<String, String> parameters = new HashMap<>();
@@ -163,9 +164,9 @@ public class SendEmailServiceImpl implements SendEmailService {
     }
   }
 
-  private String fetchRecipients(Map.Entry<String, RecipientType> recipient,
+  private String fetchRecipients(RecipientDTO recipient,
       Map<String, String> parameters) {
-    if (recipient.getValue() == RecipientType.NUMBER) {
+    if (recipient.getRecipientType() == RecipientType.NUMBER) {
 
       for (Map.Entry<String, String> parameter : parameters.entrySet()) {
         if (parameter.getKey().equals(EMAIL_PARAMETERS_KEY)) {
@@ -173,16 +174,16 @@ public class SendEmailServiceImpl implements SendEmailService {
         }
       }
 
-      log.error("Could not find email address for recipient {}", recipient.getKey());
+      log.error("Could not find email address for recipient {}", recipient.getName());
       log.error("Parameters are: {}", parameters);
 
       return null;
-    } else if (recipient.getValue() == RecipientType.PERSON) {
-      PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
+    } else if (recipient.getRecipientType() == RecipientType.PERSON) {
+      PersonEntity personEntity = recipientService.getPerson(recipient.getName().split("-"));
       return personEntity.getEmail();
     }
 
-    GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
+    GroupEntity groupEntity = recipientService.getGroupByName(recipient.getName());
 
     StringBuilder emailBuilder = new StringBuilder();
 

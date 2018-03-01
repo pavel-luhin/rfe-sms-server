@@ -34,11 +34,10 @@ public class CustomSmsRequestBuilder extends BaseSmsRequestBuilder<CustomSmsRequ
     Map<String, String> recipientsByMessages = new HashMap<>();
 
     requestDTO.getRecipients()
-        .entrySet()
         .forEach(recipient -> {
           Map<String, String> recipientParameters = new HashMap<>();
 
-          parametersCollectorResolver.resolve(recipient.getValue())
+          parametersCollectorResolver.resolve(recipient.getRecipientType())
               .collectParameters(recipient, recipientParameters);
           recipientsByMessages.putAll(processMessagesAndRecipients(recipientParameters,
               recipient, requestDTO.getContent()));

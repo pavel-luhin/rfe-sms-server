@@ -60,8 +60,7 @@ public class RecipientController {
   @GetMapping("/persons")
   public ResponseEntity<PageResponseDTO<PersonDTO>> getPersons(PageRequestDTO requestDTO,
       @RequestParam String query) {
-    PageResponseDTO pageResponseDTO = recipientService.getPersons(requestDTO, query);
-    return ok(pageResponseDTO);
+    return ok(recipientService.getPersons(requestDTO, query));
   }
 
   @GetMapping("/persons/all")

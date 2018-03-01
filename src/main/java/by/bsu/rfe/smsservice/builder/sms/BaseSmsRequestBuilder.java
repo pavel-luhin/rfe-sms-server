@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.toMap;
 
 import by.bsu.rfe.smsservice.builder.WebSmsRequestBuilder;
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BaseSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
@@ -85,7 +86,7 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
   }
 
   protected Map<String, String> processMessagesAndRecipients(Map<String, String> parameters,
-      Map.Entry<String, RecipientType> recipient, String messageTemplate) {
+      RecipientDTO recipient, String messageTemplate) {
     List<String> recipients = fetchNumbers(recipient);
     String message = createMessage(messageTemplate, parameters);
 
@@ -97,22 +98,22 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
         );
   }
 
-  protected List<String> fetchNumbers(Map.Entry<String, RecipientType> recipient) {
+  protected List<String> fetchNumbers(RecipientDTO recipient) {
     List<String> finalRecipients = new ArrayList<>();
 
-    if (recipient.getValue() == RecipientType.NUMBER) {
-      String mobileNumber = recipient.getKey();
+    if (recipient.getRecipientType() == RecipientType.NUMBER) {
+      String mobileNumber = recipient.getName();
 
       for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
         mobileNumber = mobileNumberValidator.validate(mobileNumber);
       }
 
       finalRecipients.add(mobileNumber);
-    } else if (recipient.getValue() == RecipientType.GROUP) {
-      GroupEntity groupEntity = recipientService.getGroupByName(recipient.getKey());
+    } else if (recipient.getRecipientType() == RecipientType.GROUP) {
+      GroupEntity groupEntity = recipientService.getGroupByName(recipient.getName());
       finalRecipients.add(getAllRecipientsFromGroup(groupEntity));
     } else {
-      PersonEntity personEntity = recipientService.getPerson(recipient.getKey().split("-"));
+      PersonEntity personEntity = recipientService.getPerson(recipient.getName().split("-"));
       finalRecipients.add(personEntity.getPhoneNumber());
     }
     return finalRecipients;

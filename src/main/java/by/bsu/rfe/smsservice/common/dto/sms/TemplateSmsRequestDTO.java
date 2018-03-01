@@ -1,15 +1,22 @@
 package by.bsu.rfe.smsservice.common.dto.sms;
 
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
 
-@Getter
-@AllArgsConstructor
+@Data
 public class TemplateSmsRequestDTO extends BaseSmsRequestDTO {
 
-  private Map<String, Map<String, String>> parameters;
-  private Map<String, RecipientType> recipients;
+  @NotNull
+  private List<RecipientDTO> recipients;
+
+  @NotNull
+  @Size(min = 1)
   private String templateName;
+
+  private Map<String, Map<String, String>> parameters = new HashMap<>();
 }
