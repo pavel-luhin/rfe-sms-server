@@ -17,7 +17,7 @@
         }
 
         function saveEmailTemplate(emailTemplate) {
-            return $http.post(RestURLFactory.EMAIL_TEMPLATE, template);
+            return $http.post(RestURLFactory.EMAIL_TEMPLATE, emailTemplate);
         }
     }
 })();
