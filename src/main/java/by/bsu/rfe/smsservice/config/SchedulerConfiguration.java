@@ -11,7 +11,9 @@ public class SchedulerConfiguration {
 
   @Bean
   public SchedulerFactoryBean schedulerFactoryBean() {
-    return new SchedulerFactoryBean();
+    SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
+
+    return schedulerFactoryBean;
   }
 
 }

@@ -7,13 +7,11 @@ import by.bsu.rfe.smsservice.repository.ExternalApplicationRepository;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
+import java.util.List;
+import java.util.UUID;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * Created by pluhin on 9/3/16.
@@ -42,7 +40,7 @@ public class ExternalApplicationServiceImpl implements ExternalApplicationServic
 
         String authenticationToken = UUID.randomUUID().toString().replace("-", "");
         externalApplicationEntity.setAuthenticationToken(authenticationToken);
-        CredentialsEntity credentialsEntity = credentialsService.getCredentialsForSenderName(externalApplicationDTO.getCredentialsSenderName());
+        CredentialsEntity credentialsEntity = credentialsService.getUserCredentialsForSenderName(externalApplicationDTO.getCredentialsSenderName());
         externalApplicationEntity.setDefaultCredentials(credentialsEntity);
 
         externalApplicationRepository.saveAndFlush(externalApplicationEntity);

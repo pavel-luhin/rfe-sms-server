@@ -55,7 +55,7 @@ public class SmsQueueSenderJob implements Job {
 
       if (!totalSmsResult.isError()) {
         LOGGER.info("All sms's successfully sent");
-        LOGGER.info("Total count: {}");
+        LOGGER.info("Total count: {}", totalSmsResult.getCount());
       } else {
         LOGGER.error("There is errors while sending sms's from queue");
         LOGGER.error("Last error is: ");

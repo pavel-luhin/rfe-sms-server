@@ -66,11 +66,16 @@ public class CredentialsServiceImpl implements CredentialsService {
 
   @Override
   public CredentialsEntity getCredentialsForSenderName(String senderName) {
+    return credentialsRepository.getCredentialsForSenderName(senderName);
+  }
+
+  @Override
+  public CredentialsEntity getUserCredentialsForSenderName(String senderName) {
     if (credentialsCache.isCacheEnabled()) {
       return credentialsCache.getCredentialsBySenderNameForCurrentUser(senderName);
     } else {
       String username = SecurityUtil.getCurrentUsername();
-      return credentialsRepository.getCredentialsForSenderName(username, senderName);
+      return credentialsRepository.getUserCredentialsForSenderName(username, senderName);
     }
   }
 

@@ -85,7 +85,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
       entity.setMessage(requestDTO.getContent());
       entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
       entity.setCredentials(
-          credentialsService.getCredentialsForSenderName(requestDTO.getSenderName()));
+          credentialsService.getUserCredentialsForSenderName(requestDTO.getSenderName()));
       smsQueueRepository.save(entity);
       smsResultDTO.incrementTotalCountBy(1);
     });
@@ -123,7 +123,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
           entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
           entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
           entity.setCredentials(
-              credentialsService.getCredentialsForSenderName(requestDTO.getSenderName()));
+              credentialsService.getUserCredentialsForSenderName(requestDTO.getSenderName()));
           entity.setMessage(message);
           entity.setRecipient(group.getName());
           entity.setRecipientType(RecipientType.GROUP);
@@ -156,7 +156,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
       entity.setMessage(templateEntity.getTemplate());
       entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
       entity.setCredentials(
-          credentialsService.getCredentialsForSenderName(requestDTO.getSenderName()));
+          credentialsService.getUserCredentialsForSenderName(requestDTO.getSenderName()));
       smsQueueRepository.save(entity);
       smsResultDTO.incrementTotalCountBy(1);
     });

@@ -53,7 +53,7 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
     if (StringUtils.isEmpty(requestDTO.getSenderName())) {
       credentials = credentialsService.getDefaultCredentialsForCurrentUser();
     } else {
-      credentials = credentialsService.getCredentialsForSenderName(requestDTO.getSenderName());
+      credentials = credentialsService.getUserCredentialsForSenderName(requestDTO.getSenderName());
     }
 
     if (credentials == null) {

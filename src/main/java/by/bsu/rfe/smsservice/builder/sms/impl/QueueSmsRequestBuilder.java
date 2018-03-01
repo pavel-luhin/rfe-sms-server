@@ -1,14 +1,20 @@
 package by.bsu.rfe.smsservice.builder.sms.impl;
 
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.TEST;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 import static java.util.stream.Collectors.toMap;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
 import by.bsu.rfe.smsservice.builder.sms.BaseSmsRequestBuilder;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
+import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
@@ -35,7 +41,16 @@ public class QueueSmsRequestBuilder extends BaseSmsRequestBuilder<SmsQueueReques
 
   @Override
   public Request build(SmsQueueRequestDTO smsQueueRequestDTO) {
-    Request request = buildBaseRequest(smsQueueRequestDTO);
+    Request request = new Request();
+    CredentialsEntity credentials =
+        credentialsService.getCredentialsForSenderName(smsQueueRequestDTO.getSenderName());
+
+    request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
+    request.addParameter(new BasicNameValuePair(APIKEY.getRequestParam(), credentials.getApiKey()));
+    request.addParameter(new BasicNameValuePair(SENDER.getRequestParam(), credentials.getSender()));
+    request.addParameter(
+        new BasicNameValuePair(TEST.getRequestParam(), System.getProperty("sms.test")));
+    request.setApiEndpoint(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
 
     Map.Entry<String, RecipientType> recipientTypeEntry = new ImmutablePair<>(
         smsQueueRequestDTO.getRecipient(), smsQueueRequestDTO.getRecipientType());
