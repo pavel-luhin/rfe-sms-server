@@ -18,10 +18,6 @@ public class BalanceServiceImpl implements BalanceService {
   @Autowired
   private RequestBuilderHolder requestBuilderHolder;
 
-  static {
-    System.out.println(System.getProperty("spring.profiles.active"));
-  }
-
   @Override
   public Double retrieveBalance(String username, String apiKey) {
     BalanceRequest balanceRequest = new BalanceRequest(username, apiKey);
