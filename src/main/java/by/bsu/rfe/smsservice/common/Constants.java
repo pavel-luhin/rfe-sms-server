@@ -7,4 +7,7 @@ public interface Constants {
 
   String BULK_SMS_TYPE = "BULK";
   String CUSTOM_SMS_TYPE = "CUSTOM";
+
+  String PROFILE_LOCAL = "local";
+  String PROFILE_PROD = "prod";
 }
