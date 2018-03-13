@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.common.entity;
 
+import lombok.Data;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 /**
  * Created by pluhin on 9/3/16.
  */
+@Data
 @MappedSuperclass
 public abstract class CreationDetails extends AbstractPersistable<Integer> {
     @Column(name = "created_by", nullable = false)
@@ -20,27 +22,6 @@ public abstract class CreationDetails extends AbstractPersistable<Integer> {
 
     @Column(name = "created_date", nullable = false)
     private Date createdDate;
-
-    @Override
-    public void setId(Integer id) {
-        super.setId(id);
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
 
     @PrePersist
     public void fillDetails() {

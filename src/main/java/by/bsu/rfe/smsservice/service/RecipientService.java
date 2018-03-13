@@ -1,46 +1,52 @@
 package by.bsu.rfe.smsservice.service;
 
 import by.bsu.rfe.smsservice.common.dto.GroupDTO;
-import by.bsu.rfe.smsservice.common.dto.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.dto.PersonDTO;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
+import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
-
 import java.util.List;
 
 /**
  * Created by pluhin on 3/20/16.
  */
 public interface RecipientService {
-    void addGroup(GroupDTO groupDTO);
 
-    void removeGroup(Integer groupId);
+  void addGroup(GroupDTO groupDTO);
 
-    void addPersons(List<PersonEntity> personEntities);
+  void removeGroup(Integer groupId);
 
-    void assignPersonToGroup(Integer personId, Integer groupId);
+  void addPersons(List<PersonEntity> personEntities);
 
-    List<RecipientDTO> getAllRecpients();
+  void assignPersonToGroup(Integer personId, Integer groupId);
 
-    List<RecipientDTO> getRecipientByQuery(String query);
+  List<RecipientDTO> getAllRecpients();
 
-    void removePerson(Integer personId);
+  List<RecipientDTO> getRecipientByQuery(String query);
 
-    GroupDTO getGroup(Integer groupId);
+  void removePerson(Integer personId);
 
-    PersonEntity getPerson(String[] name);
+  GroupDTO getGroup(Integer groupId);
 
-    GroupEntity getGroupByName(String groupName);
+  PersonEntity getPerson(String[] name);
 
-    PageResponseDTO<PersonDTO> getPersons(int skip, int offset, String sortField, String sortDirection, String query);
+  GroupEntity getGroupByName(String groupName);
 
-    List<PersonDTO> getAllPersons();
+  PageResponseDTO<PersonDTO> getPersons(PageRequestDTO pageRequestDTO, String query);
 
-    List<PersonDTO> getPersonsWithGroup(Integer groupId);
+  List<PersonDTO> getAllPersons();
 
-    List<PersonDTO> getPersonsWithoutGroup(Integer groupId);
+  List<PersonDTO> getPersonsWithGroup(Integer groupId);
 
-    PageResponseDTO<GroupDTO> getGroups(int skip, int offset, String sortField, String sortDirection, String query);
+  List<PersonDTO> getPersonsWithoutGroup(Integer groupId);
+
+  PageResponseDTO<GroupDTO> getGroups(PageRequestDTO pageRequestDTO, String query);
+
+  GroupEntity createGroupFromNumbers(List<String> numbers);
+
+  List<GroupEntity> findTemporaryGroups();
+
+  List<PersonEntity> findTemporaryPersons();
 }

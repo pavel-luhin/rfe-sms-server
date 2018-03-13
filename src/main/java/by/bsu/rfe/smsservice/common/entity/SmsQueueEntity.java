@@ -1,71 +1,46 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import javax.persistence.*;
-
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import lombok.Data;
 
 /**
  * Created by pluhin on 1/4/17.
  */
+@Data
 @Entity
 @Table(name = "sms_queue")
 public class SmsQueueEntity extends CreationDetails {
 
-    @Column(name = "recipient")
-    private String recipient;
+  @Column(name = "recipient")
+  private String recipient;
 
-    @Column(name = "recipient_type")
-    @Enumerated(EnumType.STRING)
-    private RecipientType recipientType;
+  @Column(name = "recipient_type")
+  @Enumerated(EnumType.STRING)
+  private RecipientType recipientType;
 
-    @Column(name = "message")
-    private String message;
+  @Column(name = "message")
+  private String message;
 
-    @OneToOne
-    @JoinColumn(name = "credentials_id")
-    private CredentialsEntity credentials;
+  @OneToOne
+  @JoinColumn(name = "credentials_id")
+  private CredentialsEntity credentials;
 
-    @OneToOne
-    @JoinColumn(name = "sms_type_id")
-    private SmsTemplateEntity smsType;
+  @Column(name = "duplicate_email")
+  private boolean duplicateEmail;
 
-    public String getRecipient() {
-        return recipient;
-    }
+  @Column(name = "parameters_json")
+  private String parametersJson;
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
+  @Column(name = "sms_type")
+  private String smsType;
 
-    public RecipientType getRecipientType() {
-        return recipientType;
-    }
-
-    public void setRecipientType(RecipientType recipientType) {
-        this.recipientType = recipientType;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public CredentialsEntity getCredentials() {
-        return credentials;
-    }
-
-    public void setCredentials(CredentialsEntity credentials) {
-        this.credentials = credentials;
-    }
-
-    public SmsTemplateEntity getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(SmsTemplateEntity smsType) {
-        this.smsType = smsType;
-    }
+  @Column(name = "initiated_by")
+  private String initiatedBy;
 }

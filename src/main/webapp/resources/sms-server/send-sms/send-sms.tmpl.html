@@ -6,19 +6,13 @@
             ng-model="requestSenderName"
             ng-options="senderName for senderName in senderNames">
     </select>
-    <div>
-        <tags-input display-property="name" placeholder="Search by recipients and groups" ng-model="sms.recipient">
-            <auto-complete source="loadRecipients($query)" load-on-focus="true"
-                           template="autocomplete-template"></auto-complete>
-        </tags-input>
-    </div>
     <div class="sms-tabs">
         <uib-tabset active="0">
             <uib-tab index="0" heading="Send Custom SMS" select="showTab(1)">
                 <div ng-if="activeTab === 1" ng-include="'/resources/sms-server/send-sms/send-sms-custom-tab.tmpl.html'"></div>
             </uib-tab>
             <uib-tab index="1" heading="Send Bulk SMS" select="showTab(2)">
-                <div ng-if="activeTab === 2" ng-include="'/resources/templates/send-sms/send-sms-bulk-tab.tmpl.html'"></div>
+                <div ng-if="activeTab === 2" ng-include="'/resources/sms-server/send-sms/send-sms-bulk-tab.tmpl.html'"></div>
             </uib-tab>
         </uib-tabset>
     </div>

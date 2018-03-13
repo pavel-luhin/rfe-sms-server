@@ -23,7 +23,7 @@
         }
 
         function sendBulkSMS(formData) {
-            return $http.post(RestURLFactory.SEND_BULK_SMS, fd,
+            return $http.post(RestURLFactory.SEND_BULK_SMS, formData,
                 {
                     transformRequest: angular.identity,
                     headers: {'Content-Type': undefined}

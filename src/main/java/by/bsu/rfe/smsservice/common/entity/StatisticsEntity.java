@@ -1,101 +1,47 @@
 package by.bsu.rfe.smsservice.common.entity;
 
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import lombok.Data;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import javax.persistence.*;
-import java.util.Date;
-
-/**
- * Created by pluhin on 12/27/15.
- */
+@Data
 @Entity
 @Table(name = "statistics")
 public class StatisticsEntity extends AbstractPersistable<Integer> {
-    private Boolean error;
-    private String sender;
-    private String recipient;
-    private String text;
-    @Lob
-    private String response;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "recipient_type")
-    private RecipientType recipientType;
-    @Column(name = "sent_date")
-    private Date sentDate;
-    private String smsType;
-    @Column(name = "initiated_by")
-    private String initiatedBy;
 
-    public Boolean getError() {
-        return error;
-    }
+  @Column
+  private Boolean error;
 
-    public void setError(Boolean error) {
-        this.error = error;
-    }
+  @Column
+  private String sender;
 
-    public String getRecipient() {
-        return recipient;
-    }
+  @Column
+  private String recipient;
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
-    }
+  @Column
+  private String text;
 
-    public String getText() {
-        return text;
-    }
+  @Lob
+  @Column
+  private String response;
 
-    public void setText(String text) {
-        this.text = text;
-    }
+  @Enumerated(EnumType.STRING)
+  @Column(name = "recipient_type")
+  private RecipientType recipientType;
 
-    public String getResponse() {
-        return response;
-    }
+  @Column(name = "sent_date")
+  private Date sentDate;
 
-    public void setResponse(String response) {
-        this.response = response;
-    }
+  @Column(name = "initiated_by")
+  private String initiatedBy;
 
-    public RecipientType getRecipientType() {
-        return recipientType;
-    }
-
-    public void setRecipientType(RecipientType recipientType) {
-        this.recipientType = recipientType;
-    }
-
-    public Date getSentDate() {
-        return sentDate;
-    }
-
-    public void setSentDate(Date sentDate) {
-        this.sentDate = sentDate;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public String getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(String smsType) {
-        this.smsType = smsType;
-    }
-
-    public String getInitiatedBy() {
-        return initiatedBy;
-    }
-
-    public void setInitiatedBy(String initiatedBy) {
-        this.initiatedBy = initiatedBy;
-    }
+  @Column
+  private String smsType;
 }

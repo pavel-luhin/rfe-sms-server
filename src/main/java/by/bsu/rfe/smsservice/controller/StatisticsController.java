@@ -1,41 +1,41 @@
 package by.bsu.rfe.smsservice.controller;
 
-import by.bsu.rfe.smsservice.common.dto.PageResponseDTO;
-import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
-import by.bsu.rfe.smsservice.service.StatisticsService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
+import static org.springframework.http.ResponseEntity.ok;
 
+import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
+import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
+import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
+import by.bsu.rfe.smsservice.service.StatisticsService;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Created by pluhin on 12/27/15.
  */
 @Controller
-@RequestMapping(value = "/statistics")
+@RequestMapping(value = "/statistics", produces = APPLICATION_JSON_UTF8_VALUE)
 public class StatisticsController {
 
-    @Autowired
-    private StatisticsService statisticsService;
+  @Autowired
+  private StatisticsService statisticsService;
 
-    @ResponseBody
-    @RequestMapping(method = RequestMethod.GET, produces = {"application/json; charset=UTF-8"})
-    public List<StatisticsDTO> getFullStatistics() {
-        return statisticsService.getFullStatistics();
-    }
+  @GetMapping
+  public ResponseEntity<List<StatisticsDTO>> getFullStatistics() {
+    return ok(statisticsService.getFullStatistics());
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/page", method = RequestMethod.GET, produces = {"application/json; charset=UTF-8"})
-    public PageResponseDTO getStatisticsPage(@RequestParam int skip, @RequestParam int offset,
-                                             @RequestParam String sortField, @RequestParam String sortDirection) {
-        return statisticsService.getStatisticsPage(skip, offset, sortField, sortDirection);
-    }
+  @GetMapping("/page")
+  public ResponseEntity<PageResponseDTO> getStatisticsPage(PageRequestDTO requestDTO) {
+    return ok(statisticsService.getStatisticsPage(requestDTO));
+  }
 
-    @ResponseBody
-    @RequestMapping(value = "/count", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Long countStatistics() {
-        return statisticsService.count();
-    }
+  @GetMapping("/count")
+  public ResponseEntity<Long> countStatistics() {
+    return ok(statisticsService.count());
+  }
 }
