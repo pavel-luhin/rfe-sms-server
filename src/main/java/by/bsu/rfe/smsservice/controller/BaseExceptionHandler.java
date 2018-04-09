@@ -61,6 +61,7 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<Object> handleException(Exception e) throws JsonProcessingException {
     log.error("Unrecognized exception catch {}", e.getMessage());
+    log.error("", e);
     return status(INTERNAL_SERVER_ERROR)
         .body(new BaseExceptionDTO(INTERNAL_SERVER_ERROR.value(), getMessage(e)));
   }
