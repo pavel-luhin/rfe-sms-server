@@ -8,6 +8,8 @@ public interface Constants {
   String BULK_SMS_TYPE = "BULK";
   String CUSTOM_SMS_TYPE = "CUSTOM";
 
+  String REGISTER_USER_SMS_TYPE = "RegisterUserSMS";
+
   String PROFILE_LOCAL = "local";
   String PROFILE_PROD = "prod";
 }
