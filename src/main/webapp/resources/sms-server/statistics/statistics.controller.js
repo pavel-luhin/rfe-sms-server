@@ -1,162 +1,164 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .controller('statisticsCtrl', statisticsCtrl);
+  angular
+  .module('sms-server')
+  .controller('statisticsCtrl', statisticsCtrl);
 
-    statisticsCtrl.$inject = ['$scope', '$routeParams', 'statisticsService'];
-    function statisticsCtrl($scope, $routeParams, statisticsService) {
-        var sortConstants = {
-            notSorted: {
-                elementClass: "fa fa-sort"
-            },
-            asc: {
-                elementClass: "fa fa-sort-asc",
-                sortString: 'asc'
-            },
-            desc: {
-                elementClass: "fa fa-sort-desc",
-                sortString: 'desc'
-            }
-        };
+  statisticsCtrl.$inject = ['$scope', '$routeParams', 'statisticsService'];
 
-        var openFirst = $routeParams.openFirst;
+  function statisticsCtrl($scope, $routeParams, statisticsService) {
+    var sortConstants = {
+      notSorted: {
+        elementClass: "fa fa-sort"
+      },
+      asc: {
+        elementClass: "fa fa-sort-asc",
+        sortString: 'asc'
+      },
+      desc: {
+        elementClass: "fa fa-sort-desc",
+        sortString: 'desc'
+      }
+    };
 
-        var sortOrder = {
-            error: sortConstants.notSorted,
-            smsType: sortConstants.notSorted,
-            senderName: sortConstants.notSorted,
-            number: sortConstants.notSorted,
-            recipientType: sortConstants.notSorted,
-            sentDate: sortConstants.desc,
-            initiatedBy: sortConstants.notSorted
-        };
+    var openFirst = $routeParams.openFirst;
 
-        var sortField = 'sentDate';
-        var sortDirection = sortConstants.desc.sortString;
+    var sortOrder = {
+      error: sortConstants.notSorted,
+      smsType: sortConstants.notSorted,
+      senderName: sortConstants.notSorted,
+      number: sortConstants.notSorted,
+      recipientType: sortConstants.notSorted,
+      sentDate: sortConstants.desc,
+      initiatedBy: sortConstants.notSorted
+    };
 
-        var sortBy = function (field) {
-            if (sortOrder[field] === sortConstants.notSorted) {
-                sortOrder[field] = sortConstants.asc;
-            } else if (sortOrder[field] === sortConstants.asc) {
-                sortOrder[field] = sortConstants.desc;
-            } else if (sortOrder[field] === sortConstants.desc) {
-                sortOrder[field] = sortConstants.asc;
-            }
+    var sortField = 'sentDate';
+    var sortDirection = sortConstants.desc.sortString;
 
-            sortDirection = sortOrder[field].sortString;
-            sortField = field;
+    var sortBy = function (field) {
+      if (sortOrder[field] === sortConstants.notSorted) {
+        sortOrder[field] = sortConstants.asc;
+      } else if (sortOrder[field] === sortConstants.asc) {
+        sortOrder[field] = sortConstants.desc;
+      } else if (sortOrder[field] === sortConstants.desc) {
+        sortOrder[field] = sortConstants.asc;
+      }
 
-            for (var sortOrderField in sortOrder) {
-                if (sortOrderField != field) {
-                    sortOrder[sortOrderField] = sortConstants.notSorted;
-                }
-            }
-        };
+      sortDirection = sortOrder[field].sortString;
+      sortField = field;
 
-        $scope.sortConstants = sortConstants;
-        $scope.sortOrder = sortOrder;
+      for (var sortOrderField in sortOrder) {
+        if (sortOrderField != field) {
+          sortOrder[sortOrderField] = sortConstants.notSorted;
+        }
+      }
+    };
 
-        $scope.sortBy = function (field) {
-            sortBy(field);
-            $scope.loadStatistics();
-        };
+    $scope.sortConstants = sortConstants;
+    $scope.sortOrder = sortOrder;
 
-        var pageSize = {
-            ten: {
-                display: "10",
-                value: 10,
-                active: true
-            },
-            fifteen: {
-                display: "15",
-                value: 15,
-                active: false
-            },
-            fifty: {
-                display: "50",
-                value: 50,
-                active: false
-            }
-        };
+    $scope.sortBy = function (field) {
+      sortBy(field);
+      $scope.loadStatistics();
+    };
 
-        var currentPage = 1;
-        var currentPageSize = pageSize.ten;
-        var showPages = [];
-        var skip = 0;
-        var count = 0;
+    var pageSize = {
+      ten: {
+        display: "10",
+        value: 10,
+        active: true
+      },
+      fifteen: {
+        display: "15",
+        value: 15,
+        active: false
+      },
+      fifty: {
+        display: "50",
+        value: 50,
+        active: false
+      }
+    };
 
-        var recalculatePages = function () {
-            pushPages();
-            $scope.showPages = showPages;
-            $scope.pageCount = count;
-            $scope.currentPage = currentPage;
-        };
+    var currentPage = 1;
+    var currentPageSize = pageSize.ten;
+    var showPages = [];
+    var skip = 0;
+    var count = 0;
 
-        var pushPages = function() {
-            showPages = [];
-            if (currentPage === 1) {
-                showPages.push(createPage(currentPage, true));
-                showPages.push(createPage(currentPage + 1, false));
-                showPages.push(createPage(currentPage + 2, false));
-            } else if (currentPage === count) {
-                showPages.push(createPage(currentPage - 2, false));
-                showPages.push(createPage(currentPage - 1, false));
-                showPages.push(createPage(currentPage, true));
-            } else {
-                showPages.push(createPage(currentPage - 1, false));
-                showPages.push(createPage(currentPage, true));
-                showPages.push(createPage(currentPage + 1, false));
-            }
-        };
+    var recalculatePages = function () {
+      pushPages();
+      $scope.showPages = showPages;
+      $scope.pageCount = count;
+      $scope.currentPage = currentPage;
+    };
 
-        var createPage = function (pageNum, active) {
-            return {
-                pageNumber: pageNum,
-                active: active
-            }
-        };
+    var pushPages = function () {
+      showPages = [];
+      if (currentPage === 1) {
+        showPages.push(createPage(currentPage, true));
+        showPages.push(createPage(currentPage + 1, false));
+        showPages.push(createPage(currentPage + 2, false));
+      } else if (currentPage === count) {
+        showPages.push(createPage(currentPage - 2, false));
+        showPages.push(createPage(currentPage - 1, false));
+        showPages.push(createPage(currentPage, true));
+      } else {
+        showPages.push(createPage(currentPage - 1, false));
+        showPages.push(createPage(currentPage, true));
+        showPages.push(createPage(currentPage + 1, false));
+      }
+    };
 
-        var changePage = function (targetPage) {
-            skip = (targetPage - 1) * currentPageSize.value;
+    var createPage = function (pageNum, active) {
+      return {
+        pageNumber: pageNum,
+        active: active
+      }
+    };
 
-            currentPage = targetPage;
-        };
+    var changePage = function (targetPage) {
+      skip = (targetPage - 1) * currentPageSize.value;
 
-        var changePageSize = function (targetPageSize) {
-            currentPageSize.active = false;
-            currentPageSize = targetPageSize;
-            currentPageSize.active = true;
-        };
+      currentPage = targetPage;
+    };
 
-        $scope.pageSize = pageSize;
+    var changePageSize = function (targetPageSize) {
+      currentPageSize.active = false;
+      currentPageSize = targetPageSize;
+      currentPageSize.active = true;
+    };
 
-        $scope.getPage = function (targetPage) {
-            changePage(targetPage);
-            $scope.loadStatistics();
-        };
+    $scope.pageSize = pageSize;
 
-        $scope.changePageSize = function (targetPageSize) {
-            changePageSize(targetPageSize);
-            $scope.loadStatistics();
-        };
+    $scope.getPage = function (targetPage) {
+      changePage(targetPage);
+      $scope.loadStatistics();
+    };
 
-        $scope.statistics = [];
+    $scope.changePageSize = function (targetPageSize) {
+      changePageSize(targetPageSize);
+      $scope.loadStatistics();
+    };
 
-        $scope.loadStatistics = function () {
-            statisticsService.loadStatistics(skip, currentPageSize, sortField, sortDirection).then(function (response) {
-                $scope.statistics = response.data.items;
+    $scope.statistics = [];
 
-                count = Math.ceil(response.data.count / currentPageSize.value);
-                recalculatePages();
+    $scope.loadStatistics = function () {
+      statisticsService.loadStatistics(skip, currentPageSize, sortField,
+          sortDirection).then(function (response) {
+        $scope.statistics = response.data.items;
 
-                if ($scope.statistics && openFirst) {
-                    $scope.statistics[0].expanded = true;
-                }
-            });
-        };
+        count = Math.ceil(response.data.count / currentPageSize.value);
+        recalculatePages();
 
-        $scope.loadStatistics();
-    }
+        if ($scope.statistics && openFirst) {
+          $scope.statistics[0].expanded = true;
+        }
+      });
+    };
+
+    $scope.loadStatistics();
+  }
 })();

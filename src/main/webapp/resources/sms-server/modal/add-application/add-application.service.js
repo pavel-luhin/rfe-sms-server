@@ -1,23 +1,24 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .factory('addApplicationService', addApplicationService);
+  angular
+  .module('sms-server')
+  .factory('addApplicationService', addApplicationService);
 
-    addApplicationService.$inject = ['RestURLFactory', '$http'];
-    function addApplicationService(RestURLFactory, $http) {
-        return {
-            getUserCredentials: getUserCredentials,
-            addNewApplication: addNewApplication
-        };
+  addApplicationService.$inject = ['RestURLFactory', '$http'];
 
-        function getUserCredentials() {
-            return $http.get(RestURLFactory.CREDENTIALS);
-        }
+  function addApplicationService(RestURLFactory, $http) {
+    return {
+      getUserCredentials: getUserCredentials,
+      addNewApplication: addNewApplication
+    };
 
-        function addNewApplication(application) {
-            return $http.post(RestURLFactory.APPLICATION, application);
-        }
+    function getUserCredentials() {
+      return $http.get(RestURLFactory.CREDENTIALS);
     }
+
+    function addNewApplication(application) {
+      return $http.post(RestURLFactory.APPLICATION, application);
+    }
+  }
 })();

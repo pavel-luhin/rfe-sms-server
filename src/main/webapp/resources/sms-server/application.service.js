@@ -1,18 +1,19 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .factory('applicationService', applicationService);
+  angular
+  .module('sms-server')
+  .factory('applicationService', applicationService);
 
-    applicationService.$inject = ['RestURLFactory', '$http'];
-    function applicationService(RestURLFactory, $http) {
-        return {
-            getVersionInfo: getVersionInfo
-        };
+  applicationService.$inject = ['RestURLFactory', '$http'];
 
-        function getVersionInfo() {
-            return $http.get(RestURLFactory.VERSION);
-        }
+  function applicationService(RestURLFactory, $http) {
+    return {
+      getVersionInfo: getVersionInfo
+    };
+
+    function getVersionInfo() {
+      return $http.get(RestURLFactory.VERSION);
     }
+  }
 })();

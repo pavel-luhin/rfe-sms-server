@@ -1,13 +1,14 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .factory('setupService', setupService);
+  angular
+  .module('sms-server')
+  .factory('setupService', setupService);
 
-    setupService.$inject = [];
-    function setupService() {
+  setupService.$inject = [];
 
-    }
+  function setupService() {
+
+  }
 
 })();

@@ -1,41 +1,45 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .controller('applicationCtrl', applicationCtrl);
+  angular
+  .module('sms-server')
+  .controller('applicationCtrl', applicationCtrl);
 
-    applicationCtrl.$inject = ['applicationService', '$scope', 'loginService', '$location', 'confirmService'];
-    function applicationCtrl(applicationService, $scope, loginService, $location, confirmService) {
-        $scope.$watch(loginService.isAuthenticated, function () {
-            $scope.authenticated = loginService.isAuthenticated();
-        });
+  applicationCtrl.$inject = ['applicationService', '$scope', 'loginService',
+    '$location', 'confirmService'];
 
-        $scope.versionLoaded = false;
+  function applicationCtrl(applicationService, $scope, loginService, $location,
+      confirmService) {
+    $scope.$watch(loginService.isAuthenticated, function () {
+      $scope.authenticated = loginService.isAuthenticated();
+    });
 
-        var confirmLogoutModalOptions = {
-            closeButtonText: 'Cancel',
-            actionButtonText: 'Log Out',
-            headerText: 'Confirm logout?',
-            bodyText: 'Are you sure you want to log out?'
-        };
+    $scope.versionLoaded = false;
 
-        $scope.logout = function () {
-            confirmService.showModal({}, confirmLogoutModalOptions).then(function (result) {
-                loginService.logout();
-            });
-        };
+    var confirmLogoutModalOptions = {
+      closeButtonText: 'Cancel',
+      actionButtonText: 'Log Out',
+      headerText: 'Confirm logout?',
+      bodyText: 'Are you sure you want to log out?'
+    };
 
-        $scope.getCurrentUserName = function () {
-            return loginService.getCurrentUserName();
-        };
+    $scope.logout = function () {
+      confirmService.showModal({}, confirmLogoutModalOptions).then(
+          function (result) {
+            loginService.logout();
+          });
+    };
 
-        $scope.getVersionInfo = function () {
-            applicationService.getVersionInfo()
-                .then(function (response) {
-                    $scope.version = response.data;
-                    $scope.versionLoaded = true;
-                })
-        };
-    }
+    $scope.getCurrentUserName = function () {
+      return loginService.getCurrentUserName();
+    };
+
+    $scope.getVersionInfo = function () {
+      applicationService.getVersionInfo()
+      .then(function (response) {
+        $scope.version = response.data;
+        $scope.versionLoaded = true;
+      })
+    };
+  }
 })();

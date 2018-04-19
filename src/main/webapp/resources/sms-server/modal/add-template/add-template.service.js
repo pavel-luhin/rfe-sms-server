@@ -1,18 +1,19 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .factory('addTemplateService', addTemplateService);
+  angular
+  .module('sms-server')
+  .factory('addTemplateService', addTemplateService);
 
-    addTemplateService.$inject = ['$http', 'RestURLFactory'];
-    function addTemplateService($http, RestURLFactory) {
-        return {
-            addTemplate: addTemplate
-        };
+  addTemplateService.$inject = ['$http', 'RestURLFactory'];
 
-        function addTemplate(template) {
-            return $http.post(RestURLFactory.SMS_TEMPLATE, template);
-        }
+  function addTemplateService($http, RestURLFactory) {
+    return {
+      addTemplate: addTemplate
+    };
+
+    function addTemplate(template) {
+      return $http.post(RestURLFactory.SMS_TEMPLATE, template);
     }
+  }
 })();

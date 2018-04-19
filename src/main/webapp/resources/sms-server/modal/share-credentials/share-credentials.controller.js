@@ -1,34 +1,38 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .controller('shareCredentialsCtrl', shareCredentialsController);
+  angular
+  .module('sms-server')
+  .controller('shareCredentialsCtrl', shareCredentialsController);
 
-    shareCredentialsController.$inject = ['shareCredentialsService', '$scope', '$uibModalInstance', '$rootScope'];
-    function shareCredentialsController(shareCredentialsService, $scope, $uibModalInstance, $rootScope) {
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss();
-        };
+  shareCredentialsController.$inject = ['shareCredentialsService', '$scope',
+    '$uibModalInstance', '$rootScope'];
 
-        shareCredentialsService.getUsersWithoutCredentials($rootScope.shareCredentialsId).then(function (response) {
-            $scope.users = response.data;
-        });
+  function shareCredentialsController(shareCredentialsService, $scope,
+      $uibModalInstance, $rootScope) {
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss();
+    };
 
-        $scope.selected = {};
-        $scope.selected.user = {};
+    shareCredentialsService.getUsersWithoutCredentials(
+        $rootScope.shareCredentialsId).then(function (response) {
+      $scope.users = response.data;
+    });
 
-        $scope.share = function () {
-            var credentialsId = $rootScope.shareCredentialsId;
+    $scope.selected = {};
+    $scope.selected.user = {};
 
-            var request = {
-                credentialsId: credentialsId,
-                userId: $scope.selected.user.id
-            };
+    $scope.share = function () {
+      var credentialsId = $rootScope.shareCredentialsId;
 
-            shareCredentialsService.shareCredentials(request).then(function (data) {
-                $uibModalInstance.dismiss();
-            })
-        };
-    }
+      var request = {
+        credentialsId: credentialsId,
+        userId: $scope.selected.user.id
+      };
+
+      shareCredentialsService.shareCredentials(request).then(function (data) {
+        $uibModalInstance.dismiss();
+      })
+    };
+  }
 })();

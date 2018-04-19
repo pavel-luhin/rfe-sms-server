@@ -1,32 +1,34 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .controller('addUserCtrl', addUserCtrl);
+  angular
+  .module('sms-server')
+  .controller('addUserCtrl', addUserCtrl);
 
-    addUserCtrl.$inject = ['addUserService', '$scope', '$uibModalInstance', 'toaster'];
-    function addUserCtrl(addUserService, $scope, $uibModalInstance, toaster) {
-        $scope.addUser = function (user) {
-            if (!user || !user.username) {
+  addUserCtrl.$inject = ['addUserService', '$scope', '$uibModalInstance',
+    'toaster'];
 
-                toaster.pop({
-                    type: 'error',
-                    title: 'Error',
-                    body: 'Please, enter valid username.',
-                    timeout: 0
-                });
+  function addUserCtrl(addUserService, $scope, $uibModalInstance, toaster) {
+    $scope.addUser = function (user) {
+      if (!user || !user.username) {
 
-                return;
-            }
+        toaster.pop({
+          type: 'error',
+          title: 'Error',
+          body: 'Please, enter valid username.',
+          timeout: 0
+        });
 
-            addUserService.addNewUser(user).then(function (data) {
-                $uibModalInstance.dismiss();
-            });
-        };
+        return;
+      }
 
-        $scope.cancel = function () {
-            $uibModalInstance.dismiss();
-        }
+      addUserService.addNewUser(user).then(function (data) {
+        $uibModalInstance.dismiss();
+      });
+    };
+
+    $scope.cancel = function () {
+      $uibModalInstance.dismiss();
     }
+  }
 })();

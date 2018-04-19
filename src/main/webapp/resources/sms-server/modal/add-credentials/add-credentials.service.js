@@ -1,18 +1,19 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .factory('addCredentialsService', addCredentialsService);
+  angular
+  .module('sms-server')
+  .factory('addCredentialsService', addCredentialsService);
 
-    addCredentialsService.$inject = ['$http', 'RestURLFactory'];
-    function addCredentialsService($http, RestURLFactory) {
-        return {
-            addCredentials: addCredentials
-        };
+  addCredentialsService.$inject = ['$http', 'RestURLFactory'];
 
-        function addCredentials(credentials) {
-            return $http.post(RestURLFactory.CREDENTIALS, credentials);
-        }
+  function addCredentialsService($http, RestURLFactory) {
+    return {
+      addCredentials: addCredentials
+    };
+
+    function addCredentials(credentials) {
+      return $http.post(RestURLFactory.CREDENTIALS, credentials);
     }
+  }
 })();

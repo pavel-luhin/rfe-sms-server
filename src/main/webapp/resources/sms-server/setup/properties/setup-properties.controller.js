@@ -1,42 +1,46 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('sms-server')
-        .controller('setupPropertiesCtrl', setupPropertiesCtrl);
+  angular
+  .module('sms-server')
+  .controller('setupPropertiesCtrl', setupPropertiesCtrl);
 
-    setupPropertiesCtrl.$inject = ['setupPropertiesService', '$scope', '$location', 'toaster'];
-    function setupPropertiesCtrl(setupPropertiesService, $scope, $location, toaster) {
-        var allProperties = [];
+  setupPropertiesCtrl.$inject = ['setupPropertiesService', '$scope',
+    '$location', 'toaster'];
 
-        setupPropertiesService.getProperties().then(function (response) {
-            $scope.propertyGroups = [];
+  function setupPropertiesCtrl(setupPropertiesService, $scope, $location,
+      toaster) {
+    var allProperties = [];
 
-            for (var key in response.data) {
-                $scope.propertyGroups.push(key);
-            }
+    setupPropertiesService.getProperties().then(function (response) {
+      $scope.propertyGroups = [];
 
-            allProperties = response.data;
+      for (var key in response.data) {
+        $scope.propertyGroups.push(key);
+      }
 
-            $scope.selectedPropertyGroup = $scope.propertyGroups[0];
-            $scope.selectGroup();
-        });
+      allProperties = response.data;
 
-        $scope.saveProperties = function (properties) {
-            allProperties[$scope.selectedPropertyGroup] = properties;
-            setupPropertiesService.saveProperties(allProperties).then(function (response) {
-                toaster.pop({
-                    type: 'success',
-                    title: 'Success',
-                    body: 'Properties Saved',
-                    timeout: 0
-                });
+      $scope.selectedPropertyGroup = $scope.propertyGroups[0];
+      $scope.selectGroup();
+    });
+
+    $scope.saveProperties = function (properties) {
+      allProperties[$scope.selectedPropertyGroup] = properties;
+      setupPropertiesService.saveProperties(allProperties).then(
+          function (response) {
+            toaster.pop({
+              type: 'success',
+              title: 'Success',
+              body: 'Properties Saved',
+              timeout: 0
             });
-        };
+          });
+    };
 
-        $scope.selectGroup = function () {
-            var selectedGroup = $scope.selectedPropertyGroup;
-            $scope.properties = allProperties[selectedGroup];
-        }
+    $scope.selectGroup = function () {
+      var selectedGroup = $scope.selectedPropertyGroup;
+      $scope.properties = allProperties[selectedGroup];
     }
+  }
 })();
