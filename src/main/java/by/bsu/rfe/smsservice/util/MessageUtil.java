@@ -6,10 +6,23 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Util class provides helper methods to work with messages.
+ */
 public final class MessageUtil {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MessageUtil.class);
 
+  private MessageUtil() {
+  }
+
+  /**
+   * Fills message parameters into the message template.
+   *
+   * @param template message template
+   * @param messageParameters message parameters to inject
+   * @return message with injected parameters
+   */
   public static String createMessage(String template, Map<String, String> messageParameters) {
     String originalMessage = new String(template);
     String regex = "\\$\\{([^}]+)\\}";

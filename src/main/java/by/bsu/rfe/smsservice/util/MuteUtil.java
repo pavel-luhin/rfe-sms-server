@@ -8,8 +8,19 @@ import by.bsu.rfe.smsservice.common.SpringContextHolder;
 import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
 import java.time.LocalTime;
 
+/**
+ * Util class provides helper methods to work with mute mode.
+ */
 public final class MuteUtil {
 
+  private MuteUtil() {
+  }
+
+  /**
+   * Checks if mute mode is active now based on sms server properties.
+   *
+   * @return true if mute mode is active, false otherwise.
+   */
   public static Boolean isMuted() {
     SmsServerPropertyService smsServerPropertyService = SpringContextHolder
         .getBean(SmsServerPropertyService.class);
@@ -24,9 +35,7 @@ public final class MuteUtil {
 
       LocalTime localTime = LocalTime.now();
 
-      if (localTime.isAfter(muteStartTime) && localTime.isBefore(muteEndTime)) {
-        return true;
-      }
+      return localTime.isAfter(muteStartTime) && localTime.isBefore(muteEndTime);
     }
 
     return false;
