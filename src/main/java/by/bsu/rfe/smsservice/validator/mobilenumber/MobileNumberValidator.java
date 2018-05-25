@@ -3,7 +3,7 @@ package by.bsu.rfe.smsservice.validator.mobilenumber;
 import by.bsu.rfe.smsservice.validator.Validator;
 
 /**
- * Created by pluhin on 5.2.17.
+ * Interface-marker used to validate mobile numbers using general {@link Validator} interface.
  */
 public interface MobileNumberValidator extends Validator<String> {
 }
