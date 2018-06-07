@@ -9,6 +9,20 @@ var angularFilesort = require('gulp-angular-filesort');
 
 const SOURCE_FOLDER = 'webapp/resources';
 const TARGET_FOLDER = './.tmp/META-INF/resources';
+const TARGET_WATCHER_FOLDER = 'target/classes/META-INF/resources';
+
+
+function makeStyles() {
+  return concatCss(TARGET_FOLDER);
+}
+
+function makeScripts() {
+  return buildScripts(TARGET_FOLDER);
+}
+
+function makeTemplates() {
+  return buildTemplates(TARGET_FOLDER);
+}
 
 //temp solution
 gulp.task('libs-js', function () {
@@ -31,23 +45,23 @@ gulp.task('libs-js', function () {
   .pipe(gulp.dest(TARGET_FOLDER + '/js'));
 });
 
-gulp.task('css', concatCss);
+gulp.task('css', makeStyles);
 
-function concatCss() {
+function concatCss(target) {
   return gulp.src('webapp/**/*.css')
   .pipe(concat('styles.css'))
-  .pipe(gulp.dest(TARGET_FOLDER + '/styles'));
+  .pipe(gulp.dest(target + '/styles'));
 }
 
-gulp.task('scripts-js', buildScripts);
+gulp.task('scripts-js', makeScripts);
 
-function buildScripts() {
+function buildScripts(target) {
   return gulp.src('webapp/resources/sms-server/**/*.js')
   .pipe(angularFilesort())
   .pipe(concat('app.js'))
   .pipe(ngAnnotate())
   .pipe(uglify())
-  .pipe(gulp.dest(TARGET_FOLDER + '/js'));
+  .pipe(gulp.dest(target + '/js'));
 }
 
 gulp.task('inject', ['libs-js', 'scripts-js', 'templatecache', 'css', 'fonts'],
@@ -67,16 +81,16 @@ gulp.task('inject', ['libs-js', 'scripts-js', 'templatecache', 'css', 'fonts'],
       .pipe(gulp.dest(TARGET_FOLDER));
     });
 
-gulp.task('templatecache', buildTemplates);
+gulp.task('templatecache', makeTemplates);
 
-function buildTemplates() {
+function buildTemplates(target) {
   return gulp.src('webapp/resources/sms-server/**/*.html')
   .pipe(tempCache(
       'templates.js', {
         module: 'sms-server',
         standAlone: false
       }))
-  .pipe(gulp.dest(TARGET_FOLDER + '/js/'));
+  .pipe(gulp.dest(target + '/js/'));
 }
 
 gulp.task('fonts', copyFonts);
@@ -86,19 +100,31 @@ function copyFonts() {
   .pipe(gulp.dest(TARGET_FOLDER + '/fonts/'));
 }
 
+function watchStyles() {
+  return concatCss(TARGET_WATCHER_FOLDER);
+}
+
+function watchScripts() {
+  return buildScripts(TARGET_WATCHER_FOLDER);
+}
+
+function watchTemplates() {
+  return buildTemplates(TARGET_WATCHER_FOLDER);
+}
+
 gulp.task('watch-styles', function () {
   return watch('webapp/resources/sms-server/**/*.css', {ignoreInitial: false},
-      concatCss);
+      watchStyles);
 });
 
 gulp.task('watch-scripts', function () {
   return watch('webapp/resources/sms-server/**/*.js', {ignoreInitial: false},
-      buildScripts);
+      watchScripts);
 });
 
 gulp.task('watch-templates', function () {
   return watch('webapp/resources/sms-server/**/*.html', {ignoreInitial: false},
-      buildTemplates);
+      watchTemplates);
 });
 
 gulp.task('build', ['inject']);

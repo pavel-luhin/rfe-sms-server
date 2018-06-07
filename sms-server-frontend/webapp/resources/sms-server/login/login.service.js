@@ -16,19 +16,23 @@
       setAuthentication: setAuthentication,
       logout: logout,
       isAuthenticated: isAuthenticated,
-      getCurrentUserName: getCurrentUserName
+      getCurrentUserName: getCurrentUserName,
+      account: account
     };
 
     function logIn(user) {
-      return $http.post(RestURLFactory.AUTHENTICATE, user);
+      var data = 'j_username=' + encodeURIComponent(user.username) +
+          '&j_password=' + encodeURIComponent(user.password);
+
+      return $http.post(RestURLFactory.AUTHENTICATE, data, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
     }
 
-    function setAuthentication(authentication) {
-      $cookies.put(cookieName, authentication.token);
-      $rootScope.authenticated = true;
-      authentication.authenticated = true;
-      localStorage.setItem(localStorageAuthName,
-          JSON.stringify(authentication));
+    function setAuthentication() {
+      account();
     }
 
     function logout() {
@@ -41,21 +45,23 @@
     }
 
     function isAuthenticated() {
-      if ($rootScope.authenticated != undefined) {
-        return $rootScope.authenticated;
-      } else {
-        var auth = JSON.parse(localStorage.getItem(localStorageAuthName));
-        if (auth != undefined) {
-          return auth.authenticated;
-        } else {
-          return false;
-        }
-      }
+      return $rootScope.authenticated;
     }
 
     function getCurrentUserName() {
       var auth = JSON.parse(localStorage.getItem(localStorageAuthName));
       return auth.username;
+    }
+
+    function account() {
+      $http.get(RestURLFactory.ACCOUNT_INFO).then(
+          function (promise) {
+            $rootScope.authenticated = true;
+            localStorage.setItem(localStorageAuthName, promise.data);
+          }, function (reject) {
+            $rootScope.authenticated = false;
+            $location.path('/login');
+          });
     }
   }
 
