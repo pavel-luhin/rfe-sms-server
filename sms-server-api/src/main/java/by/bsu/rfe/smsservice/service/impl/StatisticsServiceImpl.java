@@ -1,7 +1,7 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import static by.bsu.rfe.smsservice.common.Constants.BULK_SMS_TYPE;
-import static by.bsu.rfe.smsservice.common.Constants.CUSTOM_SMS_TYPE;
+import static by.bsu.rfe.smsservice.common.constants.GeneralConstants.BULK_SMS_TYPE;
+import static by.bsu.rfe.smsservice.common.constants.GeneralConstants.CUSTOM_SMS_TYPE;
 import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.common.dto.StatisticsDTO;
@@ -24,7 +24,6 @@ import by.bsu.rfe.smsservice.util.DozerUtil;
 import by.bsu.rfe.smsservice.util.PageUtil;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

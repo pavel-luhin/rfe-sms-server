@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import static by.bsu.rfe.smsservice.common.Constants.PROFILE_PROD;
+import static by.bsu.rfe.smsservice.common.constants.ProfileConstants.PROFILE_PROD;
 import static org.apache.http.client.methods.RequestBuilder.post;
 
 import by.bsu.rfe.smsservice.common.request.Request;

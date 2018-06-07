@@ -1,7 +1,7 @@
 package by.bsu.rfe.smsservice.security.common;
 
-import static by.bsu.rfe.smsservice.common.Constants.ACTUATOR_AUTHORITY;
-import static by.bsu.rfe.smsservice.common.Constants.USER_AUTHORITY;
+import static by.bsu.rfe.smsservice.common.constants.AuthorityConstants.ACTUATOR_AUTHORITY;
+import static by.bsu.rfe.smsservice.common.constants.AuthorityConstants.USER_AUTHORITY;
 import static java.util.Arrays.asList;
 
 import java.util.Collection;

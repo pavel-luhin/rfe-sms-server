@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import static by.bsu.rfe.smsservice.common.Constants.REGISTER_USER_SMS_TYPE;
+import static by.bsu.rfe.smsservice.common.constants.GeneralConstants.REGISTER_USER_SMS_TYPE;
 import static by.bsu.rfe.smsservice.common.enums.SmsServerProperty.AUTHENTICATION_ENABLED;
 import static by.bsu.rfe.smsservice.common.enums.SmsServerProperty.EMAIL_ENABLED;
 import static by.bsu.rfe.smsservice.common.enums.SmsServerProperty.PASSWORD;
@@ -124,6 +124,8 @@ public class SendEmailServiceImpl implements SendEmailService {
   }
 
   private void sendEmail(String address, String subject, String content) {
+    log.info("Sending message to {}", address);
+    log.info("", content);
     if (!Boolean.valueOf(smsServerPropertyService.findPropertyValue(EMAIL_ENABLED))) {
       log.info("Sending email is disabled via server property");
       return;

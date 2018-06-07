@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.controller;
 
-import static by.bsu.rfe.smsservice.common.Constants.ROLE_USER;
+import static by.bsu.rfe.smsservice.common.constants.AuthorityConstants.ROLE_USER;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.ResponseEntity.ok;
 

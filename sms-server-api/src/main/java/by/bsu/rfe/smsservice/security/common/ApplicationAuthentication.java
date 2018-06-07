@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.security.common;
 
-import static by.bsu.rfe.smsservice.common.Constants.APPLICATION_AUTHORITY;
+import static by.bsu.rfe.smsservice.common.constants.AuthorityConstants.APPLICATION_AUTHORITY;
 import static java.util.Collections.singletonList;
 
 import java.util.Collection;

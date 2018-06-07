@@ -1,15 +1,13 @@
 package by.bsu.rfe.smsservice.security.util;
 
-import static by.bsu.rfe.smsservice.common.Constants.USER_AUTHORITY;
+import static by.bsu.rfe.smsservice.common.constants.AuthorityConstants.USER_AUTHORITY;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 
-import by.bsu.rfe.smsservice.common.Constants;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class SecurityUtil {
 

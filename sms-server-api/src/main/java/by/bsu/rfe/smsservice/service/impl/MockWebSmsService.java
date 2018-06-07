@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import static by.bsu.rfe.smsservice.common.Constants.PROFILE_LOCAL;
+import static by.bsu.rfe.smsservice.common.constants.ProfileConstants.PROFILE_LOCAL;
 
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.response.BalanceResponse;
