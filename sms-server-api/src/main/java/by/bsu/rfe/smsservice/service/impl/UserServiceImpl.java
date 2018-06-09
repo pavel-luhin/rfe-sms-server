@@ -133,7 +133,9 @@ public class UserServiceImpl implements UserService {
       throw new IllegalArgumentException("Old password is invalid");
     }
 
-    userEntity.setPassword(passwordDTO.getNewPassword());
+    String encodedPassword = passwordEncoder.encode(passwordDTO.getNewPassword());
+
+    userEntity.setPassword(encodedPassword);
     userRepository.saveAndFlush(userEntity);
   }
 
