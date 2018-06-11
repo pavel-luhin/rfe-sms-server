@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('addCredentialsService', addCredentialsService);
 
-  addCredentialsService.$inject = ['$http', 'RestURLFactory'];
-
+  /** @ngInject */
   function addCredentialsService($http, RestURLFactory) {
     return {
       addCredentials: addCredentials

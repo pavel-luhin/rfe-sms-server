@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('setupUsersService', setupUsersService);
 
-  setupUsersService.$inject = ['$http', 'RestURLFactory'];
-
+  /** @ngInject */
   function setupUsersService($http, RestURLFactory) {
     return {
       getUsers: getUsers,

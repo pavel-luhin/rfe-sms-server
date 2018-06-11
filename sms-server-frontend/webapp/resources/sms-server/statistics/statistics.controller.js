@@ -5,8 +5,7 @@
   .module('sms-server')
   .controller('statisticsCtrl', statisticsCtrl);
 
-  statisticsCtrl.$inject = ['$scope', '$routeParams', 'statisticsService'];
-
+  /** @ngInject */
   function statisticsCtrl($scope, $routeParams, statisticsService) {
     var sortConstants = {
       notSorted: {

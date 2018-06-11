@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('addTemplateCtrl', addTemplateCtrl);
 
-  addTemplateCtrl.$inject = ['addTemplateService', '$scope',
-    '$uibModalInstance', 'toaster'];
-
+  /** @ngInject */
   function addTemplateCtrl(addTemplateService, $scope, $uibModalInstance,
       toaster) {
     $scope.addTemplate = function (template) {

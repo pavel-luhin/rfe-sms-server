@@ -5,8 +5,7 @@
   .module('sms-server')
   .controller('smsQueueCtrl', smsQueueCtrl);
 
-  smsQueueCtrl.$inject = ['smsQueueService', '$scope', 'ConfirmModalService'];
-
+  /** @ngInject */
   function smsQueueCtrl(smsQueueService, $scope, ConfirmModalService) {
     var getAllMessagesFromQueue = function () {
       smsQueueService.getAllMessagesInQueue().then(function (response) {

@@ -6,8 +6,7 @@
   .controller('sendSmsCtrl', sendSmsCtrl)
   .directive('fileModel', fileModel);
 
-  sendSmsCtrl.$inject = ['sendSmsService', '$scope', 'toaster', '$location'];
-
+  /** @ngInject */
   function sendSmsCtrl(sendSmsService, $scope, toaster, $location) {
     var defaultSymbolsLeft = 160;
     $scope.symbolsLeft = defaultSymbolsLeft;

@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('changePasswordService', changePasswordService);
 
-  changePasswordService.$inject = ['$http', 'RestURLFactory'];
-
+  /** @ngInject */
   function changePasswordService($http, RestURLFactory) {
     return {
       changePassword: changePassword

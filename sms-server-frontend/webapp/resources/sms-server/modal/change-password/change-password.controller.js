@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('changePasswordCtrl', changePasswordCtrl);
 
-  changePasswordCtrl.$inject = ['changePasswordService', '$scope',
-    '$uibModalInstance', 'md5', 'toaster'];
-
+  /** @ngInject */
   function changePasswordCtrl(changePasswordService, $scope, $uibModalInstance,
       md5, toaster) {
     $scope.selected = {};

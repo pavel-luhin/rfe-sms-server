@@ -15,6 +15,5 @@
     'angular-md5',
     'toaster'
   ])
-  .constant('localStorageAuthName', 'authentication')
-  .constant('cookieAuthName', 'auth_token');
+  .constant('localStorageAuthName', 'authentication');
 })();

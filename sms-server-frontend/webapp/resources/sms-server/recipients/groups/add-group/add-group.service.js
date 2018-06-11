@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('addGroupService', addGroupService);
 
-  addGroupService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function addGroupService(RestURLFactory, $http) {
     return {
       getAllPersons: getAllPersons,

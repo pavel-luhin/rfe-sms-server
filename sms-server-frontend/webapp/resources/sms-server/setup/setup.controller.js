@@ -5,8 +5,7 @@
   .module('sms-server')
   .controller('setupCtrl', setupCtrl);
 
-  setupCtrl.$inject = ['$scope', '$location'];
-
+  /** @ngInject */
   function setupCtrl($scope, $location) {
     $scope.openSetup = function (uri) {
       $location.path(uri);

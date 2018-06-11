@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('personsService', personsService);
 
-  personsService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function personsService(RestURLFactory, $http) {
     return {
       removePerson: removePerson,

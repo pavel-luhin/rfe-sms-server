@@ -2,12 +2,11 @@ package by.bsu.rfe.smsservice.common.dto;
 
 import java.io.InputStream;
 import java.util.Properties;
+import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created by pluhin on 11/27/16.
- */
+@Getter
 public class VersionDTO {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VersionDTO.class);
@@ -24,9 +23,6 @@ public class VersionDTO {
     private String commitMessageFull;       // =${git.commit.message.full}
     private String commitMessageShort;      // =${git.commit.message.short}
     private String commitTime;              // =${git.commit.time}
-
-    public VersionDTO() {
-    }
 
     public static VersionDTO loadFromProperties(String resource) {
         try (InputStream is = VersionDTO.class.getClassLoader().getResourceAsStream(resource)) {
@@ -53,53 +49,5 @@ public class VersionDTO {
             LOGGER.error("Error reading version info", ex);
         }
         return null;
-    }
-
-    public String getBranch() {
-        return branch;
-    }
-
-    public String getDescribe() {
-        return describe;
-    }
-
-    public String getCommitId() {
-        return commitId;
-    }
-
-    public String getCommitIdAbbrev() {
-        return commitIdAbbrev;
-    }
-
-    public String getBuildUserName() {
-        return buildUserName;
-    }
-
-    public String getBuildUserEmail() {
-        return buildUserEmail;
-    }
-
-    public String getBuildTime() {
-        return buildTime;
-    }
-
-    public String getCommitUserName() {
-        return commitUserName;
-    }
-
-    public String getCommitUserEmail() {
-        return commitUserEmail;
-    }
-
-    public String getCommitMessageFull() {
-        return commitMessageFull;
-    }
-
-    public String getCommitMessageShort() {
-        return commitMessageShort;
-    }
-
-    public String getCommitTime() {
-        return commitTime;
     }
 }

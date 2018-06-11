@@ -5,8 +5,7 @@
   .module('sms-server')
   .config(config);
 
-  config.$inject = ['$httpProvider'];
-
+  /** @ngInject */
   function config($httpProvider) {
     $httpProvider.interceptors.push('httpInterceptor');
   }

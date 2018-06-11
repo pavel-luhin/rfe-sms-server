@@ -9,9 +9,7 @@ import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
-import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.http.message.BasicNameValuePair;
@@ -27,10 +25,9 @@ public class TemplateSmsRequestBuilder extends BaseSmsRequestBuilder<TemplateSms
   public TemplateSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
-      List<MobileNumberValidator> mobileNumberValidators,
       RecipientService recipientService,
       SmsTemplateService smsTemplateService) {
-    super(parametersCollectorResolver, credentialsService, mobileNumberValidators,
+    super(parametersCollectorResolver, credentialsService,
         recipientService);
     this.smsTemplateService = smsTemplateService;
   }

@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('setupPropertiesCtrl', setupPropertiesCtrl);
 
-  setupPropertiesCtrl.$inject = ['setupPropertiesService', '$scope',
-    '$location', 'toaster'];
-
+  /** @ngInject */
   function setupPropertiesCtrl(setupPropertiesService, $scope, $location,
       toaster) {
     var allProperties = [];

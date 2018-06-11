@@ -1,43 +1,28 @@
 package by.bsu.rfe.smsservice.common.dto;
 
-/**
- * Created by pluhin on 9/3/16.
- */
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.MIN_LENGTH;
+
+import by.bsu.rfe.smsservice.common.constants.ValidationConstants;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class ExternalApplicationDTO extends CreatedDetails {
-    private Integer id;
-    private String applicationName;
-    private String authenticationToken;
-    private String credentialsSenderName;
 
-    public Integer getId() {
-        return id;
-    }
+  private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String applicationName;
 
-    public String getApplicationName() {
-        return applicationName;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String authenticationToken;
 
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
-    public String getAuthenticationToken() {
-        return authenticationToken;
-    }
-
-    public void setAuthenticationToken(String authenticationToken) {
-        this.authenticationToken = authenticationToken;
-    }
-
-    public String getCredentialsSenderName() {
-        return credentialsSenderName;
-    }
-
-    public void setCredentialsSenderName(String credentialsSenderName) {
-        this.credentialsSenderName = credentialsSenderName;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String credentialsSenderName;
 }

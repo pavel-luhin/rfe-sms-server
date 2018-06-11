@@ -3,9 +3,6 @@ package by.bsu.rfe.smsservice.common.dto;
 import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
 import lombok.Data;
 
-/**
- * Created by pluhin on 6/1/16.
- */
 @Data
 public class SMSResultDTO {
 

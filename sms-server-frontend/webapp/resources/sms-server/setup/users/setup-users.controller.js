@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('setupUsersCtrl', setupUsersCtrl);
 
-  setupUsersCtrl.$inject = ['setupUsersService', '$scope', '$uibModal',
-    'confirmService'];
-
+  /** @ngInject */
   function setupUsersCtrl(setupUsersService, $scope, $uibModal,
       confirmService) {
     var getUsers = function () {

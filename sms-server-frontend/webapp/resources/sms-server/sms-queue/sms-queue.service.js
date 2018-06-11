@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('smsQueueService', smsQueueService);
 
-  smsQueueService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function smsQueueService(RestURLFactory, $http) {
     return {
       getAllMessagesInQueue: getAllMessagesInQueue,

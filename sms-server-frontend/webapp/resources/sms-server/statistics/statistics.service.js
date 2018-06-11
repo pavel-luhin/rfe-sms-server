@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('statisticsService', statisticsService);
 
-  statisticsService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function statisticsService(RestURLFactory, $http) {
     return {
       loadStatistics: loadStatistics

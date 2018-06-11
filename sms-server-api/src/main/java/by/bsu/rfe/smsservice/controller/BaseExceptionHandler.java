@@ -60,7 +60,7 @@ public class BaseExceptionHandler extends ResponseEntityExceptionHandler {
   public ResponseEntity<Object> handleCredentialsNotFoundException(
       CredentialsNotFoundException ex) {
     return status(BAD_REQUEST).body(
-        new BaseExceptionDTO(BAD_REQUEST.value(), "User nas no valid credentials to send sms"));
+        new BaseExceptionDTO(BAD_REQUEST.value(), ex.getMessage()));
   }
 
   @ExceptionHandler(Exception.class)

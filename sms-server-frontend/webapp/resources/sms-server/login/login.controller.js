@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('loginCtrl', loginCtrl);
 
-  loginCtrl.$inject = ['$scope', '$location', 'ngProgressFactory', 'md5',
-    'loginService', 'toaster'];
-
+  /** @ngInject */
   function loginCtrl($scope, $location, ngProgressFactory, md5, loginService,
       toaster) {
     var progress = ngProgressFactory.createInstance();

@@ -5,8 +5,7 @@
   .module('sms-server')
   .run(run);
 
-  run.$inject = ['loginService'];
-
+  /** @ngInject */
   function run(loginService) {
     loginService.account();
   }

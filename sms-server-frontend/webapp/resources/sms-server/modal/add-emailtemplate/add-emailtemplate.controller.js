@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('addEmailTemplateCtrl', addEmailTemplateCtrl);
 
-  addEmailTemplateCtrl.$inject = ['addEmailTemplateService', '$scope',
-    '$uibModalInstance', 'toaster'];
-
+  /** @ngInject */
   function addEmailTemplateCtrl(addEmailTemplateService, $scope,
       $uibModalInstance, toaster) {
     addEmailTemplateService.getAvailableSMSTemplates().then(

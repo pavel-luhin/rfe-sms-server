@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('setupEmailTemplatesCtrl', setupEmailTemplatesCtrl);
 
-  setupEmailTemplatesCtrl.$inject = ['setupEmailTemplatesService', '$scope',
-    '$uibModal', 'confirmService'];
-
+  /** @ngInject */
   function setupEmailTemplatesCtrl(setupEmailTemplatesService, $scope,
       $uibModal, confirmService) {
     var getEmailTemplates = function () {

@@ -11,9 +11,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Data;
 
-/**
- * Created by PLugin on 14.11.2015.
- */
 @Data
 @Entity
 @Table(name = "credentials")

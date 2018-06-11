@@ -1,27 +1,30 @@
 package by.bsu.rfe.smsservice.common.dto;
 
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.MIN_LENGTH;
+
+import by.bsu.rfe.smsservice.common.constants.ValidationConstants;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 public class RecipientDTO {
-    private Integer id;
 
-    @NotNull
-    @Size(min = 1)
-    private String name;
+  private Integer id;
 
-    @NotNull
-    private RecipientType recipientType;
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String name;
 
-    public RecipientDTO(
-        @NotNull @Size(min = 1) String name,
-        @NotNull RecipientType recipientType) {
-        this.name = name;
-        this.recipientType = recipientType;
-    }
+  @NotNull
+  private RecipientType recipientType;
+
+  public RecipientDTO(String name, RecipientType recipientType) {
+    this.name = name;
+    this.recipientType = recipientType;
+  }
 }

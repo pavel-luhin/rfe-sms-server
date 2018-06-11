@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.common.entity;
 
-import by.bsu.rfe.smsservice.security.util.SecurityUtil;
+import static by.bsu.rfe.smsservice.security.util.SecurityUtil.getCurrentUsername;
+
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -8,9 +9,6 @@ import javax.persistence.PrePersist;
 import lombok.Data;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-/**
- * Created by pluhin on 9/3/16.
- */
 @Data
 @MappedSuperclass
 public abstract class CreationDetails extends AbstractPersistable<Integer> {
@@ -23,7 +21,7 @@ public abstract class CreationDetails extends AbstractPersistable<Integer> {
 
   @PrePersist
   public void fillDetails() {
-    createdBy = SecurityUtil.getCurrentUsername();
+    createdBy = getCurrentUsername();
     createdDate = new Date();
   }
 }

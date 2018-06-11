@@ -5,11 +5,10 @@
   .module('sms-server')
   .controller('personsCtrl', personsCtrl);
 
-  personsCtrl.$inject = ['$scope', '$location', 'confirmService',
-    '$routeParams', 'personsService'];
+  /** @ngInject */
+  function personsCtrl($scope, $location, $uibModal, confirmService,
+      $routeParams, personsService) {
 
-  function personsCtrl($scope, $location, confirmService, $routeParams,
-      personsService) {
     var sortConstants = {
       notSorted: {
         elementClass: "fa fa-sort"

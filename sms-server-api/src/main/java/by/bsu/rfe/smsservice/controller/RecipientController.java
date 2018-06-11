@@ -13,6 +13,7 @@ import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +27,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by pluhin on 3/5/2016.
- */
 @RestController
 @Secured({ROLE_USER})
 @RequestMapping(value = "/rest/recipient", produces = APPLICATION_JSON_UTF8_VALUE)
@@ -55,8 +53,8 @@ public class RecipientController {
   }
 
   @PostMapping(value = "/persons", consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity addPersons(@RequestBody List<PersonEntity> persons) {
-    recipientService.addPersons(persons);
+  public ResponseEntity addPersons(@Valid @RequestBody PersonDTO personDTO) {
+    recipientService.addPerson(personDTO);
     return noContent().build();
   }
 

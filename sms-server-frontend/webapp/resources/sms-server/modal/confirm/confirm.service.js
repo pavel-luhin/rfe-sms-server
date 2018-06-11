@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('confirmService', confirmService);
 
-  confirmService.$inject = ['$uibModal'];
-
+  /** @ngInject */
   function confirmService($uibModal) {
     var modalDefaults = {
       backdrop: true,

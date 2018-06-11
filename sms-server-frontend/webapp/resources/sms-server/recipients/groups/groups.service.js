@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('groupsService', groupsService);
 
-  groupsService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function groupsService(RestURLFactory, $http) {
     return {
       getGroup: getGroup,

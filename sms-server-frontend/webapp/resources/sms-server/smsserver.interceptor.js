@@ -5,11 +5,9 @@
   .module('sms-server')
   .factory('httpInterceptor', httpInterceptor);
 
-  httpInterceptor.$inject = ['$q', '$location', '$cookies', '$rootScope',
-    'toaster', 'localStorageAuthName', 'cookieAuthName'];
-
+  /** @ngInject */
   function httpInterceptor($q, $location, $cookies, $rootScope, toaster,
-      localStorageAuthName, cookieName) {
+      localStorageAuthName) {
     return {
       requestError: requestError,
       responseError: responseError
@@ -24,7 +22,6 @@
 
     function responseError(rejection) {
       if (rejection.status === 401) {
-        $cookies.remove(cookieName);
         if (localStorage.getItem(localStorageAuthName)) {
           toaster.pop({
             type: 'error',

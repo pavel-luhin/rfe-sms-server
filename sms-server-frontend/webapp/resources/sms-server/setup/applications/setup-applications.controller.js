@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('setupApplicationsCtrl', setupApplicationsCtrl);
 
-  setupApplicationsCtrl.$inject = ['setupApplicationsService', '$scope',
-    '$uibModal', 'confirmService'];
-
+  /** @ngInject */
   function setupApplicationsCtrl(setupApplicationsService, $scope, $uibModal,
       confirmService) {
     var getAllApplications = function () {

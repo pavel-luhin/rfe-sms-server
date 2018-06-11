@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('setupTemplatesService', setupTemplatesService);
 
-  setupTemplatesService.$inject = ['$http', 'RestURLFactory'];
-
+  /** @ngInject */
   function setupTemplatesService($http, RestURLFactory) {
     return {
       getAllTemplates: getAllTemplates,

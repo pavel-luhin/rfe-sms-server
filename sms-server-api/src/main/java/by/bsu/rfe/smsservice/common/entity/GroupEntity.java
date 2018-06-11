@@ -11,9 +11,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Data;
 
-/**
- * Created by pluhin on 3/20/16.
- */
 @Data
 @Entity
 @Table(name = "recipient_group")

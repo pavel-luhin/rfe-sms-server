@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('addEmailTemplateService', addEmailTemplateService);
 
-  addEmailTemplateService.$inject = ['$http', 'RestURLFactory'];
-
+  /** @ngInject */
   function addEmailTemplateService($http, RestURLFactory) {
     return {
       getAvailableSMSTemplates: getAvailableSMSTemplates,

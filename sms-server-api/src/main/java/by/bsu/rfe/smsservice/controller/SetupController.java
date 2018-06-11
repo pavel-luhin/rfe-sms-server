@@ -22,6 +22,7 @@ import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import by.bsu.rfe.smsservice.service.UserService;
 import java.util.List;
 import java.util.Map;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -61,7 +62,7 @@ public class SetupController {
   private SmsServerPropertyService smsServerPropertyService;
 
   @PostMapping(value = "/credentials", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity addNewCredentials(@RequestBody CredentialsDTO credentialsDTO) {
+  public ResponseEntity addNewCredentials(@Valid @RequestBody CredentialsDTO credentialsDTO) {
     userService.addNewCredentials(credentialsDTO);
     return noContent().build();
   }
@@ -85,7 +86,7 @@ public class SetupController {
 
   @PostMapping(value = "/smsTemplate", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SmsTemplateEntity> addSmsTemplates(
-      @RequestBody SmsTemplateEntity smsTemplateEntity) {
+      @Valid @RequestBody SmsTemplateEntity smsTemplateEntity) {
     return ok(smsTemplateService.addSMSTemplate(smsTemplateEntity));
   }
 
@@ -102,7 +103,7 @@ public class SetupController {
   }
 
   @PostMapping(value = "/user", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity createUser(@RequestBody UserDTO userDTO) {
+  public ResponseEntity createUser(@Valid @RequestBody UserDTO userDTO) {
     userService.createUser(userDTO.getUsername());
     return noContent().build();
   }
@@ -119,7 +120,8 @@ public class SetupController {
   }
 
   @PostMapping(value = "/application", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity createApplication(@RequestBody ExternalApplicationDTO applicationDTO) {
+  public ResponseEntity createApplication(
+      @Valid @RequestBody ExternalApplicationDTO applicationDTO) {
     externalApplicationService.createExternalApplication(applicationDTO);
     return noContent().build();
   }
@@ -136,7 +138,7 @@ public class SetupController {
   }
 
   @PostMapping(value = "/emailTemplate", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity createEmailTemplate(@RequestBody EmailTemplateDTO emailTemplateDTO) {
+  public ResponseEntity createEmailTemplate(@Valid @RequestBody EmailTemplateDTO emailTemplateDTO) {
     emailTemplateService.saveEmailTemplate(emailTemplateDTO);
     return noContent().build();
   }
@@ -154,7 +156,7 @@ public class SetupController {
 
   @PostMapping(value = "/shareCredentials", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity shareCredentialsBetweenUser(
-      @RequestBody ShareCredentialsDTO shareCredentialsDTO) {
+      @Valid @RequestBody ShareCredentialsDTO shareCredentialsDTO) {
     credentialsService.shareCredentials(shareCredentialsDTO);
     return noContent().build();
   }

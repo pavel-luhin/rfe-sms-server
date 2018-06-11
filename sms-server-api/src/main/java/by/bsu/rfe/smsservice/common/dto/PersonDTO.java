@@ -1,52 +1,40 @@
 package by.bsu.rfe.smsservice.common.dto;
 
-/**
- * Created by pluhin on 11/6/16.
- */
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.EMAIL_MAX_LENGTH;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.EMAIL_REGEX;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.MIN_LENGTH;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.NAME_MAX_LENGTH;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.NAME_REGEX;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.PHONE_NUMBER_MAX_LENGTH;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.PHONE_NUMBER_REGEX;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import lombok.Data;
+
+@Data
 public class PersonDTO {
-    private Integer id;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String email;
 
-    public Integer getId() {
-        return id;
-    }
+  private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @NotNull
+  @Pattern(regexp = NAME_REGEX)
+  @Size(min = MIN_LENGTH, max = NAME_MAX_LENGTH)
+  private String firstName;
 
-    public String getFirstName() {
-        return firstName;
-    }
+  @NotNull
+  @Pattern(regexp = NAME_REGEX)
+  @Size(min = MIN_LENGTH, max = NAME_MAX_LENGTH)
+  private String lastName;
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  @NotNull
+  @Pattern(regexp = PHONE_NUMBER_REGEX)
+  @Size(min = MIN_LENGTH, max = PHONE_NUMBER_MAX_LENGTH)
+  private String phoneNumber;
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  @NotNull
+  @Pattern(regexp = EMAIL_REGEX)
+  @Size(min = MIN_LENGTH, max = EMAIL_MAX_LENGTH)
+  private String email;
 }

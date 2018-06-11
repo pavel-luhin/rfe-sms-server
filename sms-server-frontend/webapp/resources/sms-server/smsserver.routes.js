@@ -5,8 +5,7 @@
   .module('sms-server')
   .config(routes);
 
-  routes.$inject = ['$routeProvider'];
-
+  /** @ngInject */
   function routes($routeProvider) {
     var SMS_SERVER_DIR = '';
     var TEMPLATE_POSTFIX = '.tmpl.html';
@@ -24,12 +23,8 @@
       controller: 'loginCtrl'
     })
     .when('/recipients', {
-      templateUrl: SMS_SERVER_DIR + 'recipients/recipients' + TEMPLATE_POSTFIX
-    })
-    .when('/recipients/add', {
-      templateUrl: SMS_SERVER_DIR + 'recipients/persons/add-persons/add-persons'
-      + TEMPLATE_POSTFIX,
-      controller: 'addPersonsCtrl'
+      templateUrl: SMS_SERVER_DIR + 'recipients/recipients' + TEMPLATE_POSTFIX,
+      controller: 'recipientsCtrl'
     })
     .when('/recipients/add-group', {
       templateUrl: SMS_SERVER_DIR + 'recipients/groups/add-group/add-group'

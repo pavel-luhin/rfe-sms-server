@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('addUserCtrl', addUserCtrl);
 
-  addUserCtrl.$inject = ['addUserService', '$scope', '$uibModalInstance',
-    'toaster'];
-
+  /** @ngInject */
   function addUserCtrl(addUserService, $scope, $uibModalInstance, toaster) {
     $scope.addUser = function (user) {
       if (!user || !user.username) {

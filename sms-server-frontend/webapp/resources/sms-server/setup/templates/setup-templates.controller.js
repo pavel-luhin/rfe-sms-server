@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('setupTemplatesCtrl', setupTemplatesCtrl);
 
-  setupTemplatesCtrl.$inject = ['setupTemplatesService', '$scope', '$uibModal',
-    'confirmService'];
-
+  /** @ngInject */
   function setupTemplatesCtrl(setupTemplatesService, $scope, $uibModal,
       confirmService) {
     var getSMSTemplates = function () {

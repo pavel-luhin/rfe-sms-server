@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('addApplicationService', addApplicationService);
 
-  addApplicationService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function addApplicationService(RestURLFactory, $http) {
     return {
       getUserCredentials: getUserCredentials,

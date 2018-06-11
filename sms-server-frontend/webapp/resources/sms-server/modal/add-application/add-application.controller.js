@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('addApplicationCtrl', addApplicationCtrl);
 
-  addApplicationCtrl.$inject = ['addApplicationService', '$scope',
-    '$uibModalInstance', 'toaster'];
-
+  /** @ngInject */
   function addApplicationCtrl(addApplicationService, $scope, $uibModalInstance,
       toaster) {
     $scope.selected = {};

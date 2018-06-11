@@ -10,9 +10,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 
-/**
- * Created by pluhin on 1/4/17.
- */
 @Data
 @Entity
 @Table(name = "sms_queue")

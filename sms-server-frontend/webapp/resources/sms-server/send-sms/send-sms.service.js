@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('sendSmsService', sendSmsService);
 
-  sendSmsService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function sendSmsService(RestURLFactory, $http) {
     return {
       getSenderNames: getSenderNames,

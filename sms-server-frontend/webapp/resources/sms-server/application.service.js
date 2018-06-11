@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('applicationService', applicationService);
 
-  applicationService.$inject = ['RestURLFactory', '$http'];
-
+  /** @ngInject */
   function applicationService(RestURLFactory, $http) {
     return {
       getVersionInfo: getVersionInfo

@@ -1,5 +1,6 @@
 package by.bsu.rfe.smsservice.service.impl;
 
+import static by.bsu.rfe.smsservice.security.util.SecurityUtil.getCurrentUsername;
 import static java.util.Collections.EMPTY_LIST;
 
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
@@ -7,6 +8,7 @@ import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.ShareCredentialsDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
+import by.bsu.rfe.smsservice.exception.CredentialsNotFoundException;
 import by.bsu.rfe.smsservice.repository.CredentialsRepository;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.BalanceService;
@@ -102,12 +104,20 @@ public class CredentialsServiceImpl implements CredentialsService {
 
   @Override
   public void shareCredentials(ShareCredentialsDTO shareCredentialsDTO) {
-    UserEntity userEntity = userService.findById(shareCredentialsDTO.getUserId());
-    CredentialsEntity credentialsEntity = credentialsRepository
-        .findOne(shareCredentialsDTO.getCredentialsId());
+    CredentialsEntity credentialsToShare =
+        credentialsCache.getAllUserCredentals(getCurrentUsername())
+            .stream()
+            .filter(
+                credentials -> credentials.getId().equals(shareCredentialsDTO.getCredentialsId()))
+            .findFirst()
+            .orElseThrow(() -> new CredentialsNotFoundException(
+                "User has no access to credentials with id " + shareCredentialsDTO
+                    .getCredentialsId()));
 
-    credentialsEntity.getUsers().add(userEntity);
-    credentialsRepository.saveAndFlush(credentialsEntity);
+    UserEntity userEntity = userService.findById(shareCredentialsDTO.getUserId());
+
+    credentialsToShare.getUsers().add(userEntity);
+    credentialsRepository.saveAndFlush(credentialsToShare);
     credentialsCache.reloadCache();
   }
 

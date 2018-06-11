@@ -5,11 +5,9 @@
   .module('sms-server')
   .factory('loginService', loginService);
 
-  loginService.$inject = ['RestURLFactory', '$http', '$rootScope', '$cookies',
-    '$location', 'localStorageAuthName', 'cookieAuthName'];
-
+  /** @ngInject */
   function loginService(RestURLFactory, $http, $rootScope, $cookies, $location,
-      localStorageAuthName, cookieName) {
+      localStorageAuthName) {
 
     return {
       logIn: logIn,
@@ -37,7 +35,6 @@
 
     function logout() {
       $http.post(RestURLFactory.LOGOUT, '').then(function (promise) {
-        $cookies.remove(cookieName);
         $rootScope.authenticated = false;
         localStorage.removeItem(localStorageAuthName);
         $location.path('/login');

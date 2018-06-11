@@ -17,7 +17,6 @@ import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +31,8 @@ public class QueueSmsRequestBuilder extends BaseSmsRequestBuilder<SmsQueueReques
   public QueueSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
-      List<MobileNumberValidator> mobileNumberValidators,
       RecipientService recipientService) {
-    super(parametersCollectorResolver, credentialsService, mobileNumberValidators,
+    super(parametersCollectorResolver, credentialsService,
         recipientService);
   }
 

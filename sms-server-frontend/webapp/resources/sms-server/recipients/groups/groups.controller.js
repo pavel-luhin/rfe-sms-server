@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('groupsCtrl', groupsCtrl);
 
-  groupsCtrl.$inject = ['groupsService', '$scope', '$location', '$routeParams',
-    'toaster', 'confirmService'];
-
+  /** @ngInject */
   function groupsCtrl(groupsService, $scope, $location, $routeParams, toaster,
       confirmService) {
     var allGroups = [];

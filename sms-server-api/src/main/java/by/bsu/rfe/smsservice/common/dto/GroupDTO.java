@@ -1,36 +1,24 @@
 package by.bsu.rfe.smsservice.common.dto;
 
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.GROUP_NAME_MAX_LENGTH;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.GROUP_NAME_REGEX;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.MIN_LENGTH;
+
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import lombok.Data;
 
-/**
- * Created by pluhin on 11/6/16.
- */
+@Data
 public class GroupDTO {
-    private Integer id;
-    private String name;
-    private List<PersonDTO> persons;
 
-    public Integer getId() {
-        return id;
-    }
+  private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @NotNull
+  @Pattern(regexp = GROUP_NAME_REGEX)
+  @Size(min = MIN_LENGTH, max = GROUP_NAME_MAX_LENGTH)
+  private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<PersonDTO> getPersons() {
-        return persons;
-    }
-
-    public void setPersons(List<PersonDTO> persons) {
-        this.persons = persons;
-    }
+  private List<PersonDTO> persons;
 }

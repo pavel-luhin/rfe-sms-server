@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('shareCredentialsCtrl', shareCredentialsController);
 
-  shareCredentialsController.$inject = ['shareCredentialsService', '$scope',
-    '$uibModalInstance', '$rootScope'];
-
+  /** @ngInject */
   function shareCredentialsController(shareCredentialsService, $scope,
       $uibModalInstance, $rootScope) {
     $scope.cancel = function () {

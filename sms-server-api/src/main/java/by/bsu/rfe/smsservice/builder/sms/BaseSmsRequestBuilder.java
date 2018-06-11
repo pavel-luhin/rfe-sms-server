@@ -14,18 +14,16 @@ import by.bsu.rfe.smsservice.common.dto.sms.BaseSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.exception.CredentialsNotFoundException;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.http.message.BasicNameValuePair;
 
 @Slf4j
@@ -34,17 +32,14 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
 
   protected ParametersCollectorResolver parametersCollectorResolver;
   protected CredentialsService credentialsService;
-  protected List<MobileNumberValidator> mobileNumberValidators;
   protected RecipientService recipientService;
 
   public BaseSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
-      List<MobileNumberValidator> mobileNumberValidators,
       RecipientService recipientService) {
     this.parametersCollectorResolver = parametersCollectorResolver;
     this.credentialsService = credentialsService;
-    this.mobileNumberValidators = mobileNumberValidators;
     this.recipientService = recipientService;
   }
 
@@ -55,7 +50,8 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
         .getUserCredentialsForSenderName(requestDTO.getSenderName());
 
     if (credentials == null) {
-      throw new CredentialsNotFoundException();
+      throw new CredentialsNotFoundException(
+          "Credentials with sender name " + requestDTO.getSenderName() + " not found");
     }
 
     request.addParameter(new BasicNameValuePair(USER.getRequestParam(), credentials.getUsername()));
@@ -101,21 +97,23 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
   protected List<String> fetchNumbers(RecipientDTO recipient) {
     List<String> finalRecipients = new ArrayList<>();
 
-    if (recipient.getRecipientType() == RecipientType.NUMBER) {
-      String mobileNumber = recipient.getName();
-
-      for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
-        mobileNumber = mobileNumberValidator.validate(mobileNumber);
-      }
-
-      finalRecipients.add(mobileNumber);
-    } else if (recipient.getRecipientType() == RecipientType.GROUP) {
-      GroupEntity groupEntity = recipientService.getGroupByName(recipient.getName());
-      finalRecipients.add(getAllRecipientsFromGroup(groupEntity));
-    } else {
-      PersonEntity personEntity = recipientService.getPerson(recipient.getName().split("-"));
-      finalRecipients.add(personEntity.getPhoneNumber());
+    switch (recipient.getRecipientType()) {
+      case NUMBER:
+        finalRecipients.add(recipient.getName());
+        break;
+      case GROUP:
+        GroupEntity groupEntity = recipientService.getGroupByName(recipient.getName());
+        finalRecipients.add(getAllRecipientsFromGroup(groupEntity));
+        break;
+      case PERSON:
+        PersonEntity personEntity = recipientService.getPerson(recipient.getName().split("-"));
+        finalRecipients.add(personEntity.getPhoneNumber());
+        break;
+      default:
+        throw new NotImplementedException(
+            "Not supported recipient type: " + recipient.getRecipientType());
     }
+
     return finalRecipients;
   }
 

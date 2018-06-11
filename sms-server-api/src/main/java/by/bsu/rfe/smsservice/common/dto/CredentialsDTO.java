@@ -1,61 +1,33 @@
 package by.bsu.rfe.smsservice.common.dto;
 
-/**
- * Created by pluhin on 8/27/16.
- */
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.EMAIL_MAX_LENGTH;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.EMAIL_REGEX;
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.MIN_LENGTH;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class CredentialsDTO extends CreatedDetails {
-    private Integer id;
-    private String apiKey;
-    private String username;
-    private String smsType;
-    private String sender;
-    private Double balance;
 
-    public Integer getId() {
-        return id;
-    }
+  private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String apiKey;
 
-    public String getApiKey() {
-        return apiKey;
-    }
+  @NotNull
+  @Pattern(regexp = EMAIL_REGEX)
+  @Size(min = MIN_LENGTH, max = EMAIL_MAX_LENGTH)
+  private String username;
 
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String sender;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(String smsType) {
-        this.smsType = smsType;
-    }
-
-    public String getSender() {
-        return sender;
-    }
-
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
-
-    public Double getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Double balance) {
-        this.balance = balance;
-    }
+  private Double balance;
 }

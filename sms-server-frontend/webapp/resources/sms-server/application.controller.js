@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('applicationCtrl', applicationCtrl);
 
-  applicationCtrl.$inject = ['applicationService', '$scope', 'loginService',
-    '$location', 'confirmService'];
-
+  /** @ngInject */
   function applicationCtrl(applicationService, $scope, loginService, $location,
       confirmService) {
     $scope.$watch(loginService.isAuthenticated, function () {

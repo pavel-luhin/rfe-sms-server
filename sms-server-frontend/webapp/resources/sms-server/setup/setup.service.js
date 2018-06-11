@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('setupService', setupService);
 
-  setupService.$inject = [];
-
+  /** @ngInject */
   function setupService() {
 
   }

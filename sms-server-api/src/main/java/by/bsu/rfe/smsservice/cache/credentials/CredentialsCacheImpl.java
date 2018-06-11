@@ -79,13 +79,15 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
   @Override
   public List<CredentialsEntity> getAllUserCredentals(String username) {
-    while (locked) {}
+    while (locked) {
+    }
     return cache.get(username);
   }
 
   @Override
   public Set<String> getSenderNamesForCurrentUser() {
-    while (locked) {}
+    while (locked) {
+    }
     return getAllUserCredentals(getCurrentUsername())
         .stream()
         .map(CredentialsEntity::getSender)
@@ -94,12 +96,14 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
   @Override
   public CredentialsEntity getCredentialsBySenderNameForCurrentUser(String senderName) {
-    while (locked) {}
+    while (locked) {
+    }
     return getAllUserCredentals(getCurrentUsername())
         .stream()
         .filter(credentialsEntity -> credentialsEntity.getSender().equals(senderName))
         .findFirst()
-        .orElseThrow(CredentialsNotFoundException::new);
+        .orElseThrow(() -> new CredentialsNotFoundException(
+            "Credentials with " + senderName + " not found"));
   }
 
   @Override

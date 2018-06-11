@@ -17,7 +17,6 @@ import by.bsu.rfe.smsservice.repository.GroupRepository;
 import by.bsu.rfe.smsservice.repository.PersonRepository;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.util.DozerUtil;
-import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +38,6 @@ public class RecipientServiceImpl implements RecipientService {
   private GroupRepository groupRepository;
   @Autowired
   private Mapper mapper;
-  @Autowired
-  private List<MobileNumberValidator> mobileNumberValidators;
 
   @Override
   public void addGroup(GroupDTO groupDTO) {
@@ -64,17 +61,9 @@ public class RecipientServiceImpl implements RecipientService {
   }
 
   @Override
-  public void addPersons(List<PersonEntity> personEntities) {
-
-    for (PersonEntity personEntity : personEntities) {
-      for (MobileNumberValidator mobileNumberValidator : mobileNumberValidators) {
-        if (!mobileNumberValidator.isValid(personEntity.getPhoneNumber())) {
-          throw new IllegalArgumentException(mobileNumberValidator.errorString());
-        }
-      }
-    }
-
-    personRepository.save(personEntities);
+  public void addPerson(PersonDTO personDTO) {
+    PersonEntity personEntity = mapper.map(personDTO, PersonEntity.class);
+    personRepository.save(personEntity);
   }
 
   @Override

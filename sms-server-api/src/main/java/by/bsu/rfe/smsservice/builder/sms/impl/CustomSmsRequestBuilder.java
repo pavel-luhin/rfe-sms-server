@@ -7,9 +7,7 @@ import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,8 @@ public class CustomSmsRequestBuilder extends BaseSmsRequestBuilder<CustomSmsRequ
   public CustomSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
-      List<MobileNumberValidator> mobileNumberValidators,
       RecipientService recipientService) {
-    super(parametersCollectorResolver, credentialsService, mobileNumberValidators,
+    super(parametersCollectorResolver, credentialsService,
         recipientService);
   }
 

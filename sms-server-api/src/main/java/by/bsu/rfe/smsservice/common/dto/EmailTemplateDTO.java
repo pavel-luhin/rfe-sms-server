@@ -1,43 +1,28 @@
 package by.bsu.rfe.smsservice.common.dto;
 
-/**
- * Created by pluhin on 9/4/16.
- */
+import static by.bsu.rfe.smsservice.common.constants.ValidationConstants.MIN_LENGTH;
+
+import by.bsu.rfe.smsservice.common.constants.ValidationConstants;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class EmailTemplateDTO extends CreatedDetails {
-    private Integer id;
-    private String subject;
-    private String content;
-    private String smsType;
 
-    public Integer getId() {
-        return id;
-    }
+  private Integer id;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String subject;
 
-    public String getSubject() {
-        return subject;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String content;
 
-    public void setSubject(String subject) {
-        this.subject = subject;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getSmsType() {
-        return smsType;
-    }
-
-    public void setSmsType(String smsType) {
-        this.smsType = smsType;
-    }
+  @NotNull
+  @Size(min = MIN_LENGTH)
+  private String smsType;
 }

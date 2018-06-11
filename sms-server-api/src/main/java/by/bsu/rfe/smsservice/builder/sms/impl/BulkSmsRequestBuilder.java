@@ -14,7 +14,6 @@ import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.validator.mobilenumber.MobileNumberValidator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +32,8 @@ public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestD
   public BulkSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
-      List<MobileNumberValidator> mobileNumberValidators,
       RecipientService recipientService) {
-    super(parametersCollectorResolver, credentialsService, mobileNumberValidators,
+    super(parametersCollectorResolver, credentialsService,
         recipientService);
   }
 

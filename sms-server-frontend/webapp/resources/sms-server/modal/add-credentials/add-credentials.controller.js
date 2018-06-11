@@ -5,9 +5,7 @@
   .module('sms-server')
   .controller('addCredentialsCtrl', addCredentialsCtrl);
 
-  addCredentialsCtrl.$inject = ['addCredentialsService', '$scope',
-    '$uibModalInstance', 'toaster'];
-
+  /** @ngInject */
   function addCredentialsCtrl(addCredentialsService, $scope, $uibModalInstance,
       toaster) {
     $scope.addCredentials = function (credentials) {

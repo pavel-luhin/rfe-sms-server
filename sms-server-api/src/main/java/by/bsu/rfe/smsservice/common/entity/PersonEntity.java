@@ -6,11 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Pattern;
 import lombok.Data;
 
-/**
- * Created by pluhin on 3/20/16.
- */
 @Data
 @Entity
 @Table(name = "person")
@@ -22,6 +20,7 @@ public class PersonEntity extends CreationDetails {
   @Column(name = "last_name", nullable = false)
   private String lastName;
 
+  @Pattern(regexp = "^\\+?(\\d){12}$")
   @Column(name = "phone_number", nullable = false, unique = true)
   private String phoneNumber;
 

@@ -5,8 +5,7 @@
   .module('sms-server')
   .factory('setupPropertiesService', setupPropertiesService);
 
-  setupPropertiesService.$inject = ['$http', 'RestURLFactory'];
-
+  /** @ngInject */
   function setupPropertiesService($http, RestURLFactory) {
     return {
       saveProperties: saveProperties,
