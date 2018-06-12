@@ -46,6 +46,7 @@
       angular.extend(tempModalOptions, modalOptions, customModalOptions);
 
       if (!tempModalDefaults.controller) {
+        /** @ngInject */
         tempModalDefaults.controller = function ($scope, $uibModalInstance) {
           $scope.modalOptions = tempModalOptions;
           $scope.modalOptions.ok = function (result) {

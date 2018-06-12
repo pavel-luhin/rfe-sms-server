@@ -54,7 +54,9 @@
       $http.get(RestURLFactory.ACCOUNT_INFO).then(
           function (promise) {
             $rootScope.authenticated = true;
-            localStorage.setItem(localStorageAuthName, promise.data);
+            localStorage.setItem(localStorageAuthName,
+                JSON.stringify(promise.data));
+            console.log(promise.data);
           }, function (reject) {
             $rootScope.authenticated = false;
             $location.path('/login');
