@@ -6,8 +6,7 @@
   .controller('applicationCtrl', applicationCtrl);
 
   /** @ngInject */
-  function applicationCtrl(applicationService, $scope, loginService, $location,
-      confirmService) {
+  function applicationCtrl(applicationService, $scope, loginService) {
     $scope.$watch(loginService.isAuthenticated, function () {
       $scope.authenticated = loginService.isAuthenticated();
     });
@@ -22,10 +21,7 @@
     };
 
     $scope.logout = function () {
-      confirmService.showModal({}, confirmLogoutModalOptions).then(
-          function (result) {
-            loginService.logout();
-          });
+      loginService.logout();
     };
 
     $scope.getCurrentUserName = function () {

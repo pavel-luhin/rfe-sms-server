@@ -3,6 +3,7 @@ package by.bsu.rfe.smsservice.config;
 import by.bsu.rfe.smsservice.security.UnauthorizedEntryPoint;
 import by.bsu.rfe.smsservice.security.filter.AuthenticationTokenFilter;
 import by.bsu.rfe.smsservice.security.handler.ErrorAuthenticationHandler;
+import by.bsu.rfe.smsservice.security.handler.SuccessLogoutHandler;
 import by.bsu.rfe.smsservice.service.ExternalApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private ErrorAuthenticationHandler errorAuthenticationHandler;
+
+  @Autowired
+  private SuccessLogoutHandler successLogoutHandler;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -72,6 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .logout()
         .logoutUrl("/rest/user/logout")
         .deleteCookies("JSESSIONID")
+        .logoutSuccessHandler(successLogoutHandler)
         .and()
         .addFilterAfter(authenticationTokenFilter(), SessionManagementFilter.class)
         .authorizeRequests()
