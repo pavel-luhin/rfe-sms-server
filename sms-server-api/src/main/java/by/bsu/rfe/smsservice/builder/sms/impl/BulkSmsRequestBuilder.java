@@ -53,14 +53,13 @@ public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestD
     smsRequestDTO.setMessage(message);
 
     totalMessages
-        .entrySet()
-        .forEach(messageAndRecipient -> {
+        .forEach((key, value) -> {
           Map<String, String> parameters = new HashMap<>();
-          RecipientDTO recipient = new RecipientDTO(messageAndRecipient.getKey(), NUMBER);
+          RecipientDTO recipient = new RecipientDTO(key, NUMBER);
           parametersCollectorResolver.resolve(NUMBER).collectParameters(recipient, parameters);
 
           String createdMessage = createMessage(message, parameters);
-          totalMessages.put(messageAndRecipient.getKey(), createdMessage);
+          totalMessages.put(key, createdMessage);
         });
 
     String finalMessages = createArrayOfMessages(totalMessages, smsRequestDTO.getSenderName());

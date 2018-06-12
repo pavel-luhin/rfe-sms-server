@@ -1,5 +1,10 @@
 package by.bsu.rfe.smsservice.common.entity;
 
+import static javax.persistence.CascadeType.DETACH;
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+import static javax.persistence.CascadeType.REFRESH;
+
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +32,10 @@ public class PersonEntity extends CreationDetails {
   @Column(name = "email", nullable = false, unique = true)
   private String email;
 
-  @ManyToMany(mappedBy = "persons", fetch = FetchType.EAGER)
+  @ManyToMany(
+      mappedBy = "persons",
+      fetch = FetchType.EAGER,
+      cascade = {DETACH, MERGE, PERSIST, REFRESH})
   private List<GroupEntity> groups;
 
   @Column(name = "temporary")
