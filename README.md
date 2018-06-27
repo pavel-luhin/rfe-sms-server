@@ -24,11 +24,15 @@ FLUSH PRIVILEGES;
 ```
 This set of mysql commands will create database schema, user and grant all access to created user.
 Then you need to specify the following environment variables for the application:
-* ```-Ddatabase.url``` - url of database schema. In this example ```jdbc:mysql://localhost:3306/sms_server```
-* ```-Ddatabase.username``` - username of database user. In this example ```sms-server-user```
-* ```-Ddatabase.password``` - password of database user. In this example ```some-password```
+* ```-Dspring.datasource.url``` or ```-Ddatabase.url``` in older version - url of database schema. In this example ```jdbc:mysql://localhost:3306/sms_server```
+* ```-Dspring.datasource.username``` or ```-Ddatabase.username``` in older version - username of database user. In this example ```sms-server-user```
+* ```-DDspring.datasource.password``` or ```-Ddatabase.password``` in older version - password of database user. In this example ```some-password```
 * ```-Dsms.test``` - in older versions test flag, send real or mock request to websms system. Deprecated. Use build profiles instead.
 * ```-Dserver.url``` - server domain or IP address with port where application is going to be deployed. Needed to send in email to newly registered users.
 * ```-Dcredentials.cache.enabled``` - in older versions flat to enable or disable credentials cache. Deprecated since version 1.4. Credentials cache is active by default now.
+* ```-Dserver.port``` - specifies port to bind to server. 8080 is by default
 
 After installing, you have execute jar file named ```sms-server-X.jar```, where X - application version from ```target``` folder.
+
+To start application you need to execute ```java -jar sms-server-X.jar``` where ```sms-server-X.jar``` - is the name of the generated jar file.
+After running this command, you can access sms server on ```http://localhost:8080``` 
