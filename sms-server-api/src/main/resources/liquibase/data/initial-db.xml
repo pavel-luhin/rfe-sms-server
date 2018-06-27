@@ -431,7 +431,7 @@
     <insert tableName="user">
       <column name="id" valueNumeric="1"/>
       <column name="username" value="pavel.luhin@gmail.com"/>
-      <column name="password" value="42d8aa7cde9c78c4757862d84620c335"/>
+      <column name="password" value="$2a$04$nZkme/R9IKfRunz3UZN1WOkdESAl399ZW12T/a5TfD4Do2feOUkYi"/>
       <column name="default_credentials"/>
       <column name="created_by" value="SYSTEM"/>
       <column name="created_date" valueDate="2018-04-25 12:58:57.0"/>
