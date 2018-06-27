@@ -128,9 +128,8 @@ public class UserServiceImpl implements UserService {
   @Override
   public void changePassword(ChangePasswordDTO passwordDTO) {
     UserEntity userEntity = findByUsername(SecurityUtil.getCurrentUsername());
-    String oldPassword = passwordEncoder.encode(passwordDTO.getOldPassword());
 
-    if (!userEntity.getPassword().equals(oldPassword)) {
+    if (!passwordEncoder.matches(passwordDTO.getOldPassword(), userEntity.getPassword())) {
       throw new IllegalArgumentException("Old password is invalid");
     }
 
