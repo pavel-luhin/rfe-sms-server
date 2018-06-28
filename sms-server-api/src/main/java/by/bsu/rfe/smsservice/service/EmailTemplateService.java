@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.service;
 
 import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
+import by.bsu.rfe.smsservice.common.entity.EmailEntity;
 import java.util.List;
 
 public interface EmailTemplateService {
@@ -11,5 +12,5 @@ public interface EmailTemplateService {
 
   void removeEmailTemplate(Integer id);
 
-  EmailTemplateDTO getEmailTemplate(String smsType);
+  EmailEntity getEmailTemplate(String smsType);
 }

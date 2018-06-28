@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -24,7 +23,7 @@ public class GroupEntity extends CreationDetails {
   @Column(name = "name", nullable = false, unique = true)
   private String name;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = {DETACH, MERGE, PERSIST, REFRESH})
+  @ManyToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH})
   @JoinTable(
       name = "persons_have_groups",
       inverseJoinColumns = @JoinColumn(name = "person_id"),
@@ -35,4 +34,8 @@ public class GroupEntity extends CreationDetails {
   @Column(name = "temporary")
   private boolean temporary;
 
+  @Override
+  public void setId(Integer id) {
+    super.setId(id);
+  }
 }

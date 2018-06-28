@@ -10,7 +10,6 @@ import static javax.persistence.CascadeType.REFRESH;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
@@ -37,7 +36,6 @@ public class PersonEntity extends CreationDetails {
 
   @ManyToMany(
       mappedBy = "persons",
-      fetch = FetchType.EAGER,
       cascade = {DETACH, MERGE, PERSIST, REFRESH})
   private List<GroupEntity> groups;
 

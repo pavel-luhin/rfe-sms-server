@@ -18,7 +18,7 @@
     };
 
     $scope.getGroup = function (groupId) {
-      addGroupService.getGroup(id)
+      addGroupService.getGroup(groupId)
       .then(function (response) {
         $scope.selectedPersons = response.data.persons;
         $scope.groupName = response.data.name;

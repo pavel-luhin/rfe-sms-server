@@ -6,6 +6,7 @@ import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.websms.WebSMSParam;
+import by.bsu.rfe.smsservice.exception.TemplateNotFoundException;
 import by.bsu.rfe.smsservice.service.CredentialsService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
@@ -36,7 +37,11 @@ public class TemplateSmsRequestBuilder extends BaseSmsRequestBuilder<TemplateSms
   public Request build(TemplateSmsRequestDTO smsRequestDTO) {
     SmsTemplateEntity smsTemplateEntity = smsTemplateService
         .findSMSTemplate(smsRequestDTO.getTemplateName());
-    String message = smsTemplateEntity.getTemplate();
+
+    String message = Optional.ofNullable(smsTemplateEntity)
+        .map(SmsTemplateEntity::getTemplate)
+        .orElseThrow(() -> new TemplateNotFoundException(
+            "Sms template with name " + smsRequestDTO.getTemplateName() + " not found"));
 
     Request request = buildBaseRequest(smsRequestDTO);
     Map<String, String> recipientsByMessages = new HashMap<>();

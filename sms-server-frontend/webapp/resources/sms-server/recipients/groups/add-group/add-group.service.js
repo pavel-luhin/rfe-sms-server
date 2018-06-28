@@ -19,7 +19,7 @@
     }
 
     function getGroup(id) {
-      return $http.get(RestURLFactory.GROUP + '/' + groupId);
+      return $http.get(RestURLFactory.GROUP + '/' + id);
     }
 
     function getPersonsWithoutGroup(groupId) {

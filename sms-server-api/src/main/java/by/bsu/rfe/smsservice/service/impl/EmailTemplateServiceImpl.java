@@ -44,7 +44,7 @@ public class EmailTemplateServiceImpl implements EmailTemplateService {
   }
 
   @Override
-  public EmailTemplateDTO getEmailTemplate(String smsType) {
-    return mapper.map(emailRepository.findBySMSType(smsType), EmailTemplateDTO.class);
+  public EmailEntity getEmailTemplate(String smsType) {
+    return emailRepository.findBySMSType(smsType);
   }
 }

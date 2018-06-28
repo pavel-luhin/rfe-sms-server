@@ -12,21 +12,23 @@ import static by.bsu.rfe.smsservice.common.enums.SmsServerProperty.USERNAME;
 import static by.bsu.rfe.smsservice.util.MessageUtil.createMessage;
 
 import by.bsu.rfe.smsservice.builder.parameters.ParametersCollectorResolver;
-import by.bsu.rfe.smsservice.common.dto.EmailTemplateDTO;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
+import by.bsu.rfe.smsservice.common.entity.EmailEntity;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.enums.SmsParams;
+import by.bsu.rfe.smsservice.exception.TemplateNotFoundException;
 import by.bsu.rfe.smsservice.service.EmailTemplateService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import by.bsu.rfe.smsservice.service.SendEmailService;
 import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -65,17 +67,25 @@ public class SendEmailServiceImpl implements SendEmailService {
   @Async
   @Override
   public void sendEmail(TemplateSmsRequestDTO requestDTO) {
-    EmailTemplateDTO emailTemplateDTO = emailTemplateService
+    EmailEntity emailEntity = emailTemplateService
         .getEmailTemplate(requestDTO.getTemplateName());
 
+    String content = Optional.ofNullable(emailEntity)
+        .map(EmailEntity::getContent)
+        .orElseThrow(() -> new TemplateNotFoundException(
+            "There is no email template linked to " + requestDTO.getTemplateName()
+                + " sms template"));
+
     requestDTO.getRecipients().forEach(recipient -> {
-      Map<String, String> parameters = requestDTO.getParameters().get(recipient.getName());
+      Map<String, String> parameters = Optional
+          .ofNullable(requestDTO.getParameters().get(recipient.getName()))
+          .orElse(new HashMap<>());
       parametersCollectorResolver.resolve(recipient.getRecipientType())
           .collectParameters(recipient, parameters);
 
       String addresses = fetchRecipients(recipient, parameters);
-      String message = createMessage(emailTemplateDTO.getContent(), parameters);
-      sendEmail(addresses, emailTemplateDTO.getSubject(), message);
+      String message = createMessage(content, parameters);
+      sendEmail(addresses, emailEntity.getSubject(), message);
     });
   }
 
@@ -89,11 +99,16 @@ public class SendEmailServiceImpl implements SendEmailService {
         .collectParameters(recipient, requestDTO.getParameters());
 
     String addresses = fetchRecipients(recipient, requestDTO.getParameters());
-    EmailTemplateDTO emailTemplateDTO = emailTemplateService
+    EmailEntity emailEntity = emailTemplateService
         .getEmailTemplate(requestDTO.getSmsType());
 
-    String message = createMessage(emailTemplateDTO.getContent(), requestDTO.getParameters());
-    sendEmail(addresses, emailTemplateDTO.getSubject(), message);
+    String content = Optional.ofNullable(emailEntity)
+        .map(EmailEntity::getContent)
+        .orElseThrow(() -> new TemplateNotFoundException(
+            "There is no email template linked to " + requestDTO.getSmsType() + " sms template"));
+
+    String message = createMessage(content, requestDTO.getParameters());
+    sendEmail(addresses, emailEntity.getSubject(), message);
   }
 
   @Override
@@ -115,17 +130,20 @@ public class SendEmailServiceImpl implements SendEmailService {
     parametersCollectorResolver.resolve(RecipientType.NUMBER)
         .collectParameters(recipientTypeEntry, parameters);
 
-    EmailTemplateDTO emailTemplateDTO = emailTemplateService
+    EmailEntity emailEntity = emailTemplateService
         .getEmailTemplate(REGISTER_USER_SMS_TYPE);
 
-    String message = createMessage(emailTemplateDTO.getContent(), parameters);
+    String message = createMessage(emailEntity.getContent(), parameters);
 
-    sendEmail(username, emailTemplateDTO.getSubject(), message);
+    sendEmail(username, emailEntity.getSubject(), message);
   }
 
   private void sendEmail(String address, String subject, String content) {
+    Optional.ofNullable(address)
+        .orElseThrow(() -> new IllegalArgumentException("Invalid email address: " + address));
+
     log.info("Sending message to {}", address);
-    log.info("", content);
+    log.info("{}", content);
     if (!Boolean.valueOf(smsServerPropertyService.findPropertyValue(EMAIL_ENABLED))) {
       log.info("Sending email is disabled via server property");
       return;

@@ -4,19 +4,17 @@ import by.bsu.rfe.smsservice.common.dto.ExternalApplicationDTO;
 import by.bsu.rfe.smsservice.common.entity.ExternalApplicationEntity;
 import java.util.List;
 
-/**
- * Created by pluhin on 9/3/16.
- */
 public interface ExternalApplicationService {
-    List<ExternalApplicationDTO> getAllExternalApplications();
 
-    void createExternalApplication(ExternalApplicationDTO externalApplicationDTO);
+  List<ExternalApplicationDTO> getAllExternalApplications();
 
-    void removeExternalApplication(Integer id);
+  void createExternalApplication(ExternalApplicationDTO externalApplicationDTO);
 
-    ExternalApplicationEntity getByToken(String token);
+  void removeExternalApplication(Integer id);
 
-    List<ExternalApplicationEntity> getAllApplicationEntities();
+  ExternalApplicationEntity getByToken(String token);
 
-    ExternalApplicationEntity getByName(String name);
+  List<ExternalApplicationEntity> getAllApplicationEntities();
+
+  ExternalApplicationEntity getByName(String name);
 }

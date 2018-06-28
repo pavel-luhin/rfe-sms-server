@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.common.dto.error;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BaseExceptionDTO {
 
-  @JsonInclude(NON_NULL)
+  @JsonInclude(NON_EMPTY)
   private List<FieldErrorDTO> fieldErrors = new ArrayList<>();
   private Integer code;
   private String message;
