@@ -24,6 +24,11 @@ function makeTemplates() {
   return buildTemplates(TARGET_FOLDER);
 }
 
+gulp.task('icons', function() {
+  return gulp.src(SOURCE_FOLDER + '/favicon*')
+  .pipe(gulp.dest(TARGET_FOLDER));
+});
+
 //temp solution
 gulp.task('libs-js', function () {
   return gulp.src([SOURCE_FOLDER + '/libs/angular/angular.min.js',
@@ -64,7 +69,7 @@ function buildScripts(target) {
   .pipe(gulp.dest(target + '/js'));
 }
 
-gulp.task('inject', ['libs-js', 'scripts-js', 'templatecache', 'css', 'fonts'],
+gulp.task('inject', ['libs-js', 'scripts-js', 'templatecache', 'css', 'fonts', 'icons'],
     function () {
       gulp.src('webapp/index.html')
       .pipe(inject(gulp.src(TARGET_FOLDER + '/js/vendors.js', {read: false}), {
