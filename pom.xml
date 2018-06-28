@@ -6,7 +6,7 @@
 
   <groupId>by.bsu.rfe</groupId>
   <artifactId>sms-server</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.4</version>
 
   <issueManagement>
     <url>https://github.com/p-luhin/rfe-sms-server/issues</url>
