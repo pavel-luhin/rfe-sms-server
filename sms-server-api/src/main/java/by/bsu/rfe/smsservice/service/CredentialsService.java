@@ -13,7 +13,7 @@ public interface CredentialsService {
 
   CredentialsEntity getUserCredentialsForSenderName(String senderName);
 
-  void saveCredentials(CredentialsEntity credentialsEntity);
+  void saveCredentials(CredentialsDTO credentialsDTO);
 
   List<CredentialsDTO> getUserCredentials(String username);
 

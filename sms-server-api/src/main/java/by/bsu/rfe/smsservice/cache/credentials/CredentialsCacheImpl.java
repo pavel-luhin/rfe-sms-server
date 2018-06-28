@@ -6,34 +6,35 @@ import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.ExternalApplicationEntity;
 import by.bsu.rfe.smsservice.exception.CacheAlreadyLockedException;
 import by.bsu.rfe.smsservice.exception.CredentialsNotFoundException;
-import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.ExternalApplicationService;
+import by.bsu.rfe.smsservice.repository.CredentialsRepository;
+import by.bsu.rfe.smsservice.repository.ExternalApplicationRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
+import lombok.SneakyThrows;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
 public class CredentialsCacheImpl implements CredentialsCache {
 
+  private static final Logger log = org.slf4j.LoggerFactory.getLogger(CredentialsCacheImpl.class);
   @Autowired
-  private CredentialsService credentialsService;
+  private CredentialsRepository credentialsRepository;
 
   @Autowired
-  private ExternalApplicationService applicationService;
+  private ExternalApplicationRepository applicationRepository;
 
-  private volatile boolean locked = false;
+  private volatile Boolean locked = false;
 
-  private Map<String, List<CredentialsEntity>> cache = new HashMap<>();
+  private Map<String, List<CredentialsEntity>> cache;
 
   @PostConstruct
   public void startCache() {
@@ -47,8 +48,10 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
     long startTime = System.currentTimeMillis();
 
-    List<CredentialsEntity> userCredentials = credentialsService.getAllCredentials();
-    log.info("LOADED {} credentials " + userCredentials.size());
+    cache = new HashMap<>();
+
+    List<CredentialsEntity> userCredentials = credentialsRepository.findAll();
+    log.info("LOADED {} credentials ", userCredentials.size());
 
     userCredentials
         .forEach(credentialsEntity -> {
@@ -62,8 +65,7 @@ public class CredentialsCacheImpl implements CredentialsCache {
               });
         });
 
-    List<ExternalApplicationEntity> applications = applicationService
-        .getAllApplicationEntities();
+    List<ExternalApplicationEntity> applications = applicationRepository.findAll();
     log.info("LOADED {} applications", applications.size());
 
     applications
@@ -79,15 +81,13 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
   @Override
   public List<CredentialsEntity> getAllUserCredentals(String username) {
-    while (locked) {
-    }
+    checkForLock();
     return cache.get(username);
   }
 
   @Override
   public Set<String> getSenderNamesForCurrentUser() {
-    while (locked) {
-    }
+    checkForLock();
     return getAllUserCredentals(getCurrentUsername())
         .stream()
         .map(CredentialsEntity::getSender)
@@ -96,8 +96,7 @@ public class CredentialsCacheImpl implements CredentialsCache {
 
   @Override
   public CredentialsEntity getCredentialsBySenderNameForCurrentUser(String senderName) {
-    while (locked) {
-    }
+    checkForLock();
     return getAllUserCredentals(getCurrentUsername())
         .stream()
         .filter(credentialsEntity -> credentialsEntity.getSender().equals(senderName))
@@ -106,6 +105,7 @@ public class CredentialsCacheImpl implements CredentialsCache {
             "Credentials with " + senderName + " not found"));
   }
 
+  @Async
   @Override
   public void reloadCache() {
     startCache();
@@ -119,5 +119,17 @@ public class CredentialsCacheImpl implements CredentialsCache {
   private void unlockCache() {
     locked = false;
     log.info("Cache lock released");
+    synchronized (locked) {
+      locked.notify();
+    }
+  }
+
+  @SneakyThrows
+  private void checkForLock() {
+    synchronized (locked) {
+      if (locked) {
+        locked.wait();
+      }
+    }
   }
 }

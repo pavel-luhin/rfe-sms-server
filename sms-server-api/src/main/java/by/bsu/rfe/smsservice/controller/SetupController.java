@@ -63,7 +63,7 @@ public class SetupController {
 
   @PostMapping(value = "/credentials", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity addNewCredentials(@Valid @RequestBody CredentialsDTO credentialsDTO) {
-    userService.addNewCredentials(credentialsDTO);
+    credentialsService.saveCredentials(credentialsDTO);
     return noContent().build();
   }
 

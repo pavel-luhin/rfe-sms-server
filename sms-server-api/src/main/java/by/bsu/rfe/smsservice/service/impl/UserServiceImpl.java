@@ -2,7 +2,6 @@ package by.bsu.rfe.smsservice.service.impl;
 
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.dto.ChangePasswordDTO;
-import by.bsu.rfe.smsservice.common.dto.CredentialsDTO;
 import by.bsu.rfe.smsservice.common.dto.UserDTO;
 import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.entity.UserEntity;
@@ -20,7 +19,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -80,16 +78,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public Set<String> getSenderNames() {
     return credentialsCache.getSenderNamesForCurrentUser();
-
-  }
-
-  @Override
-  public void addNewCredentials(CredentialsDTO credentialsDTO) {
-    CredentialsEntity credentialsEntity = mapper.map(credentialsDTO, CredentialsEntity.class);
-    UserEntity userEntity = userRepository.findByUsername(SecurityUtil.getCurrentUsername());
-    credentialsEntity.getUsers().add(userEntity);
-    credentialsService.saveCredentials(credentialsEntity);
-    credentialsCache.reloadCache();
   }
 
   @Override

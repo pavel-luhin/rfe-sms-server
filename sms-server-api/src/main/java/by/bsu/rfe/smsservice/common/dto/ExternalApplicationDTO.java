@@ -18,7 +18,6 @@ public class ExternalApplicationDTO extends CreatedDetails {
   @Size(min = MIN_LENGTH)
   private String applicationName;
 
-  @NotNull
   @Size(min = MIN_LENGTH)
   private String authenticationToken;
 

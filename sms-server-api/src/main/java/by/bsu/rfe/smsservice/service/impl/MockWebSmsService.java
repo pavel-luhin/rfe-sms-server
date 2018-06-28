@@ -26,7 +26,7 @@ public class MockWebSmsService implements WebSmsService {
 
   @Override
   public BalanceResponse getBalance(Request request) {
-    log.info("Simulating send websms request to send sms");
+    log.info("Simulating send websms request to get balance");
     log.info("request is {}", request);
 
     return buildBalanceResponse();

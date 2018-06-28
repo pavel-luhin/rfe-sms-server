@@ -63,8 +63,11 @@ public class CredentialsServiceImpl implements CredentialsService {
   }
 
   @Override
-  public void saveCredentials(CredentialsEntity credentialsEntity) {
+  public void saveCredentials(CredentialsDTO credentialsDTO) {
+    CredentialsEntity credentialsEntity = mapper.map(credentialsDTO, CredentialsEntity.class);
     balanceService.retrieveBalance(credentialsEntity.getUsername(), credentialsEntity.getApiKey());
+    UserEntity user = userService.findByUsername(SecurityUtil.getCurrentUsername());
+    credentialsEntity.getUsers().add(user);
     credentialsRepository.saveAndFlush(credentialsEntity);
     credentialsCache.reloadCache();
   }
