@@ -4,7 +4,7 @@ import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getMessagesFromSheet;
 import static by.bsu.rfe.smsservice.bulk.ExcelUtils.getSheetFromFile;
 import static by.bsu.rfe.smsservice.util.DozerUtil.mapList;
 
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.dto.result.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;

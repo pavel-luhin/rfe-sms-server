@@ -6,13 +6,14 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8_VALUE;
 import static org.springframework.http.ResponseEntity.noContent;
 import static org.springframework.http.ResponseEntity.ok;
 
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.dto.result.ResultDTO;
+import by.bsu.rfe.smsservice.common.dto.result.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.SmsTemplateEntity;
-import by.bsu.rfe.smsservice.service.SendSmsService;
+import by.bsu.rfe.smsservice.service.SendMessageService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import java.util.List;
@@ -37,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class SMSController {
 
   @Autowired
-  private SendSmsService sendSmsService;
+  private SendMessageService messageProcessingService;
 
   @Autowired
   private SmsTemplateService smsTemplateService;
@@ -46,21 +47,21 @@ public class SMSController {
   private SmsQueueService smsQueueService;
 
   @PostMapping(value = "/sms/send/custom", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendCustomSms(
+  public ResponseEntity<ResultDTO> sendCustomSms(
       @RequestBody @Valid CustomSmsRequestDTO requestDTO) {
-    return ok(sendSmsService.sendCustom(requestDTO));
+    return ok(messageProcessingService.sendCustom(requestDTO));
   }
 
   @Secured({ROLE_USER, ROLE_APPLICATION})
   @PostMapping(value = "/sms/send/template", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendTemplateSms(
+  public ResponseEntity<ResultDTO> sendTemplateSms(
       @RequestBody @Valid TemplateSmsRequestDTO requestDTO) {
-    return ok(sendSmsService.sendTemplate(requestDTO));
+    return ok(messageProcessingService.sendTemplate(requestDTO));
   }
 
   @PostMapping(value = "/sms/send/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<SMSResultDTO> sendBulkSms(@Valid BulkSmsRequestDTO requestDTO) {
-    return ok(sendSmsService.sendBulk(requestDTO));
+  public ResponseEntity<ResultDTO> sendBulkSms(@Valid BulkSmsRequestDTO requestDTO) {
+    return ok(messageProcessingService.sendBulk(requestDTO));
   }
 
   @GetMapping("/sms/template")

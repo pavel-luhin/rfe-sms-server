@@ -1,10 +1,10 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import static by.bsu.rfe.smsservice.common.dto.SMSResultDTO.fromResponse;
+import static by.bsu.rfe.smsservice.common.dto.result.SMSResultDTO.fromResponse;
 import static by.bsu.rfe.smsservice.util.MuteUtil.isMuted;
 
 import by.bsu.rfe.smsservice.builder.SmsRequestBuilderHolder;
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.dto.result.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
@@ -12,7 +12,7 @@ import by.bsu.rfe.smsservice.common.dto.sms.TemplateSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
 import by.bsu.rfe.smsservice.service.SendEmailService;
-import by.bsu.rfe.smsservice.service.SendSmsService;
+import by.bsu.rfe.smsservice.service.SendMessageService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import by.bsu.rfe.smsservice.service.WebSmsService;
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SendSmsServiceImpl implements SendSmsService {
+public class SendSmsMessageService implements SendMessageService<SMSResultDTO> {
 
   private SmsRequestBuilderHolder smsRequestBuilderHolder;
   private WebSmsService webSmsService;
@@ -29,7 +29,7 @@ public class SendSmsServiceImpl implements SendSmsService {
   private SmsQueueService smsQueueService;
 
   @Autowired
-  public SendSmsServiceImpl(
+  public SendSmsMessageService(
       SmsRequestBuilderHolder smsRequestBuilderHolder,
       WebSmsService webSmsService, SendEmailService sendEmailService,
       StatisticsService statisticsService,

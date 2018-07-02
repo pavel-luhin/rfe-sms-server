@@ -1,10 +1,10 @@
-package by.bsu.rfe.smsservice.common.dto;
+package by.bsu.rfe.smsservice.common.dto.result;
 
 import by.bsu.rfe.smsservice.common.response.SendSmsResponse;
 import lombok.Data;
 
 @Data
-public class SMSResultDTO {
+public class SMSResultDTO implements ResultDTO {
 
   private boolean error;
   private int count = 0;

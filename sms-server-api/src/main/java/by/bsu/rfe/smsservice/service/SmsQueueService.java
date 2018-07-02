@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.service;
 
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.dto.result.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.CustomSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;

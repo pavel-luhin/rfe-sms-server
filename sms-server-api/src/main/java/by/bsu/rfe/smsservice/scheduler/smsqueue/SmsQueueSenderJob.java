@@ -4,9 +4,9 @@ import static by.bsu.rfe.smsservice.util.MuteUtil.isMuted;
 import static java.util.stream.Collectors.toList;
 
 import by.bsu.rfe.smsservice.common.SpringContextHolder;
-import by.bsu.rfe.smsservice.common.dto.SMSResultDTO;
+import by.bsu.rfe.smsservice.common.dto.result.SMSResultDTO;
 import by.bsu.rfe.smsservice.common.dto.sms.SmsQueueRequestDTO;
-import by.bsu.rfe.smsservice.service.SendSmsService;
+import by.bsu.rfe.smsservice.service.SendMessageService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import java.util.List;
 import org.quartz.Job;
@@ -25,7 +25,7 @@ public class SmsQueueSenderJob implements Job {
   @Override
   public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
     SmsQueueService smsQueueService = SpringContextHolder.getBean(SmsQueueService.class);
-    SendSmsService sendSmsService = SpringContextHolder.getBean(SendSmsService.class);
+    SendMessageService sendMessageService = SpringContextHolder.getBean(SendMessageService.class);
     LOGGER.info("Executing sms queue sender job");
 
     if (!isMuted()) {
@@ -34,7 +34,7 @@ public class SmsQueueSenderJob implements Job {
 
       List<SMSResultDTO> results = smsFromQueue
           .stream()
-          .map(sendSmsService::sendSmsFromQueue)
+          .map(sendMessageService::sendSmsFromQueue)
           .collect(toList());
 
       SMSResultDTO totalSmsResult = new SMSResultDTO();
