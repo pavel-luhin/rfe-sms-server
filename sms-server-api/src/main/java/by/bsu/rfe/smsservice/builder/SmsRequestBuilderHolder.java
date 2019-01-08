@@ -26,8 +26,7 @@ public class SmsRequestBuilderHolder {
       BulkSmsRequestBuilder bulkSmsRequestBuilder,
       CustomSmsRequestBuilder customSmsRequestBuilder,
       TemplateSmsRequestBuilder templateSmsRequestBuilder,
-      QueueSmsRequestBuilder queueSmsRequestBuilder,
-      BalanceRequestBuilder balanceRequestBuilder) {
+      QueueSmsRequestBuilder queueSmsRequestBuilder) {
     this.bulkSmsRequestBuilder = bulkSmsRequestBuilder;
     this.customSmsRequestBuilder = customSmsRequestBuilder;
     this.templateSmsRequestBuilder = templateSmsRequestBuilder;
