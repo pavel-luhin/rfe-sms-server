@@ -5,14 +5,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>sms-server-api</artifactId>
-  <version>1.4-SNAPSHOT</version>
+  <version>1.5-SNAPSHOT</version>
 
   <packaging>jar</packaging>
 
   <parent>
     <groupId>by.bsu.rfe</groupId>
     <artifactId>sms-server</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>${project.version}</version>
   </parent>
 
   <dependencies>
