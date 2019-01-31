@@ -4,6 +4,7 @@ import by.bsu.rfe.smsservice.v2.domain.recipient.Recipient;
 import by.bsu.rfe.smsservice.v2.domain.sms.Message;
 import by.bsu.rfe.smsservice.v2.parameters.ParametersCollectorResolver;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DefaultMessageBuilder implements MessageBuilder {
@@ -24,7 +25,7 @@ public class DefaultMessageBuilder implements MessageBuilder {
         .collect(Collectors.toList());
   }
 
-  private Message buildMessage(List<String> parameters, String template) {
+  private Message buildMessage(Map<String, String> parameters, String template) {
     return null;
   }
 }
