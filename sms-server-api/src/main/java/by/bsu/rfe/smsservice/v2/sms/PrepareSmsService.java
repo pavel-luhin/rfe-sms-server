@@ -1,8 +1,10 @@
 package by.bsu.rfe.smsservice.v2.sms;
 
-import by.bsu.rfe.smsservice.v2.domain.Sms;
 import by.bsu.rfe.smsservice.v2.domain.SmsResult;
-import by.bsu.rfe.smsservice.v2.parameters.ParametersCollectorResolver;
+import by.bsu.rfe.smsservice.v2.domain.message.MessageBuilder;
+import by.bsu.rfe.smsservice.v2.domain.sms.Message;
+import by.bsu.rfe.smsservice.v2.domain.sms.Sms;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,18 +12,18 @@ import org.springframework.stereotype.Service;
 public class PrepareSmsService implements SmsService {
 
   private final SmsService delegate;
-  private final ParametersCollectorResolver parametersCollectorResolver;
+  private final MessageBuilder messageBuilder;
 
   @Autowired
-  public PrepareSmsService(SmsService delegate,
-      ParametersCollectorResolver parametersCollectorResolver) {
+  public PrepareSmsService(SmsService delegate, MessageBuilder messageBuilder) {
     this.delegate = delegate;
-    this.parametersCollectorResolver = parametersCollectorResolver;
+    this.messageBuilder = messageBuilder;
   }
 
   @Override
   public SmsResult process(Sms sms) {
-    parametersCollectorResolver.resolve(sms.type()).collectParameters(sms);
+    List<Message> messages = messageBuilder.build(sms.getRecipients(), sms.getTemplate());
+    sms.getMessages().addAll(messages);
     return delegate.process(sms);
   }
 }

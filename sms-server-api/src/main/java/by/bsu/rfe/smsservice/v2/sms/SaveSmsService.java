@@ -1,6 +1,6 @@
 package by.bsu.rfe.smsservice.v2.sms;
 
-import by.bsu.rfe.smsservice.v2.domain.Sms;
+import by.bsu.rfe.smsservice.v2.domain.sms.Sms;
 import by.bsu.rfe.smsservice.v2.domain.SmsResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

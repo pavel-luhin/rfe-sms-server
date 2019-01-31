@@ -1,8 +1,9 @@
 package by.bsu.rfe.smsservice.v2.parameters;
 
-import by.bsu.rfe.smsservice.v2.domain.Sms;
+import by.bsu.rfe.smsservice.v2.domain.recipient.Recipient;
+import java.util.Map;
 
 public interface ParametersCollector {
 
-  void collectParameters(Sms sms);
+  Map<String, String> collectParameters(Recipient recipient);
 }
