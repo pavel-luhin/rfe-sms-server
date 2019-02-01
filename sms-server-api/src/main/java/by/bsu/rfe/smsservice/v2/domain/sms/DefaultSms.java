@@ -5,7 +5,7 @@ import by.bsu.rfe.smsservice.v2.domain.recipient.Recipient;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultSms implements Sms {
+public final class DefaultSms implements Sms {
 
   private final SmsType smsType;
   private final List<Message> messages = new ArrayList<>();
@@ -21,12 +21,12 @@ public class DefaultSms implements Sms {
 
   @Override
   public List<Message> getMessages() {
-    return null;
+    return messages;
   }
 
   @Override
   public List<Recipient> getRecipients() {
-    return null;
+    return recipients;
   }
 
   @Override

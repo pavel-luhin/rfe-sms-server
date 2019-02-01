@@ -1,5 +1,10 @@
 package by.bsu.rfe.smsservice.v2.sms;
 
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.APIKEY;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGES;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
+import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
+
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.v2.domain.DefaultSmsResult;
 import by.bsu.rfe.smsservice.v2.domain.SmsResult;
@@ -25,12 +30,19 @@ public class SendSmsService implements SmsService {
   public SmsResult process(Sms sms) {
     Request request = createRequest(sms);
     Response response = webSmsService.execute(request);
-    return new DefaultSmsResult();
+    return convertResponse(response);
   }
 
   private Request createRequest(Sms sms) {
+    Request request = new DefaultRequest(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
     String body = createBody(sms.getMessages());
-    return new DefaultRequest(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint(), body);
+
+    request.addParameter(USER.getRequestParam(), "mock");//TODO add support this
+    request.addParameter(APIKEY.getRequestParam(), "mock");//TODO add support this
+    request.addParameter(SENDER.getRequestParam(), "mock");//TODO add support this
+    request.addParameter(MESSAGES.getRequestParam(), body);
+
+    return request;
   }
 
   private String createBody(List<Message> messages) {
@@ -45,5 +57,9 @@ public class SendSmsService implements SmsService {
         });
 
     return stringBuilder.toString();
+  }
+
+  private SmsResult convertResponse(Response response) {
+    return new DefaultSmsResult();
   }
 }

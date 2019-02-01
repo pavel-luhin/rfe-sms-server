@@ -36,9 +36,8 @@ public class SmsController {
 
   private Sms createSms(SmsRequest smsRequest) {
     List<Recipient> recipients = smsRequest.getRecipients()
-        .entrySet()
         .stream()
-        .map(rec -> new DefaultRecipient(rec.getKey(), rec.getValue()))
+        .map(rec -> new DefaultRecipient(rec.getName(), rec.getRecipientType(), rec.getParameters()))
         .collect(Collectors.toList());
 
     return new DefaultSms(smsRequest.getSmsType(), smsRequest.getTemplate(), recipients);
