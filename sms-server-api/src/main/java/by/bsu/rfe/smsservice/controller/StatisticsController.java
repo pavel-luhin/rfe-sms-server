@@ -9,7 +9,6 @@ import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
 import by.bsu.rfe.smsservice.service.StatisticsService;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -24,8 +23,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(value = "/rest/statistics", produces = APPLICATION_JSON_UTF8_VALUE)
 public class StatisticsController {
 
-  @Autowired
-  private StatisticsService statisticsService;
+  private final StatisticsService statisticsService;
+
+  public StatisticsController(StatisticsService statisticsService) {
+    this.statisticsService = statisticsService;
+  }
 
   @GetMapping
   public ResponseEntity<List<StatisticsDTO>> getFullStatistics() {

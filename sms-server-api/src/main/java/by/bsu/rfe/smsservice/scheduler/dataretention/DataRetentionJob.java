@@ -3,7 +3,8 @@ package by.bsu.rfe.smsservice.scheduler.dataretention;
 import by.bsu.rfe.smsservice.common.SpringContextHolder;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
-import by.bsu.rfe.smsservice.service.RecipientService;
+import by.bsu.rfe.smsservice.service.GroupService;
+import by.bsu.rfe.smsservice.service.PersonService;
 import java.util.List;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -23,22 +24,23 @@ public class DataRetentionJob implements Job {
   }
 
   private void dropTemporaryRecipients() {
-    RecipientService recipientService = SpringContextHolder.getBean(RecipientService.class);
+    PersonService personService = SpringContextHolder.getBean(PersonService.class);
+    GroupService groupService = SpringContextHolder.getBean(GroupService.class);
 
-    List<GroupEntity> groupsToRemove = recipientService.findTemporaryGroups();
+    List<GroupEntity> groupsToRemove = groupService.findTemporaryGroups();
     LOGGER.info("Found {} groups to remove", groupsToRemove.size());
 
     groupsToRemove.stream().forEach(group -> {
       LOGGER.info("Removing {} group", group.getName());
-      recipientService.removeGroup(group.getId());
+      groupService.removeGroup(group.getId());
     });
 
-    List<PersonEntity> personsToRemove = recipientService.findTemporaryPersons();
+    List<PersonEntity> personsToRemove = personService.findTemporaryPersons();
     LOGGER.info("Found {} persons to remove", personsToRemove.size());
 
     personsToRemove.stream().forEach(person -> {
       LOGGER.info("Removing {} person", person.getFirstName() + " " + person.getLastName());
-      recipientService.removePerson(person.getId());
+      personService.removePerson(person.getId());
     });
   }
 }

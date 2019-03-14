@@ -10,10 +10,11 @@ import by.bsu.rfe.smsservice.common.dto.PersonDTO;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
 import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
+import by.bsu.rfe.smsservice.service.GroupService;
+import by.bsu.rfe.smsservice.service.PersonService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import java.util.List;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -31,69 +32,77 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/rest/recipient", produces = APPLICATION_JSON_UTF8_VALUE)
 public class RecipientController {
 
-  @Autowired
-  private RecipientService recipientService;
+  private final PersonService personService;
+  private final GroupService groupService;
+  private final RecipientService recipientService;
+
+  public RecipientController(PersonService personService, GroupService groupService,
+      RecipientService recipientService) {
+    this.personService = personService;
+    this.groupService = groupService;
+    this.recipientService = recipientService;
+  }
 
   @PostMapping(value = "/group", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity createGroup(@RequestBody GroupDTO groupDTO) {
-    recipientService.addGroup(groupDTO);
+    groupService.addGroup(groupDTO);
     return noContent().build();
   }
 
   @GetMapping("/group/{id}")
   public ResponseEntity<GroupDTO> getGroup(@PathVariable("id") Integer id) {
-    return ok(recipientService.getGroup(id));
+    return ok(groupService.getGroup(id));
   }
 
   @DeleteMapping("/group/{id}")
   public ResponseEntity removeGroup(@PathVariable("id") Integer groupId) {
-    recipientService.removeGroup(groupId);
+    groupService.removeGroup(groupId);
     return noContent().build();
   }
 
   @PostMapping(value = "/persons", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity addPersons(@Valid @RequestBody PersonDTO personDTO) {
-    recipientService.addPerson(personDTO);
+    personService.addPerson(personDTO);
     return noContent().build();
   }
 
   @GetMapping("/persons")
   public ResponseEntity<PageResponseDTO<PersonDTO>> getPersons(PageRequestDTO requestDTO,
       @RequestParam(required = false) String query) {
-    return ok(recipientService.getPersons(requestDTO, query));
+    return ok(personService.getPersons(requestDTO, query));
   }
 
   @GetMapping("/persons/all")
   public ResponseEntity<List<PersonDTO>> getAllPersons() {
-    return ok(recipientService.getAllPersons());
+    return ok(personService.getAllPersons());
   }
 
   @GetMapping("/persons/withGroup/{groupId}")
   public ResponseEntity<List<PersonDTO>> getPersonsWithGroup(@PathVariable Integer groupId) {
-    return ok(recipientService.getPersonsWithGroup(groupId));
+    return ok(personService.getPersonsWithGroup(groupId));
   }
 
   @GetMapping("/persons/withoutGroup/{groupId}")
   public ResponseEntity<List<PersonDTO>> getPersonsWithoutGroup(@PathVariable Integer groupId) {
-    return ok(recipientService.getPersonsWithoutGroup(groupId));
+    return ok(personService.getPersonsWithoutGroup(groupId));
   }
 
   @DeleteMapping("/persons/{id}")
   public ResponseEntity removePerson(@PathVariable("id") Integer personId) {
-    recipientService.removePerson(personId);
+    personService.removePerson(personId);
     return noContent().build();
   }
 
   @GetMapping("/group")
   public ResponseEntity<PageResponseDTO<GroupDTO>> getGroups(PageRequestDTO pageRequestDTO,
       @RequestParam(required = false) String query) {
-    return ok(recipientService.getGroups(pageRequestDTO, query));
+    return ok(groupService.getGroups(pageRequestDTO, query));
   }
 
   @PostMapping(value = "/add/{recipientId}/toGroup/{groupId}", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity addRecipientToGroup(@PathVariable Integer recipientId,
       @PathVariable Integer groupId) {
-    recipientService.assignPersonToGroup(recipientId, groupId);
+    personService.assignPersonToGroup(recipientId, groupId);
     return noContent().build();
   }
 

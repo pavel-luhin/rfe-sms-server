@@ -13,6 +13,7 @@ import by.bsu.rfe.smsservice.common.dto.sms.BulkSmsRequestDTO;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.request.Request;
 import by.bsu.rfe.smsservice.service.CredentialsService;
+import by.bsu.rfe.smsservice.service.GroupService;
 import by.bsu.rfe.smsservice.service.RecipientService;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,13 +29,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestDTO> {
 
+  private final GroupService groupService;
+
   @Autowired
   public BulkSmsRequestBuilder(
       ParametersCollectorResolver parametersCollectorResolver,
       CredentialsService credentialsService,
-      RecipientService recipientService) {
+      RecipientService recipientService, GroupService groupService) {
     super(parametersCollectorResolver, credentialsService,
         recipientService);
+    this.groupService = groupService;
   }
 
   @Override
@@ -47,7 +51,7 @@ public class BulkSmsRequestBuilder extends BaseSmsRequestBuilder<BulkSmsRequestD
     log.debug("Found {} messages", totalMessages.size());
 
     List<String> numbers = new ArrayList<>(totalMessages.keySet());
-    GroupEntity group = recipientService.createGroupFromNumbers(numbers);
+    GroupEntity group = groupService.createGroupFromNumbers(numbers);
     String message = totalMessages.get(numbers.get(0));
     smsRequestDTO.setCreatedGroup(group);
     smsRequestDTO.setMessage(message);

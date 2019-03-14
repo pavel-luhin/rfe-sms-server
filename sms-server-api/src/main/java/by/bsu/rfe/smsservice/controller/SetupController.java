@@ -23,7 +23,6 @@ import by.bsu.rfe.smsservice.service.UserService;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -35,31 +34,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * Created by pluhin on 9/3/16.
- */
 @Controller
 @Secured({ROLE_USER})
 @RequestMapping(value = "/rest/setup", produces = APPLICATION_JSON_UTF8_VALUE)
 public class SetupController {
 
-  @Autowired
-  private UserService userService;
+  private final UserService userService;
+  private final CredentialsService credentialsService;
+  private final SmsTemplateService smsTemplateService;
+  private final ExternalApplicationService externalApplicationService;
+  private final EmailTemplateService emailTemplateService;
+  private final SmsServerPropertyService smsServerPropertyService;
 
-  @Autowired
-  private CredentialsService credentialsService;
-
-  @Autowired
-  private SmsTemplateService smsTemplateService;
-
-  @Autowired
-  private ExternalApplicationService externalApplicationService;
-
-  @Autowired
-  private EmailTemplateService emailTemplateService;
-
-  @Autowired
-  private SmsServerPropertyService smsServerPropertyService;
+  public SetupController(UserService userService, CredentialsService credentialsService,
+      SmsTemplateService smsTemplateService,
+      ExternalApplicationService externalApplicationService,
+      EmailTemplateService emailTemplateService,
+      SmsServerPropertyService smsServerPropertyService) {
+    this.userService = userService;
+    this.credentialsService = credentialsService;
+    this.smsTemplateService = smsTemplateService;
+    this.externalApplicationService = externalApplicationService;
+    this.emailTemplateService = emailTemplateService;
+    this.smsServerPropertyService = smsServerPropertyService;
+  }
 
   @PostMapping(value = "/credentials", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity addNewCredentials(@Valid @RequestBody CredentialsDTO credentialsDTO) {

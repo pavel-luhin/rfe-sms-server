@@ -16,7 +16,7 @@ import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.SmsQueueRepository;
 import by.bsu.rfe.smsservice.security.util.SecurityUtil;
 import by.bsu.rfe.smsservice.service.CredentialsService;
-import by.bsu.rfe.smsservice.service.RecipientService;
+import by.bsu.rfe.smsservice.service.GroupService;
 import by.bsu.rfe.smsservice.service.SmsQueueService;
 import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,33 +28,29 @@ import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.dozer.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * Created by pluhin on 1/4/17.
- */
 @Slf4j
 @Service
 public class SmsQueueServiceImpl implements SmsQueueService {
 
-  @Autowired
-  private SmsQueueRepository smsQueueRepository;
+  private final SmsQueueRepository smsQueueRepository;
+  private final CredentialsService credentialsService;
+  private final SmsTemplateService smsTemplateService;
+  private final GroupService groupService;
+  private final ObjectMapper objectMapper;
+  private final Mapper mapper;
 
-  @Autowired
-  private CredentialsService credentialsService;
-
-  @Autowired
-  private SmsTemplateService smsTemplateService;
-
-  @Autowired
-  private RecipientService recipientService;
-
-  @Autowired
-  private ObjectMapper objectMapper;
-
-  @Autowired
-  private Mapper mapper;
+  public SmsQueueServiceImpl(SmsQueueRepository smsQueueRepository,
+      CredentialsService credentialsService, SmsTemplateService smsTemplateService,
+      GroupService groupService, ObjectMapper objectMapper, Mapper mapper) {
+    this.smsQueueRepository = smsQueueRepository;
+    this.credentialsService = credentialsService;
+    this.smsTemplateService = smsTemplateService;
+    this.groupService = groupService;
+    this.objectMapper = objectMapper;
+    this.mapper = mapper;
+  }
 
   @Override
   public void addToQueue(SmsQueueEntity smsQueueEntity) {
@@ -103,33 +99,29 @@ public class SmsQueueServiceImpl implements SmsQueueService {
     log.debug("Found {} messages", totalMessages.size());
 
     Map<String, List<String>> messagesByRecipients = new HashMap<>();
+
     totalMessages
-        .entrySet()
-        .forEach(messageRecipient -> {
-          String message = messageRecipient.getValue();
-          String recipient = messageRecipient.getKey();
+        .forEach((recipient, message) -> {
           if (!messagesByRecipients.containsKey(message)) {
             messagesByRecipients.put(message, new ArrayList<>());
           }
           messagesByRecipients.get(message).add(recipient);
         });
 
-    messagesByRecipients.entrySet()
-        .forEach(messageWithRecipients -> {
-          GroupEntity group = recipientService
-              .createGroupFromNumbers(messageWithRecipients.getValue());
-          String message = messageWithRecipients.getKey();
-          SmsQueueEntity entity = new SmsQueueEntity();
-          entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
-          entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
-          entity.setCredentials(
-              credentialsService.getUserCredentialsForSenderName(requestDTO.getSenderName()));
-          entity.setMessage(message);
-          entity.setRecipient(group.getName());
-          entity.setRecipientType(RecipientType.GROUP);
-          smsQueueRepository.save(entity);
-          smsResultDTO.incrementTotalCountBy(1);
-        });
+    messagesByRecipients.forEach((message, value) -> {
+      GroupEntity group = groupService
+          .createGroupFromNumbers(value);
+      SmsQueueEntity entity = new SmsQueueEntity();
+      entity.setInitiatedBy(SecurityUtil.getCurrentUsername());
+      entity.setDuplicateEmail(requestDTO.isDuplicateEmail());
+      entity.setCredentials(
+          credentialsService.getUserCredentialsForSenderName(requestDTO.getSenderName()));
+      entity.setMessage(message);
+      entity.setRecipient(group.getName());
+      entity.setRecipientType(RecipientType.GROUP);
+      smsQueueRepository.save(entity);
+      smsResultDTO.incrementTotalCountBy(1);
+    });
 
     return smsResultDTO;
   }

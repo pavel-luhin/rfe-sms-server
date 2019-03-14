@@ -29,22 +29,4 @@ public class SmsController {
   public SmsController(SmsService smsService) {
     this.smsService = smsService;
   }
-
-  @PostMapping(value = "/sms/send/custom", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendCustomSms(
-      @RequestBody @Valid CustomSmsRequestDTO requestDTO) {
-    return ok(sendSmsService.sendCustom(requestDTO));
-  }
-
-  @Secured({ROLE_USER, ROLE_APPLICATION})
-  @PostMapping(value = "/sms/send/template", consumes = APPLICATION_JSON_UTF8_VALUE)
-  public ResponseEntity<SMSResultDTO> sendTemplateSms(
-      @RequestBody @Valid TemplateSmsRequestDTO requestDTO) {
-    return ok(sendSmsService.sendTemplate(requestDTO));
-  }
-
-  @PostMapping(value = "/sms/send/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-  public ResponseEntity<SMSResultDTO> sendBulkSms(@Valid BulkSmsRequestDTO requestDTO) {
-    return ok(sendSmsService.sendBulk(requestDTO));
-  }
 }

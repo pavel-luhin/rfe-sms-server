@@ -57,7 +57,7 @@ public class QueueSmsRequestBuilder extends BaseSmsRequestBuilder<SmsQueueReques
         .collectParameters(recipientTypeEntry, parameters);
 
     String message = createMessage(smsQueueRequestDTO.getContent(), parameters);
-    List<String> numbers = fetchNumbers(recipientTypeEntry);
+    List<String> numbers = recipientService.fetchNumbers(recipientTypeEntry);
 
     Map<String, String> recipientsWithMessages = numbers
         .stream()

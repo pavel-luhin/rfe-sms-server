@@ -1,86 +1,29 @@
 package by.bsu.rfe.smsservice.service.impl;
 
-import static by.bsu.rfe.smsservice.common.constants.GeneralConstants.EXAMPLE_EMAIL_POSTFIX;
-import static by.bsu.rfe.smsservice.common.constants.GeneralConstants.GENERATED_GROUP_NAME_PREFIX;
-import static by.bsu.rfe.smsservice.common.constants.GeneralConstants.GENERATED_NAME;
-import static by.bsu.rfe.smsservice.util.DozerUtil.mapList;
-import static by.bsu.rfe.smsservice.util.PageUtil.createPage;
-
-import by.bsu.rfe.smsservice.common.dto.GroupDTO;
-import by.bsu.rfe.smsservice.common.dto.PersonDTO;
 import by.bsu.rfe.smsservice.common.dto.RecipientDTO;
-import by.bsu.rfe.smsservice.common.dto.page.PageRequestDTO;
-import by.bsu.rfe.smsservice.common.dto.page.PageResponseDTO;
 import by.bsu.rfe.smsservice.common.entity.GroupEntity;
 import by.bsu.rfe.smsservice.common.entity.PersonEntity;
 import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.repository.GroupRepository;
 import by.bsu.rfe.smsservice.repository.PersonRepository;
 import by.bsu.rfe.smsservice.service.RecipientService;
-import by.bsu.rfe.smsservice.util.DozerUtil;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.dozer.Mapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RecipientServiceImpl implements RecipientService {
 
-  @Autowired
-  private PersonRepository personRepository;
+  private final PersonRepository personRepository;
+  private final GroupRepository groupRepository;
 
-  @Autowired
-  private GroupRepository groupRepository;
-
-  @Autowired
-  private Mapper mapper;
-
-  @Override
-  @Transactional
-  public void addGroup(GroupDTO groupDTO) {
-    GroupEntity groupEntity = mapper.map(groupDTO, GroupEntity.class);
-    groupEntity.setPersons(
-        personRepository.findAll(
-            groupDTO.getPersons().stream().map(PersonDTO::getId).collect(Collectors.toSet())
-        )
-    );
-
-    if (groupEntity.isNew()) {
-      groupRepository.saveAndFlush(groupEntity);
-      return;
-    }
-
-    GroupEntity oldGroupEntity = groupRepository.findOne(groupEntity.getId());
-    oldGroupEntity.setName(groupEntity.getName());
-    oldGroupEntity.setPersons(groupEntity.getPersons());
-
-    groupRepository.saveAndFlush(oldGroupEntity);
-  }
-
-  @Override
-  public void removeGroup(Integer groupId) {
-    groupRepository.delete(groupId);
-  }
-
-  @Override
-  public void addPerson(PersonDTO personDTO) {
-    PersonEntity personEntity = mapper.map(personDTO, PersonEntity.class);
-    personRepository.save(personEntity);
-  }
-
-  @Override
-  public void assignPersonToGroup(Integer personId, Integer groupId) {
-    GroupEntity groupEntity = groupRepository.findOne(groupId);
-    PersonEntity personEntity = personRepository.findOne(personId);
-
-    groupEntity.getPersons().add(personEntity);
-    groupRepository.saveAndFlush(groupEntity);
+  public RecipientServiceImpl(PersonRepository personRepository,
+      GroupRepository groupRepository) {
+    this.personRepository = personRepository;
+    this.groupRepository = groupRepository;
   }
 
   @Override
@@ -102,102 +45,41 @@ public class RecipientServiceImpl implements RecipientService {
   }
 
   @Override
-  public void removePerson(Integer personId) {
-    personRepository.delete(personId);
-  }
+  public List<String> fetchNumbers(RecipientDTO recipient) {
+    List<String> finalRecipients = new ArrayList<>();
 
-  @Override
-  public GroupDTO getGroup(Integer groupId) {
-    return mapper.map(groupRepository.findOne(groupId), GroupDTO.class);
-  }
-
-  @Override
-  public PersonEntity getPerson(String[] name) {
-    return personRepository.getPersonByFirstNameAndLastName(name[0], name[1]);
-  }
-
-  @Override
-  public GroupEntity getGroupByName(String groupName) {
-    return groupRepository.getGroupsByQuery(groupName).get(0);
-  }
-
-  @Override
-  public PageResponseDTO<PersonDTO> getPersons(PageRequestDTO pageRequestDTO, String query) {
-    Pageable pageable = createPage(pageRequestDTO);
-
-    if (StringUtils.isEmpty(query)) {
-      Page<PersonEntity> personEntitiesPage = personRepository.findAll(pageable);
-      return new PageResponseDTO<>(
-          mapList(mapper, personEntitiesPage.getContent(), PersonDTO.class),
-          personEntitiesPage.getTotalElements());
+    switch (recipient.getRecipientType()) {
+      case NUMBER:
+        finalRecipients.add(recipient.getName());
+        break;
+      case GROUP:
+        GroupEntity groupEntity = groupRepository.getGroupsByQuery(recipient.getName()).get(0);
+        finalRecipients.add(getAllRecipientsFromGroup(groupEntity));
+        break;
+      case PERSON:
+        String[] recipientName = recipient.getName().split("-");
+        PersonEntity personEntity = personRepository.getPersonByFirstNameAndLastName(
+            recipientName[0],
+            recipientName[1]
+        );
+        finalRecipients.add(personEntity.getPhoneNumber());
+        break;
+      default:
+        throw new NotImplementedException(
+            "Not supported recipient type: " + recipient.getRecipientType());
     }
 
-    Page<PersonEntity> personEntitiesPage = personRepository.findPageByQuery(query, pageable);
-    return new PageResponseDTO<>(
-        mapList(mapper, personEntitiesPage.getContent(), PersonDTO.class),
-        personEntitiesPage.getTotalElements());
+    return finalRecipients;
   }
 
-  @Override
-  public List<PersonDTO> getAllPersons() {
-    return mapList(mapper, personRepository.findAll(), PersonDTO.class);
-  }
-
-  @Override
-  public List<PersonDTO> getPersonsWithGroup(Integer groupId) {
-    return mapList(mapper, personRepository.getPersonsWithGroup(groupId), PersonDTO.class);
-  }
-
-  @Override
-  public List<PersonDTO> getPersonsWithoutGroup(Integer groupId) {
-    return mapList(mapper, personRepository.getPersonsWithoutGroup(groupId), PersonDTO.class);
-  }
-
-  @Override
-  public PageResponseDTO<GroupDTO> getGroups(PageRequestDTO pageRequestDTO, String query) {
-    Pageable pageable = createPage(pageRequestDTO);
-    Page<GroupEntity> entities = null;
-
-    if (StringUtils.isEmpty(query)) {
-      entities = groupRepository.findAll(pageable);
-    } else {
-      entities = groupRepository.findPageByQuery(query, pageable);
+  private String getAllRecipientsFromGroup(GroupEntity groupEntity) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (PersonEntity person : groupEntity.getPersons()) {
+      stringBuilder.append(person.getPhoneNumber());
+      stringBuilder.append(",");
     }
-
-    return new PageResponseDTO<>(
-        mapList(mapper, entities.getContent(), GroupDTO.class),
-        entities.getTotalElements());
-  }
-
-  @Override
-  public GroupEntity createGroupFromNumbers(List<String> numbers) {
-    GroupEntity groupEntity = new GroupEntity();
-    groupEntity.setName(GENERATED_GROUP_NAME_PREFIX + System.currentTimeMillis());
-    groupEntity.setTemporary(true);
-
-    numbers.forEach(number -> {
-      PersonEntity personEntity = new PersonEntity();
-      personEntity.setFirstName(GENERATED_NAME);
-      personEntity.setLastName(GENERATED_NAME);
-      personEntity.setEmail(number + EXAMPLE_EMAIL_POSTFIX);
-      personEntity.setPhoneNumber(number);
-      personEntity.setTemporary(true);
-      personRepository.saveAndFlush(personEntity);
-      groupEntity.getPersons().add(personEntity);
-    });
-
-    groupRepository.saveAndFlush(groupEntity);
-    return groupEntity;
-  }
-
-  @Override
-  public List<GroupEntity> findTemporaryGroups() {
-    return groupRepository.findTemporaryGroups();
-  }
-
-  @Override
-  public List<PersonEntity> findTemporaryPersons() {
-    return personRepository.findTemporaryPersons();
+    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+    return stringBuilder.toString();
   }
 
   private List<RecipientDTO> mapRecipientListsToRecipientDTOs(List<PersonEntity> personEntities,

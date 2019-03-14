@@ -23,7 +23,8 @@ import by.bsu.rfe.smsservice.common.enums.RecipientType;
 import by.bsu.rfe.smsservice.common.enums.SmsParams;
 import by.bsu.rfe.smsservice.exception.TemplateNotFoundException;
 import by.bsu.rfe.smsservice.service.EmailTemplateService;
-import by.bsu.rfe.smsservice.service.RecipientService;
+import by.bsu.rfe.smsservice.service.GroupService;
+import by.bsu.rfe.smsservice.service.PersonService;
 import by.bsu.rfe.smsservice.service.SendEmailService;
 import by.bsu.rfe.smsservice.service.SmsServerPropertyService;
 import java.util.HashMap;
@@ -38,7 +39,6 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -48,17 +48,18 @@ public class SendEmailServiceImpl implements SendEmailService {
 
   private static final String EMAIL_PARAMETERS_KEY = "email_address";
 
-  private RecipientService recipientService;
-  private EmailTemplateService emailTemplateService;
-  private ParametersCollectorResolver parametersCollectorResolver;
-  private SmsServerPropertyService smsServerPropertyService;
+  private final PersonService personService;
+  private final GroupService groupService;
+  private final EmailTemplateService emailTemplateService;
+  private final ParametersCollectorResolver parametersCollectorResolver;
+  private final SmsServerPropertyService smsServerPropertyService;
 
-  @Autowired
-  public SendEmailServiceImpl(RecipientService recipientService,
+  public SendEmailServiceImpl(PersonService personService, GroupService groupService,
       EmailTemplateService emailTemplateService,
       ParametersCollectorResolver parametersCollectorResolver,
       SmsServerPropertyService smsServerPropertyService) {
-    this.recipientService = recipientService;
+    this.personService = personService;
+    this.groupService = groupService;
     this.emailTemplateService = emailTemplateService;
     this.parametersCollectorResolver = parametersCollectorResolver;
     this.smsServerPropertyService = smsServerPropertyService;
@@ -201,11 +202,11 @@ public class SendEmailServiceImpl implements SendEmailService {
 
       return null;
     } else if (recipient.getRecipientType() == RecipientType.PERSON) {
-      PersonEntity personEntity = recipientService.getPerson(recipient.getName().split("-"));
+      PersonEntity personEntity = personService.getPerson(recipient.getName().split("-"));
       return personEntity.getEmail();
     }
 
-    GroupEntity groupEntity = recipientService.getGroupByName(recipient.getName());
+    GroupEntity groupEntity = groupService.getGroupByName(recipient.getName());
 
     StringBuilder emailBuilder = new StringBuilder();
 

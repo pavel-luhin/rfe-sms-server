@@ -18,7 +18,6 @@ import by.bsu.rfe.smsservice.service.SmsTemplateService;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -36,14 +35,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping(value = "/rest", produces = APPLICATION_JSON_UTF8_VALUE)
 public class SMSController {
 
-  @Autowired
-  private SendSmsService sendSmsService;
+  private final SendSmsService sendSmsService;
+  private final SmsTemplateService smsTemplateService;
+  private final SmsQueueService smsQueueService;
 
-  @Autowired
-  private SmsTemplateService smsTemplateService;
-
-  @Autowired
-  private SmsQueueService smsQueueService;
+  public SMSController(SendSmsService sendSmsService,
+      SmsTemplateService smsTemplateService, SmsQueueService smsQueueService) {
+    this.sendSmsService = sendSmsService;
+    this.smsTemplateService = smsTemplateService;
+    this.smsQueueService = smsQueueService;
+  }
 
   @PostMapping(value = "/sms/send/custom", consumes = APPLICATION_JSON_UTF8_VALUE)
   public ResponseEntity<SMSResultDTO> sendCustomSms(

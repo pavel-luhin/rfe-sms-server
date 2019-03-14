@@ -83,7 +83,7 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
 
   protected Map<String, String> processMessagesAndRecipients(Map<String, String> parameters,
       RecipientDTO recipient, String messageTemplate) {
-    List<String> recipients = fetchNumbers(recipient);
+    List<String> recipients = recipientService.fetchNumbers(recipient);
     String message = createMessage(messageTemplate, parameters);
 
     return recipients
@@ -92,38 +92,5 @@ public abstract class BaseSmsRequestBuilder<T extends BaseSmsRequestDTO> extends
             (rec) -> rec,
             (rec) -> message)
         );
-  }
-
-  protected List<String> fetchNumbers(RecipientDTO recipient) {
-    List<String> finalRecipients = new ArrayList<>();
-
-    switch (recipient.getRecipientType()) {
-      case NUMBER:
-        finalRecipients.add(recipient.getName());
-        break;
-      case GROUP:
-        GroupEntity groupEntity = recipientService.getGroupByName(recipient.getName());
-        finalRecipients.add(getAllRecipientsFromGroup(groupEntity));
-        break;
-      case PERSON:
-        PersonEntity personEntity = recipientService.getPerson(recipient.getName().split("-"));
-        finalRecipients.add(personEntity.getPhoneNumber());
-        break;
-      default:
-        throw new NotImplementedException(
-            "Not supported recipient type: " + recipient.getRecipientType());
-    }
-
-    return finalRecipients;
-  }
-
-  protected String getAllRecipientsFromGroup(GroupEntity groupEntity) {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (PersonEntity person : groupEntity.getPersons()) {
-      stringBuilder.append(person.getPhoneNumber());
-      stringBuilder.append(",");
-    }
-    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-    return stringBuilder.toString();
   }
 }
