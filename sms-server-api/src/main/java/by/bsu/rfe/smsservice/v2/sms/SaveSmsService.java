@@ -1,12 +1,12 @@
 package by.bsu.rfe.smsservice.v2.sms;
 
-import by.bsu.rfe.smsservice.v2.domain.sms.Sms;
 import by.bsu.rfe.smsservice.v2.domain.SmsResult;
+import by.bsu.rfe.smsservice.v2.domain.sms.tmp.sms.PreparedSmsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SaveSmsService implements SmsService {
+public class SaveSmsService implements SmsService<PreparedSmsDTO> {
 
   private final SmsService delegate;
 
@@ -16,7 +16,7 @@ public class SaveSmsService implements SmsService {
   }
 
   @Override
-  public SmsResult process(Sms sms) {
+  public SmsResult process(PreparedSmsDTO sms) {
     SmsResult result = delegate.process(sms);
     //TODO save v2
     return result;

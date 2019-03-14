@@ -1,19 +1,17 @@
 package by.bsu.rfe.smsservice.v2.domain.message;
 
-import by.bsu.rfe.smsservice.v2.domain.recipient.Recipient;
-
 public class DefaultMessage implements Message {
 
-  private final Recipient recipient;
+  private final String recipient;
   private final String message;
 
-  public DefaultMessage(Recipient recipient, String message) {
+  public DefaultMessage(String recipient, String message) {
     this.recipient = recipient;
     this.message = message;
   }
 
   @Override
-  public Recipient getRecipient() {
+  public String getRecipient() {
     return recipient;
   }
 

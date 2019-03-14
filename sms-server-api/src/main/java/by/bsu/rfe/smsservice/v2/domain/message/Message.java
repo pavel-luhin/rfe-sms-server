@@ -4,7 +4,7 @@ import by.bsu.rfe.smsservice.v2.domain.recipient.Recipient;
 
 public interface Message {
 
-  Recipient getRecipient();
+  String getRecipient();
 
   String getMessage();
 }
