@@ -12,7 +12,7 @@
   <parent>
     <groupId>by.bsu.rfe</groupId>
     <artifactId>sms-server</artifactId>
-    <version>${project.version}</version>
+    <version>1.5-SNAPSHOT</version>
   </parent>
 
   <build>
