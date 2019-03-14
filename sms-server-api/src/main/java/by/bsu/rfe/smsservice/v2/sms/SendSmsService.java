@@ -6,6 +6,7 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
 import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
+import by.bsu.rfe.smsservice.common.entity.CredentialsEntity;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.v2.domain.DefaultSmsResult;
 import by.bsu.rfe.smsservice.v2.domain.SmsResult;
@@ -39,24 +40,27 @@ public class SendSmsService implements SmsService<PreparedSmsDTO> {
 
   private Request createRequest(PreparedSmsDTO sms) {
     Request request = new DefaultRequest(WebSMSRest.BULK_SEND_MESSAGE.getApiEndpoint());
-    String body = createBody(sms.getMessages());
+    String senderName = sms.getSenderName();
+    CredentialsEntity credentialsEntity = credentialsCache.getCredentialsBySenderNameForCurrentUser(senderName);
 
-    request.addParameter(USER.getRequestParam(), "mock");//TODO add support this
-    request.addParameter(APIKEY.getRequestParam(), "mock");//TODO add support this
-    request.addParameter(SENDER.getRequestParam(), "mock");//TODO add support this
+    String body = createBody(credentialsEntity.getSender(), sms.getMessages());
+
+    request.addParameter(USER.getRequestParam(), credentialsEntity.getUsername());
+    request.addParameter(APIKEY.getRequestParam(), credentialsEntity.getApiKey());
+    request.addParameter(SENDER.getRequestParam(), credentialsEntity.getSender());
     request.addParameter(MESSAGES.getRequestParam(), body);
 
     return request;
   }
 
-  private String createBody(List<Message> messages) {
+  private String createBody(String senderName, List<Message> messages) {
     StringBuilder stringBuilder = new StringBuilder();
     stringBuilder.append("{");
 
     messages
         .forEach(message -> {
-          stringBuilder.append("{\"recipient\":\"").append(message.getRecipient().getName()).append("\",");
-          stringBuilder.append("\"sender\":\"").append("Vizitka").append("\",");//TODO add support multiple sender names
+          stringBuilder.append("{\"recipient\":\"").append(message.getRecipient()).append("\",");
+          stringBuilder.append("\"sender\":\"").append(senderName).append("\",");
           stringBuilder.append("\"message\":\"").append(message.getMessage()).append("\"},");
         });
 
