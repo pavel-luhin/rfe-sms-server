@@ -1,6 +1,7 @@
 package by.bsu.rfe.smsservice.v2.domain.sms;
 
 import by.bsu.rfe.smsservice.v2.domain.SmsType;
+import by.bsu.rfe.smsservice.v2.domain.message.Message;
 import by.bsu.rfe.smsservice.v2.domain.recipient.Recipient;
 import java.util.List;
 
@@ -13,4 +14,6 @@ public interface Sms {
   SmsType getType();
 
   String getTemplate();
+
+  String getSenderName();
 }

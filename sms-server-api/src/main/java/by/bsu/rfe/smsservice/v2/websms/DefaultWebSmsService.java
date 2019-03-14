@@ -50,16 +50,22 @@ public class DefaultWebSmsService implements WebSmsService {
     }
 
     log.info("Web sms request executed successfully with result {}", httpResponse);
-    return new DefaultResponse(getContent(httpResponse));
+    return new DefaultResponse(httpResponse.getStatusLine().getStatusCode(), getContent(httpResponse));
   }
 
-  private String getContent(HttpResponse httpResponse) throws IOException {
-    BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()));
+  private String getContent(HttpResponse httpResponse) {
     String unicodeLine = "";
     StringBuilder unicodeContent = new StringBuilder();
 
-    while ((unicodeLine = reader.readLine()) != null) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(httpResponse.getEntity().getContent()))) {
+      while (true) {
+        if ((unicodeLine = reader.readLine()) == null) {
+          break;
+        }
+      }
       unicodeContent.append(unicodeLine);
+    } catch (IOException e) {
+      log.error("Error while parsing response {}", e);
     }
 
     return StringEscapeUtils.unescapeJava(unicodeContent.toString());

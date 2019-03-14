@@ -5,10 +5,11 @@ import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.MESSAGES;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.SENDER;
 import static by.bsu.rfe.smsservice.common.websms.WebSMSParam.USER;
 
+import by.bsu.rfe.smsservice.cache.credentials.CredentialsCache;
 import by.bsu.rfe.smsservice.common.websms.WebSMSRest;
 import by.bsu.rfe.smsservice.v2.domain.DefaultSmsResult;
 import by.bsu.rfe.smsservice.v2.domain.SmsResult;
-import by.bsu.rfe.smsservice.v2.domain.sms.Message;
+import by.bsu.rfe.smsservice.v2.domain.message.Message;
 import by.bsu.rfe.smsservice.v2.domain.sms.Sms;
 import by.bsu.rfe.smsservice.v2.domain.websms.DefaultRequest;
 import by.bsu.rfe.smsservice.v2.domain.websms.Request;
@@ -21,9 +22,12 @@ import org.springframework.stereotype.Service;
 public class SendSmsService implements SmsService {
 
   private final WebSmsService webSmsService;
+  private final CredentialsCache credentialsCache;
 
-  public SendSmsService(WebSmsService webSmsService) {
+  public SendSmsService(WebSmsService webSmsService,
+      CredentialsCache credentialsCache) {
     this.webSmsService = webSmsService;
+    this.credentialsCache = credentialsCache;
   }
 
   @Override
