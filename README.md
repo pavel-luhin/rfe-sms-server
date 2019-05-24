@@ -3,6 +3,27 @@ RFE Sms Server - is a simple application that provides api to send sms notificat
 This application contains users management system, ability to send sms directly from server or from external applications, collecting statistics of sent sms, duplicating sms messages to email.
 
 # Getting Started
+First you have to create database schema and user for it.
+```
+CREATE DATABASE sms_server;
+CREATE USER 'sms-server-user'@'localhost' IDENTIFIED BY 'passkey0';
+GRANT ALL ON sms_server.* TO 'sms-server-user'@'localhost';
+FLUSH PRIVILEGES;
+```
+To start application you need to have docker installed on you machine. Then you just have to type
+```
+docker run pluhin/sms-server:latest java -jar sms-server.jar
+```
+While start you need to specify the following environment variables for the application:
+* ```-Dspring.datasource.url``` or ```-Ddatabase.url``` in older version - url of database schema. In this example ```jdbc:mysql://localhost:3306/sms_server```
+* ```-Dspring.datasource.username``` or ```-Ddatabase.username``` in older version - username of database user. In this example ```sms-server-user```
+* ```-DDspring.datasource.password``` or ```-Ddatabase.password``` in older version - password of database user. In this example ```some-password```
+* ```-Dsms.test``` - in older versions test flag, send real or mock request to websms system. Deprecated. Use build profiles instead.
+* ```-Dserver.url``` - server domain or IP address with port where application is going to be deployed. Needed to send in email to newly registered users.
+* ```-Dcredentials.cache.enabled``` - in older versions flat to enable or disable credentials cache. Deprecated since version 1.4. Credentials cache is active by default now.
+* ```-Dserver.port``` - specifies port to bind to server. 8080 is by default
+
+#Alternative start without docker
 To start application you need to get Git, JRE that provides Java 8, Apache Maven at least 3.2 version, and MySQL at least 5.6 version.
 First, you need to clone this repository.
 ```
@@ -15,13 +36,7 @@ mvn clean install -Pprod
 ```
 This will compile and pack all project files in jar file.
 The project contains two profiles: ```prod``` and ```local```. The main difference is that production profile sends requests directly to websms server, and local one returns random or predefined data.
-Next you have to create database schema and user for it.
-```
-CREATE DATABASE sms_server;
-CREATE USER 'sms-server-user'@'localhost' IDENTIFIED BY 'some-password';
-GRANT ALL ON sms_server.* TO 'sms-server-user'@'localhost';
-FLUSH PRIVILEGES;
-```
+
 This set of mysql commands will create database schema, user and grant all access to created user.
 Then you need to specify the following environment variables for the application:
 * ```-Dspring.datasource.url``` or ```-Ddatabase.url``` in older version - url of database schema. In this example ```jdbc:mysql://localhost:3306/sms_server```
