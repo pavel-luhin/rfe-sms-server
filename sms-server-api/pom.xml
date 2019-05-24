@@ -167,6 +167,7 @@
               <mainClass>by.bsu.rfe.smsservice.SmsServerApplication</mainClass>
             </manifest>
           </archive>
+          <finalName>sms-server</finalName>
         </configuration>
       </plugin>
       <plugin>
