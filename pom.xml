@@ -12,6 +12,13 @@
     <url>https://github.com/p-luhin/rfe-sms-server/issues</url>
   </issueManagement>
 
+  <repositories>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <developers>
     <developer>
       <name>Pavel Luhin</name>
@@ -73,6 +80,12 @@
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>${commons-fileupload.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.github.sbrannen</groupId>
+        <artifactId>spring-test-junit5</artifactId>
+        <version>1.5.0</version>
+        <scope>test</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

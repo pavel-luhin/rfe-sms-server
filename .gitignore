@@ -7,3 +7,4 @@ package-lock.json
 node
 npm-debug.log
 confs.txt
+target
