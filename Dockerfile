@@ -1,4 +1,5 @@
-FROM maven:3-jdk-8
-ADD . .
-RUN mvn clean install -Pprod
-ENTRYPOINT ["java", "-jar", "sms-server-api/target/sms-server-api-1.4.jar"]
+FROM openjdk:8
+
+COPY sms-server-api/target/sms-server.jar /opt/sms-server.jar
+
+ENTRYPOINT ["java", "-jar", "/opt/sms-server.jar"]

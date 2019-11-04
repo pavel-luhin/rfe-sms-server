@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  sms-server:
+    build: .
+    ports:
+      - "8080:8080"
+  mysql:
+    environment:
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=true"
+      - "MYSQL_DATABASE=sms_server"
+      - "MYSQL_USER=sms-server-user"
+      - "MYSQL_PASSWORD=passkey0"
+    image: mysql:5.7.25
+    ports:
+      - "3306:3306"
